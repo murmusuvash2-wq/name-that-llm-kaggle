@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# Kaggle data and artifacts
+/data/raw/*
+!/data/raw/.gitkeep
+/models/*
+!/models/.gitkeep
+/submissions/*
+!/submissions/.gitkeep
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
