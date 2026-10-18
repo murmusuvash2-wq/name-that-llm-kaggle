@@ -63,3 +63,9 @@ The baseline combines word n-grams and character n-grams using `TfidfVectorizer`
 3. Try calibrated probabilities and blend independent models.
 4. Evaluate sentence or language-model embeddings as a second branch.
 5. Audit duplicates, formatting artifacts, topic leakage, and prompt distribution shifts.
+
+## GitHub Actions with a Kaggle secret
+
+The repository includes a manual workflow at `.github/workflows/kaggle-test.yml`. Add a repository secret named `KAGGLE_API_TOKEN` under **Settings → Secrets and variables → Actions → New repository secret**. Then open **Actions → Kaggle test and submit → Run workflow**.
+
+The workflow always downloads the data, trains the baseline, and stores `submission.parquet` as a GitHub Actions artifact. Keep the `submit` input set to `false` for the first test. After checking the artifact, run it again with `submit=true` to upload the file to Kaggle. The token is read only from GitHub Secrets and is never written into the repository.
