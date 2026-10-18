@@ -1,80 +1,37 @@
-# Name That LLM — Kaggle Starter
+# Name That LLM — LLM GMC
 
-Reproducible baseline for Kaggle's **Name That LLM** competition.
+Repository for the Kaggle **Name That LLM** competition, using the Kaggle notebook `janaiworkspace/llm-gmc` as the main experiment runner.
 
-The goal is to classify an unlabeled passage into one of the 18 language-model classes. This repository deliberately keeps competition data and generated submissions out of Git.
+## Current workflow
+
+1. Edit the notebook code in `notebooks/llm-gmc.ipynb` and commit it to GitHub.
+2. In GitHub, open **Actions → Publish and run LLM GMC on Kaggle → Run workflow**.
+3. GitHub Actions pushes the notebook to Kaggle using the `KAGGLE_API_TOKEN` repository secret.
+4. The workflow waits for the Kaggle run, downloads its outputs, and stores them as a GitHub Actions artifact.
+5. Review the local validation accuracy and balanced accuracy before choosing the next experiment.
+
+The workflow does **not** submit predictions to the Kaggle leaderboard.
+
+## Baseline model
+
+The LLM GMC notebook currently evaluates a word + character TF-IDF feature union with class-balanced `LinearSVC`. It uses a prompt-grouped validation split when `prompt_id` is available; otherwise it uses a stratified random split. The notebook writes `validation_results.json` under `/kaggle/working`.
+
+The printed accuracy is a **local validation score**, not the public leaderboard score.
+
+## Required GitHub secret
+
+In **Settings → Secrets and variables → Actions**, create:
+
+- `KAGGLE_API_TOKEN`: your Kaggle API token. Do not commit or paste the token into source files.
+
+The workflow currently targets the Kaggle notebook reference `janaiworkspace/llm-gmc` and competition slug `name-that-llm`.
 
 ## Repository layout
 
 ```text
-src/baseline.py       Train a character + word TF-IDF linear SVM and create submission.parquet
-requirements.txt      Python dependencies
-.env.example          Optional local configuration
-notebooks/            Experiment notebooks
-models/               Local model artifacts (ignored by Git)
-data/raw/             Kaggle input files (ignored by Git)
-submissions/          Local submissions (ignored by Git)
+src/baseline.py                         Optional local/GitHub Actions baseline
+notebooks/llm-gmc.ipynb                 Main competition-linked notebook
+.github/workflows/llm-gmc-kaggle.yml    Push, run, and collect notebook outputs
 ```
 
-## Kaggle-to-GitHub flow
-
-1. Create or sign in to one Kaggle account.
-2. Open the [Name That LLM competition](https://www.kaggle.com/competitions/name-that-llm), click **Join Competition**, and accept the rules.
-3. Download the competition data from Kaggle, or attach the competition dataset to a Kaggle Notebook.
-4. For local work, place `train.csv`, `test.csv`, and `sample_submission.parquet` under `data/raw/`.
-5. Create a virtual environment and install dependencies:
-
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
-
-6. Run the baseline:
-
-   ```bash
-   python src/baseline.py --data-dir data/raw --output submissions/baseline.parquet
-   ```
-
-7. Inspect the generated file. It must contain one row per test `id` and a `model` column.
-8. Upload the file on Kaggle's **Submit Predictions** page. Never commit the data, Kaggle API token, or submission files.
-9. Record the experiment and public score in `notebooks/` or a separate experiment log, then commit only code and notes to GitHub.
-
-## Kaggle Notebook flow
-
-If you do not want to download data locally, create a Kaggle Notebook, attach `name-that-llm` as an input, copy the code from `src/baseline.py`, and change the data path to Kaggle's mounted input path. Turn internet off for a reproducible submission run and attach any pretrained model as a Kaggle Dataset instead of downloading it during execution.
-
-## Baseline method
-
-The baseline combines word n-grams and character n-grams using `TfidfVectorizer`, then trains a class-balanced `LinearSVC`. Character features help capture punctuation, spelling, formatting, and stylistic habits; word features capture phrase-level tendencies. The script prints a prompt-grouped validation score when `prompt_id` is available, then retrains on all labelled data and writes the submission.
-
-## Important rules and hygiene
-
-- Use one Kaggle account only.
-- Do not commit competition data or private team code.
-- Do not share private code outside your Kaggle team.
-- Check the current official rules for team size, submission limits, deadlines, eligibility, and prize/tax requirements.
-- Treat the public leaderboard as a weak signal; optimize against robust local validation, especially prompt-wise splits.
-
-## Next experiments
-
-1. Compare character-only, word-only, and combined models.
-2. Add repeated prompt-grouped cross-validation and confidence analysis.
-3. Try calibrated probabilities and blend independent models.
-4. Evaluate sentence or language-model embeddings as a second branch.
-5. Audit duplicates, formatting artifacts, topic leakage, and prompt distribution shifts.
-
-## GitHub Actions with a Kaggle secret
-
-The repository includes a manual workflow at `.github/workflows/kaggle-test.yml`. Add a repository secret named `KAGGLE_API_TOKEN` under **Settings → Secrets and variables → Actions → New repository secret**. Then open **Actions → Kaggle test and submit → Run workflow**.
-
-The workflow always downloads the data, trains the baseline, and stores `submission.parquet` as a GitHub Actions artifact. Keep the `submit` input set to `false` for the first test. After checking the artifact, run it again with `submit=true` to upload the file to Kaggle. The token is read only from GitHub Secrets and is never written into the repository.
-
-## Automatic Kaggle test notebook
-
-The workflow `.github/workflows/kaggle-notebook-test.yml` publishes and runs `notebooks/kaggle_test.ipynb` on Kaggle without making a competition submission. Add these two GitHub Actions repository secrets:
-
-- `KAGGLE_API_TOKEN`: the token generated at Kaggle Settings → API
-- `KAGGLE_USERNAME`: your Kaggle username, not your GitHub username unless they are identical
-
-Then run **Actions → Publish and run Kaggle test notebook → Run workflow**. The workflow uses the `name-that-llm` competition as the notebook input, runs with internet disabled, and prints the Kaggle notebook status. It does not call `kaggle competitions submit`.
+Competition data, API credentials, and generated submissions should not be committed to Git.
