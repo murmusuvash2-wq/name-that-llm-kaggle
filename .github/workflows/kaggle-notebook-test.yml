@@ -37,8 +37,8 @@ jobs:
           python - <<'PY'
           import json, os
           metadata = {
-              "title": "Name That LLM - Automated Test",
-              "id": f"{os.environ['KAGGLE_USERNAME']}/name-that-llm-test",
+              "title": "Name That LLM Automated Test",
+              "id": f"{os.environ['KAGGLE_USERNAME']}/name-that-llm-automated-test",
               "code_file": "kaggle_test.ipynb",
               "language": "python",
               "kernel_type": "notebook",
