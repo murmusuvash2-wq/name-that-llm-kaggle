@@ -69,3 +69,12 @@ The baseline combines word n-grams and character n-grams using `TfidfVectorizer`
 The repository includes a manual workflow at `.github/workflows/kaggle-test.yml`. Add a repository secret named `KAGGLE_API_TOKEN` under **Settings → Secrets and variables → Actions → New repository secret**. Then open **Actions → Kaggle test and submit → Run workflow**.
 
 The workflow always downloads the data, trains the baseline, and stores `submission.parquet` as a GitHub Actions artifact. Keep the `submit` input set to `false` for the first test. After checking the artifact, run it again with `submit=true` to upload the file to Kaggle. The token is read only from GitHub Secrets and is never written into the repository.
+
+## Automatic Kaggle test notebook
+
+The workflow `.github/workflows/kaggle-notebook-test.yml` publishes and runs `notebooks/kaggle_test.ipynb` on Kaggle without making a competition submission. Add these two GitHub Actions repository secrets:
+
+- `KAGGLE_API_TOKEN`: the token generated at Kaggle Settings → API
+- `KAGGLE_USERNAME`: your Kaggle username, not your GitHub username unless they are identical
+
+Then run **Actions → Publish and run Kaggle test notebook → Run workflow**. The workflow uses the `name-that-llm` competition as the notebook input, runs with internet disabled, and prints the Kaggle notebook status. It does not call `kaggle competitions submit`.

@@ -1,0 +1,63 @@
+name: Publish and run Kaggle test notebook
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-test-notebook:
+    runs-on: ubuntu-latest
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+
+      - name: Validate required secrets without printing them
+        run: |
+          test -n "$KAGGLE_API_TOKEN" || (echo "KAGGLE_API_TOKEN is missing" && exit 1)
+          test -n "$KAGGLE_USERNAME" || (echo "KAGGLE_USERNAME is missing" && exit 1)
+
+      - name: Prepare Kaggle notebook metadata
+        run: |
+          mkdir -p kaggle_kernel
+          cp notebooks/kaggle_test.ipynb kaggle_kernel/kaggle_test.ipynb
+          python - <<'PY'
+          import json, os
+          metadata = {
+              "title": "Name That LLM - Automated Test",
+              "id": f"{os.environ['KAGGLE_USERNAME']}/name-that-llm-test",
+              "code_file": "kaggle_test.ipynb",
+              "language": "python",
+              "kernel_type": "notebook",
+              "is_private": True,
+              "enable_gpu": False,
+              "enable_internet": False,
+              "dataset_sources": [],
+              "competition_sources": ["name-that-llm"],
+              "kernel_sources": [],
+              "model_sources": []
+          }
+          with open("kaggle_kernel/kernel-metadata.json", "w") as f:
+              json.dump(metadata, f, indent=2)
+          PY
+          cat kaggle_kernel/kernel-metadata.json
+
+      - name: Publish and run Kaggle test notebook
+        run: kaggle kernels push -p kaggle_kernel
+
+      - name: Print Kaggle notebook status
+        run: kaggle kernels status "$KAGGLE_USERNAME/name-that-llm-test"
