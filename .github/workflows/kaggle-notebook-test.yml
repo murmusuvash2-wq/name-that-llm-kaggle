@@ -59,4 +59,4 @@ jobs:
         run: kaggle kernels push -p kaggle_kernel
 
       - name: Print Kaggle notebook status
-        run: kaggle kernels status "$KAGGLE_USERNAME/name-that-llm-test"
+        run: kaggle kernels status "$KAGGLE_USERNAME/name-that-llm-automated-test"
