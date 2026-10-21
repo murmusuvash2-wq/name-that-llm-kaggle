@@ -1,0 +1,56 @@
+name: Run Qwen3 SVM diagnostic on Kaggle
+on:
+  workflow_dispatch:
+jobs:
+  qwen3-svm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/qwen3-svm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+      - name: Prepare notebook metadata
+        run: |
+          mkdir -p kaggle_qwen
+          cp notebooks/qwen3-embedding-svm.ipynb kaggle_qwen/qwen3-embedding-svm.ipynb
+          python - <<'PY'
+          import json, os
+          meta={
+            "title":"Qwen3 SVM Diagnostic",
+            "id":f"{os.environ['KAGGLE_USERNAME']}/qwen3-svm",
+            "code_file":"qwen3-embedding-svm.ipynb",
+            "language":"python", "kernel_type":"notebook",
+            "is_private":True, "enable_gpu":True, "enable_internet":False,
+            "dataset_sources":[], "competition_sources":["name-that-llm"],
+            "kernel_sources":[],
+            "model_sources":["qwen-lm/qwen-3-embedding/Transformers/4b/1"]
+          }
+          json.dump(meta, open("kaggle_qwen/kernel-metadata.json","w"), indent=2)
+          PY
+      - name: Push and run Kaggle notebook
+        run: kaggle kernels push -p kaggle_qwen
+      - name: Wait for completion
+        run: |
+          mkdir -p kaggle-qwen-output
+          for attempt in $(seq 1 240); do
+            status="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Status $attempt/240: $status"
+            if echo "$status" | grep -qi COMPLETE; then exit 0; fi
+            if echo "$status" | grep -qiE "ERROR|CANCEL"; then exit 1; fi
+            sleep 60
+          done
+          exit 1
+      - name: Download outputs
+        run: kaggle kernels output "$KERNEL_REF" -p kaggle-qwen-output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qwen3-svm-results
+          path: kaggle-qwen-output/
+          if-no-files-found: error
