@@ -23,7 +23,7 @@ jobs:
           python - <<'PY'
           import json, os
           meta={
-            "title":"Qwen3 SVM Diagnostic",
+            "title":"qwen3-svm",
             "id":f"{os.environ['KAGGLE_USERNAME']}/qwen3-svm",
             "code_file":"qwen3-embedding-svm.ipynb",
             "language":"python", "kernel_type":"notebook",
