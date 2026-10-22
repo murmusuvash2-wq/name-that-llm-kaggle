@@ -49,7 +49,7 @@ jobs:
               "is_private": True,
               "enable_gpu": False,
               "enable_internet": False,
-              "dataset_sources": [],
+              "dataset_sources": ["prvsiyan/prvsiyans-extended-name-that-llm-dataset"],
               "competition_sources": ["name-that-llm"],
               "kernel_sources": [],
               "model_sources": []
