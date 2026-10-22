@@ -30,17 +30,24 @@ jobs:
       - name: Wait
         run: |
           mkdir -p family-output
+          final_status=""
           for i in $(seq 1 180); do
             s="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "Status $i/180: $s"
-            if echo "$s" | grep -qi COMPLETE; then exit 0; fi
-            if echo "$s" | grep -qiE "ERROR|CANCEL"; then exit 1; fi
+            if echo "$s" | grep -qi COMPLETE; then final_status=complete; break; fi
+            if echo "$s" | grep -qiE "ERROR|CANCEL"; then final_status=error; break; fi
             sleep 60
           done
-          exit 1
+          printf '%s\n' "$s" > family-output/kernel-status.txt
+          kaggle kernels output "$KERNEL_REF" -p family-output > family-output/output-command.log 2>&1 || true
+          echo "final_status=$final_status"
+          [ "$final_status" = complete ]
       - name: Download output
+        if: always()
+        continue-on-error: true
         run: kaggle kernels output "$KERNEL_REF" -p family-output
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: family-aware-results
           path: family-output/
-          if-no-files-found: error
+          if-no-files-found: warn
