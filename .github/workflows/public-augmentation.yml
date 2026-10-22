@@ -1,0 +1,53 @@
+name: Run public matched-dataset augmentation
+on:
+  workflow_dispatch:
+jobs:
+  augmentation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/public-augmentation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+      - name: Prepare notebook
+        run: |
+          mkdir -p kaggle_aug
+          cp notebooks/public-augmentation.ipynb kaggle_aug/public-augmentation.ipynb
+          python - <<'PY'
+          import json, os
+          meta={"title":"public-augmentation","id":f"{os.environ['KAGGLE_USERNAME']}/public-augmentation","code_file":"public-augmentation.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":False,"enable_internet":False,"dataset_sources":["prvsiyan/prvsiyans-extended-name-that-llm-dataset"],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":[]}
+          json.dump(meta,open("kaggle_aug/kernel-metadata.json","w"),indent=2)
+          PY
+      - name: Push and run
+        run: kaggle kernels push -p kaggle_aug
+      - name: Wait and download
+        run: |
+          mkdir -p aug-output
+          final_status=""
+          for i in $(seq 1 180); do
+            s="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "Status $i/180: $s"
+            if echo "$s" | grep -qi COMPLETE; then final_status=complete; break; fi
+            if echo "$s" | grep -qiE "ERROR|CANCEL"; then final_status=error; break; fi
+            sleep 60
+          done
+          printf '%s\n' "$s" > aug-output/kernel-status.txt
+          kaggle kernels output "$KERNEL_REF" -p aug-output > aug-output/output-command.log 2>&1 || true
+          echo "final_status=$final_status"
+          [ "$final_status" = complete ]
+      - name: Download output
+        if: always()
+        continue-on-error: true
+        run: kaggle kernels output "$KERNEL_REF" -p aug-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-augmentation-results
+          path: aug-output/
+          if-no-files-found: warn
