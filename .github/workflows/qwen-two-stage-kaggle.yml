@@ -1,0 +1,66 @@
+name: Run Qwen two-stage LoRA
+on:
+  workflow_dispatch:
+jobs:
+  qwen-two-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/qwen-two-stage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+      - name: Prepare notebook metadata
+        run: |
+          mkdir -p kaggle_qwen
+          cp notebooks/qwen-two-stage.ipynb kaggle_qwen/qwen-two-stage.ipynb
+          python - <<'PY'
+          import json, os
+          metadata={
+            "title":"Qwen two-stage LoRA",
+            "id":f"{os.environ['KAGGLE_USERNAME']}/qwen-two-stage",
+            "code_file":"qwen-two-stage.ipynb",
+            "language":"python",
+            "kernel_type":"notebook",
+            "is_private":True,
+            "enable_gpu":True,
+            "enable_internet":False,
+            "dataset_sources":["nishantdahal/ntl-two-stage-lora"],
+            "competition_sources":["name-that-llm"],
+            "kernel_sources":[],
+            "model_sources":["qwen-3"]
+          }
+          json.dump(metadata,open("kaggle_qwen/kernel-metadata.json","w"),indent=2)
+          PY
+      - name: Push and run
+        run: kaggle kernels push -p kaggle_qwen
+      - name: Wait and download
+        run: |
+          mkdir -p qwen-output
+          final_status=""
+          for i in $(seq 1 240); do
+            s="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "Status $i/240: $s"
+            if echo "$s" | grep -qi COMPLETE; then final_status=complete; break; fi
+            if echo "$s" | grep -qiE "ERROR|CANCEL"; then final_status=error; break; fi
+            sleep 60
+          done
+          printf '%s\n' "$s" > qwen-output/kernel-status.txt
+          kaggle kernels output "$KERNEL_REF" -p qwen-output > qwen-output/output-command.log 2>&1 || true
+          echo "final_status=$final_status"
+          [ "$final_status" = complete ]
+      - name: Download output
+        if: always()
+        continue-on-error: true
+        run: kaggle kernels output "$KERNEL_REF" -p qwen-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qwen-two-stage-results
+          path: qwen-output/
+          if-no-files-found: warn
