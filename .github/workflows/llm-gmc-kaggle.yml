@@ -47,12 +47,12 @@ jobs:
               "language": "python",
               "kernel_type": "notebook",
               "is_private": True,
-              "enable_gpu": False,
+              "enable_gpu": True,
               "enable_internet": False,
-              "dataset_sources": ["prvsiyan/prvsiyans-extended-name-that-llm-dataset"],
+              "dataset_sources": ["nishantdahal/ntl-two-stage-lora"],
               "competition_sources": ["name-that-llm"],
               "kernel_sources": [],
-              "model_sources": []
+              "model_sources": ["qwen-lm/qwen-3/transformers/8b/1", "qwen-lm/qwen-3/transformers/14b/1"]
           }
           with open("kaggle_kernel/kernel-metadata.json", "w") as f:
               json.dump(metadata, f, indent=2)
