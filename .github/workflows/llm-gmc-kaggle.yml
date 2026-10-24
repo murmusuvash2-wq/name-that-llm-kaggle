@@ -49,7 +49,7 @@ jobs:
               "is_private": True,
               "enable_gpu": True,
               "enable_internet": False,
-              "dataset_sources": ["nishantdahal/ntl-two-stage-lora", "prvsiyan/prvsiyans-extended-name-that-llm-dataset"],
+              "dataset_sources": ["nishantdahal/ntl-two-stage-lora"],
               "competition_sources": ["name-that-llm"],
               "kernel_sources": [],
               "model_sources": ["qwen-lm/qwen-3/transformers/8b/1", "qwen-lm/qwen-3/transformers/14b/1"]
