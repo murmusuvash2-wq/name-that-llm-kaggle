@@ -29,7 +29,7 @@ jobs:
           python - <<'PY'
           import json, os
           metadata = {
-              "title": "Name That LLM - Permanent Phase Validation",
+              "title": "phase1-validation",
               "id": f"{os.environ['KAGGLE_USERNAME']}/phase1-validation",
               "code_file": "phase1-validation.ipynb",
               "language": "python",
