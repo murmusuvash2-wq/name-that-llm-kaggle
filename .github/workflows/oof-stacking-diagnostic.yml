@@ -1,0 +1,45 @@
+name: Qwen SVC OOF stacking diagnostic
+on:
+  workflow_dispatch:
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/oof-stacking-diagnostic
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Prepare notebook metadata
+        run: |
+          mkdir -p kaggle_stack
+          cp notebooks/oof-stacking-diagnostic.ipynb kaggle_stack/
+          python - <<'PY'
+          import json, os
+          m={"title":"Qwen SVC OOF stacking diagnostic","id":f"{os.environ['KAGGLE_USERNAME']}/oof-stacking-diagnostic","code_file":"oof-stacking-diagnostic.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":True,"enable_internet":False,"dataset_sources":["nishantdahal/ntl-two-stage-lora"],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":["qwen-lm/qwen-3/transformers/8b/1","qwen-lm/qwen-3/transformers/14b/1"]}
+          json.dump(m,open('kaggle_stack/kernel-metadata.json','w'),indent=2)
+          PY
+      - run: kaggle kernels push -p kaggle_stack
+      - name: Wait and collect
+        run: |
+          mkdir -p stack-output
+          done_flag=false
+          for i in $(seq 1 210); do
+            s="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "Status $i/210: $s"
+            if echo "$s" | grep -qi COMPLETE; then done_flag=true; break; fi
+            if echo "$s" | grep -qiE "ERROR|CANCEL"; then exit 1; fi
+            sleep 60
+          done
+          [ "$done_flag" = true ]
+          kaggle kernels output "$KERNEL_REF" -p stack-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: oof-stacking-results
+          path: stack-output/
+          if-no-files-found: warn
