@@ -5,6 +5,7 @@ Record every meaningful experiment before uploading a submission.
 | Run | Features | Model | Validation split | Balanced accuracy | Public score | Notes |
 |---|---|---|---|---:|---:|---|
 | 001 | word + char TF-IDF | LinearSVC | prompt-grouped, seed 42 |  |  | baseline |
+| 002 | phase1_oof_stacking | TF-IDF + meta-logit | grouped OOF, no test leakage | pending | pending | true OOF stacking candidate |
 
 ## Error analysis checklist
 
