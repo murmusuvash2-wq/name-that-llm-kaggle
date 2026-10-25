@@ -33,3 +33,7 @@ The combined pasted-text Step 1 candidate (weight reallocation plus orthographic
 ## Research Phase R1: early-layer auxiliary readout
 
 Public evidence supported testing early Qwen layers and a complementary readout, so a gated early-half 8B auxiliary LinearSVC was implemented with grouped OOF selection. Workflow `40212395409` successfully pushed the notebook but remained stuck in Kaggle's wait stage for more than eight hours and produced no artifact or score. This is an execution timeout, not a model result. The candidate is not retained; the exact Version 40 baseline is restored pending a lighter implementation.
+
+## Validation-repaired clean baseline candidate
+
+Commit `c76d763` removes the invalid mixed OOF/in-sample blend search and disables twin/grouping, embedding, label calibration, sibling, family, and hierarchical specialists. It retains fixed Version 40 weights, n-gram SVC, Qwen 8B/14B plain heads, damped balancing, and the proven orthographic shield. Workflow `40245690732` completed successfully in 8m14s; the submission artifact is valid. Interactive output changed only `005f5a9a6139` from `gpt-5.6-terra` to `gpt-5.6-sol`. Public LB score is pending manual submission.
