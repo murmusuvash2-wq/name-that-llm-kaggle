@@ -17,3 +17,7 @@ Version 46 was the isolated orthographic-shield-off ablation from Version 40. It
 ## Pasted-text blend-weight candidate
 
 The pasted-text proposal was tested in isolation from Version 40 with `W_SVC=0.720`, `lora8b_v1.w=0.305`, and `lora14b_v1.w=0.580`. The Kaggle execution succeeded in workflow `40192911961`; `clean_extra=0`, the shield remained enabled, and all three interactive predictions were unchanged from Version 40. Public LB score is pending manual submission. The candidate is not retained as production until it beats `0.582`; production is restored to the exact Version 40 baseline.
+
+### Weight candidate Public LB decision
+
+The isolated pasted-text blend-weight candidate (`W_SVC=0.720`, 8B=`0.305`, 14B=`0.580`) received Public LB **0.582**, exactly equal to Version 40. It produced no measurable improvement and is rejected as a production change. The exact Version 40 weights remain active.
