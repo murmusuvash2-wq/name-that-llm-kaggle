@@ -1,16 +1,12 @@
-# Experiment log
 
-Record every meaningful experiment before uploading a submission.
 
-| Run | Features | Model | Validation split | Balanced accuracy | Public score | Notes |
-|---|---|---|---|---:|---:|---|
-| 001 | word + char TF-IDF | LinearSVC | prompt-grouped, seed 42 |  |  | baseline |
-| 002 | phase1_oof_stacking | TF-IDF + meta-logit | grouped OOF, no test leakage | pending | pending | true OOF stacking candidate |
+## Verified Version 40 golden baseline
 
-## Error analysis checklist
-
-- Are errors concentrated in one model class?
-- Do errors change when punctuation and whitespace are normalized?
-- Does performance collapse on unseen prompt groups?
-- Are train/test duplicates or near-duplicates present?
-- Is the public score improving for a real reason or because of leaderboard overfitting?
+- Kaggle version: **40**
+- Public LB: **0.582**
+- Source: user-attached `llm-gmc(2).ipynb`
+- Git reconstruction: commit `28a78e6` (source cells match exactly across all 11 cells)
+- Reconstruction commit: `0da054c`
+- Source SHA-256: `080fef1224186288eea69d6dbb6c5a84109c46236fc14030afbf7adb2dc91eab`
+- Active components: full-weight public-pool SVC, Qwen3 8B + 14B LoRA blend, original `C=0.5`, original TF-IDF views, original Sinkhorn/post-processing and orthographic shield.
+- Rule: all future ablations branch from this exact Version 40 state and are judged against Public LB `0.582`.
