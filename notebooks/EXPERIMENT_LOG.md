@@ -21,3 +21,7 @@ The pasted-text proposal was tested in isolation from Version 40 with `W_SVC=0.7
 ### Weight candidate Public LB decision
 
 The isolated pasted-text blend-weight candidate (`W_SVC=0.720`, 8B=`0.305`, 14B=`0.580`) received Public LB **0.582**, exactly equal to Version 40. It produced no measurable improvement and is rejected as a production change. The exact Version 40 weights remain active.
+
+## Combined pasted-text Step 1 candidate
+
+The text-prescribed combined candidate used the Version 40 baseline with weight reallocation (`W_SVC=0.720`, 8B=`0.305`, 14B=`0.580`), no extra clean rows (`clean_extra=0`), and the orthographic shield disabled. Kaggle workflow `40201881454` completed successfully; the submission artifact is valid. Public LB score is pending manual submission. Production is restored to the exact Version 40 shield-on baseline until the candidate beats `0.582`.
