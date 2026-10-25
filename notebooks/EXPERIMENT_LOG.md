@@ -13,3 +13,7 @@
 ## Version 46 Public LB result
 
 Version 46 was the isolated orthographic-shield-off ablation from Version 40. Its confirmed Public LB score was **0.580**, below the Version 40 shield-on baseline of **0.582**. The ablation is rejected; the exact Version 40 shield-on notebook is restored for the next experiment.
+
+## Pasted-text blend-weight candidate
+
+The pasted-text proposal was tested in isolation from Version 40 with `W_SVC=0.720`, `lora8b_v1.w=0.305`, and `lora14b_v1.w=0.580`. The Kaggle execution succeeded in workflow `40192911961`; `clean_extra=0`, the shield remained enabled, and all three interactive predictions were unchanged from Version 40. Public LB score is pending manual submission. The candidate is not retained as production until it beats `0.582`; production is restored to the exact Version 40 baseline.
