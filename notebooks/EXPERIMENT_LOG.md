@@ -29,3 +29,7 @@ The text-prescribed combined candidate used the Version 40 baseline with weight 
 ### Combined Step 1 Public LB decision
 
 The combined pasted-text Step 1 candidate (weight reallocation plus orthographic shield disabled; extra rows already absent) received Public LB **0.582**, exactly equal to Version 40. It produced no improvement and is rejected. The exact Version 40 shield-on configuration remains the production baseline.
+
+## Research Phase R1: early-layer auxiliary readout
+
+Public evidence supported testing early Qwen layers and a complementary readout, so a gated early-half 8B auxiliary LinearSVC was implemented with grouped OOF selection. Workflow `40212395409` successfully pushed the notebook but remained stuck in Kaggle's wait stage for more than eight hours and produced no artifact or score. This is an execution timeout, not a model result. The candidate is not retained; the exact Version 40 baseline is restored pending a lighter implementation.
