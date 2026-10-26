@@ -60,7 +60,11 @@ jobs:
             sleep 60
           done
       - name: Download validation output
-        run: kaggle kernels output "$KERNEL_REF" -p kaggle-validation-output
+        if: always()
+        run: |
+          kaggle kernels output "$KERNEL_REF" -p kaggle-validation-output || true
+          echo "--- downloaded validation files ---"
+          find kaggle-validation-output -maxdepth 2 -type f -print || true
       - name: Upload validation artifact
         uses: actions/upload-artifact@v4
         with:
