@@ -37,3 +37,6 @@ Public evidence supported testing early Qwen layers and a complementary readout,
 ## Validation-repaired clean baseline candidate
 
 Commit `c76d763` removes the invalid mixed OOF/in-sample blend search and disables twin/grouping, embedding, label calibration, sibling, family, and hierarchical specialists. It retains fixed Version 40 weights, n-gram SVC, Qwen 8B/14B plain heads, damped balancing, and the proven orthographic shield. Workflow `40245690732` completed successfully in 8m14s; the submission artifact is valid. Interactive output changed only `005f5a9a6139` from `gpt-5.6-terra` to `gpt-5.6-sol`. Public LB score is pending manual submission.
+
+### Clean baseline Public LB decision
+The validation-repaired clean baseline received Public LB **0.559**, materially below Version 40's **0.582**, so it is rejected. The ablation was confounded: it removed both the twin/cavity path and the complete label-calibration/sibling block at once, while also bypassing the existing blend-selection path. Family and hierarchical gates were not applied on the 3-row public test, so they cannot explain this regression. Exact Version 40 was restored in commit `10b6ca7`. Next tests must isolate one mechanism at a time.
