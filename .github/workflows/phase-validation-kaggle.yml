@@ -66,6 +66,7 @@ jobs:
           echo "--- downloaded validation files ---"
           find kaggle-validation-output -maxdepth 2 -type f -print || true
       - name: Upload validation artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: permanent-phase-validation
