@@ -58,3 +58,48 @@ Kaggle's official Name That LLM overview confirms that interactive notebooks use
 
 ### Held-out OOF orthographic shield sweep
 Workflow `40429995010` successfully tested factors 0.001, 0.005, 0.01, 0.025, 0.05, 0.10, 0.25, 0.50, and 1.00 on 3 prompt-held-out folds using production-style SVC train+pool. Every factor below 1.0 changed only 6/2,699 rows total and produced the same result: mean BA **0.435299 → 0.434928** (-0.000370), changed-row accuracy **16.7% → 0%**, net correct change **-1**. Factor 1.0 was identical to baseline with 0 changed rows. Shield factor changes are rejected; no production notebook change. The next evidence-backed candidate remains pool weight 0.50, whose disagreement audit improved all folds with +42 net correct changed-row gain and should be evaluated only through a real hidden-test competition submission.
+
+## Version 41: honest OOF harness, pool-trained specialists, OOF-selected switches
+
+- Code commit: notebook `notebooks/llm-gmc.ipynb` (v41), Kaggle kernel version **58**
+- Kaggle workflow: `40444002320` (push + interactive run + outputs), interactive run 34m
+- Submission workflow: `40447445344` (submit-only, kernel v58)
+- Public LB: **pending scoring rerun** (hidden test is ~4,000 passages, so the rerun takes ~2h)
+
+What changed, and why (all three were measurement bugs, not model bugs):
+
+1. The fold SVC was fitted on the 2,699 host rows only while production fits train + 34,940 pool
+   rows with sample weights, so the OOF number described a different model than the submission.
+   Folds now use the production row set (fold train + pool + extra).
+2. The blend-weight grid ran on `q_train`, which comes from LoRA heads fine-tuned on those same
+   train rows. That is in-sample and pulls the blend towards the LoRAs. The reference weights
+   (1.021 / 0.226 / 0.429) are now frozen and never re-fitted here.
+3. Candidates were being accepted or rejected on the 3-row interactive test, which cannot show a
+   score change (balancing is skipped below 50 rows). Switches are now chosen on prompt-grouped
+   OOF balanced accuracy with a 0.002 acceptance margin.
+
+Mechanisms added: sibling-pair, family and within-family heads fitted on train + pool (37k rows)
+instead of train only; final-logit prompt centering with a cluster-tightness guard; one-vs-rest
+heads for the eight weakest classes (rejected on OOF, kept in the code behind a switch).
+
+Verified OOF (3 folds, grouped by prompt, balanced accuracy):
+
+| stage | BA |
+|---|---|
+| v40 recipe | 0.45637 |
+| + pool-trained sibling/family specialists | 0.45970 (accepted) |
+| + one-vs-rest worst-class heads | 0.45527 (rejected) |
+| + final-logit prompt centering 0.15 | 0.46637 (accepted) |
+| + final-logit prompt centering 0.30 | 0.47526 (accepted) |
+| no marginal balancing | 0.47011 (balancing kept) |
+| **chosen** spec=True, ovr=False, lam=0.30, alpha=0.50, shield=hard, calib=0.10 | **0.47526** |
+
+OOF 0.45637 -> 0.47526 (+0.0189); 16 of 18 classes flat or better.
+
+Caveat to record: this harness sees the label-fitted members out-of-fold but not the LoRAs, whose
+train probabilities are in-sample. The comparison is therefore apples-to-apples across configs but
+still an SVC-stack number, not a full-ensemble one. Real LoRA OOF needs fold-wise stage-2 adapters.
+
+Next candidates (see the v41 report): the part-two assets in `nishantdahal/ntl-handwriting-blend`
+(Qwen3-14B 0.611 CV, Qwen2.5-14B 0.569, DeBERTa 0.546, pool_v4 75,783 rows), per-family gates,
+fold-wise LoRA OOF, and a bigger backbone member.
