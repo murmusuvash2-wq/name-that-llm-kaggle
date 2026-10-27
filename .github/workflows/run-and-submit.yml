@@ -114,12 +114,12 @@ jobs:
           if [ -n "${KERNEL_VERSION:-}" ]; then
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
               -f submission.parquet \
-              -m "v42: public part-two reproduction (pool_v4 + Qwen3-14B + Qwen2.5-14B + DeBERTa), kernel v$KERNEL_VERSION" \
+              -m "v44: v42 + adaptive SVC topic correction, kernel v$KERNEL_VERSION" \
               --wait 10800 --poll-interval 60
           else
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
               -f submission.parquet \
-              -m "v42: public part-two reproduction, latest kernel" \
+              -m "v44: v42 + adaptive SVC topic correction, latest kernel" \
               --wait 10800 --poll-interval 60
           fi
 
