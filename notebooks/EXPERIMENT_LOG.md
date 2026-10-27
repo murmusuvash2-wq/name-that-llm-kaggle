@@ -159,3 +159,39 @@ assignment and the rules below 50 rows (`hungarian_rows: 0`). What it does estab
 whole package is 0.021 worse than the untouched v42, which is consistent with the public part-two
 notebook's own finding that "at most one passage per model inside a topic cluster" is better in
 simulation and worse on the leaderboard.
+
+## Version 44: adaptive SVC topic correction — Public LB 0.626 (best)
+
+- Kaggle kernel version **62**, workflow `40489691161`, interactive run ~16 min, scoring ~41 min
+- **Public LB 0.626**, against 0.620 for v42. **Accepted; this is the new production notebook.**
+- Submission ref 57698691. 0 submissions remaining for the day after it.
+
+One mechanism added to v42, nothing else: inside each topic cluster of **8 to 18** test passages,
+subtract the cluster's leave-one-out mean from the SVC's log probabilities, scaled by a margin gate
+
+    gate = clip((2 - (top1 - top2)) / 1.6, 0.15, 1.0)
+    log p <- log p - 0.62 * gate * cluster_loo_mean
+
+The tight 0.85 clustering still drives the centred twin; the correction clusters at a looser 0.95
+threshold so that clusters of 8-18 exist at all. `CORRECTION["lam"] = 0` reproduces v42 exactly.
+
+Why this and not the v41 attempt: v41 centred the **final blended logits** at weight 0.30, which
+mixed the members' style evidence into the "topic" being removed and cost 0.006. This centres the
+**SVC member's own log probabilities**, only where the cluster is big enough for the mean to mean
+something, and only as much as the passage is unsure. Same idea, applied where it is identifiable.
+
+Submission history on the public board:
+
+| version | change | public LB |
+|---|---|---|
+| v40 | part-one two-stage LoRA stack | 0.585 |
+| v41 | pool-trained specialists, OOF-selected switches | 0.579 |
+| v42 | public part-two reproduction (pool_v4, Qwen3-14B, Qwen2.5-14B, DeBERTa) | 0.620 |
+| v43 | v42 + the attached plan (Hungarian, extra pool, TTA, rules) | 0.599 |
+| **v44** | **v42 + adaptive SVC topic correction** | **0.626** |
+
+Next: the complementary stack. v42/v44 sit on the part-two recipe, which the public notebooks take
+from 0.620 to 0.636/0.639 by blending ~16 published readouts at 15% (stylegram, stylometry LightGBM,
+UltraBERT, frozen Qwen/Gemma/GLM heads, ELECTRA, lora24 x3, token-attention x2), then to 0.641/0.642
+with ATLAS, spectral readouts and a full-text Qwen3.8-27B NF4 classifier. No new training, mostly
+plumbing, and each member needs its own loader.
