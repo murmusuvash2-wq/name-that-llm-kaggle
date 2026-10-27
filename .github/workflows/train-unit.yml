@@ -1,0 +1,129 @@
+name: Train an NTL LoRA24 unit on Kaggle
+
+on:
+  workflow_dispatch:
+    inputs:
+      unit_name:
+        description: "Unit label, used in the dataset title"
+        required: true
+        default: "unit0"
+      max_minutes:
+        description: "Time box for the run"
+        required: true
+        default: "90"
+      publish:
+        description: "Publish the artifact as a Kaggle dataset"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/ntl-train-lora24
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+
+      - name: Prepare the training kernel metadata
+        shell: bash
+        run: |
+          mkdir -p kaggle_kernel
+          cp notebooks/train-lora24.ipynb kaggle_kernel/train-lora24.ipynb
+          python - <<'PY'
+          import json, os
+          metadata = {
+              "title": "NTL train lora24",
+              "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-train-lora24",
+              "code_file": "train-lora24.ipynb",
+              "language": "python",
+              "kernel_type": "notebook",
+              "is_private": True,
+              "enable_gpu": True,
+              "enable_internet": False,
+              "dataset_sources": ["nishantdahal/ntl-handwriting-blend"],
+              "competition_sources": ["name-that-llm"],
+              "kernel_sources": [],
+              "model_sources": ["qwen-lm/qwen-3/transformers/8b-base/1"]
+          }
+          with open("kaggle_kernel/kernel-metadata.json", "w") as f:
+              json.dump(metadata, f, indent=2)
+          PY
+
+      - name: Push the training notebook
+        shell: bash
+        run: |
+          set -o pipefail
+          kaggle kernels push -p kaggle_kernel 2>&1 | tee push.log
+          VER="$(grep -oiE 'version[^0-9]*[0-9]+' push.log | grep -oE '[0-9]+' | head -1 || true)"
+          echo "KERNEL_VERSION=$VER" >> "$GITHUB_ENV"
+          echo "pushed training kernel version: '${VER:-unknown}'"
+
+      - name: Wait for the training run
+        shell: bash
+        run: |
+          set -o pipefail
+          completed=false
+          for attempt in $(seq 1 200); do
+            status="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Status check $attempt/200: $status"
+            if echo "$status" | grep -qi "COMPLETE"; then completed=true; break; fi
+            if echo "$status" | grep -qiE "ERROR|CANCEL"; then
+              echo "Training notebook reported a failure."
+              exit 1
+            fi
+            sleep 60
+          done
+          if [ "$completed" != true ]; then
+            echo "Timed out waiting for the training notebook."
+            exit 1
+          fi
+
+      - name: Download the artifact and show the unit report
+        shell: bash
+        run: |
+          mkdir -p kaggle-output
+          kaggle kernels output "$KERNEL_REF" -p kaggle-output || true
+          find kaggle-output -maxdepth 3 -type f | head -40
+          echo "===== COMPLETE.json ====="
+          cat kaggle-output/unit/COMPLETE.json 2>/dev/null || echo "(not present)"
+          echo "===== meta.json ====="
+          cat kaggle-output/unit/meta.json 2>/dev/null | head -40 || true
+          echo "===== notebook log tail ====="
+          tail -n 60 kaggle-output/train-lora24.log 2>/dev/null || true
+
+      - name: Publish the artifact as a Kaggle dataset
+        if: ${{ inputs.publish == true }}
+        shell: bash
+        run: |
+          set -o pipefail
+          UNIT="${{ inputs.unit_name }}"
+          test -f "kaggle-output/unit/meta.json" || { echo "no artifact to publish"; exit 1; }
+          python - "$UNIT" <<'PY'
+          import json, os, sys
+          unit = sys.argv[1]
+          meta = {"title": f"NTL {unit} lora24 adapter",
+                  "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-{unit}-lora24",
+                  "licenses": [{"name": "CC0-1.0"}]}
+          with open("kaggle-output/unit/dataset-metadata.json", "w") as f:
+              json.dump(meta, f, indent=2)
+          print("dataset slug:", meta["id"])
+          PY
+          kaggle datasets create -p kaggle-output/unit --dir-mode zip || \
+            kaggle datasets version -p kaggle-output/unit -m "unit $UNIT artifact"
