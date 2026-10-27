@@ -1,0 +1,50 @@
+name: Fetch a Kaggle kernel log
+
+on:
+  workflow_dispatch:
+    inputs:
+      kernel:
+        description: "Kernel ref, e.g. janaiworkspace/ntl-train-lora24"
+        required: true
+        default: "janaiworkspace/ntl-train-lora24"
+      lines:
+        description: "How many log lines to print"
+        required: true
+        default: "200"
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KERNEL_REF: ${{ inputs.kernel }}
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+
+      - name: Status
+        shell: bash
+        run: kaggle kernels status "$KERNEL_REF" || true
+
+      - name: Download the output and print every log file
+        shell: bash
+        run: |
+          mkdir -p out
+          kaggle kernels output "$KERNEL_REF" -p out || true
+          echo "===== files ====="
+          find out -maxdepth 3 -type f | head -40
+          for f in out/*.log; do
+            [ -e "$f" ] || continue
+            echo "===== $f (tail ${{ inputs.lines }}) ====="
+            tail -n "${{ inputs.lines }}" "$f"
+          done
