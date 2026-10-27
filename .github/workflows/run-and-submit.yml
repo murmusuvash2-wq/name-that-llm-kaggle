@@ -56,7 +56,8 @@ jobs:
               "is_private": True,
               "enable_gpu": True,
               "enable_internet": False,
-              "dataset_sources": ["nishantdahal/ntl-handwriting-blend", "illiadolenko/ntl-merged-corpus-v1"],
+              "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
+                                "lightningv08/ntl-olmo2-native24-final-inference-assets"],
               "competition_sources": ["name-that-llm"],
               "kernel_sources": [],
               "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
@@ -114,12 +115,12 @@ jobs:
           if [ -n "${KERNEL_VERSION:-}" ]; then
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
               -f submission.parquet \
-              -m "v44: v42 + adaptive SVC topic correction, kernel v$KERNEL_VERSION" \
+              -m "v45: v44 + stylegram portable readout, kernel v$KERNEL_VERSION" \
               --wait 10800 --poll-interval 60
           else
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
               -f submission.parquet \
-              -m "v44: v42 + adaptive SVC topic correction, latest kernel" \
+              -m "v45: v44 + stylegram portable readout, latest kernel" \
               --wait 10800 --poll-interval 60
           fi
 
