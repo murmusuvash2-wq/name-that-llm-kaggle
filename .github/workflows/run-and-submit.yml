@@ -56,7 +56,7 @@ jobs:
               "is_private": True,
               "enable_gpu": True,
               "enable_internet": False,
-              "dataset_sources": ["nishantdahal/ntl-handwriting-blend"],
+              "dataset_sources": ["nishantdahal/ntl-handwriting-blend", "illiadolenko/ntl-merged-corpus-v1"],
               "competition_sources": ["name-that-llm"],
               "kernel_sources": [],
               "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
