@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       kernel:
-        description: "Kernel ref, e.g. janaiworkspace/ntl-train-lora24"
+        description: "One kernel ref, or several separated by commas"
         required: true
         default: "janaiworkspace/ntl-train-lora24"
       lines:
@@ -32,19 +32,20 @@ jobs:
       - name: Install Kaggle CLI
         run: python -m pip install --upgrade pip kaggle
 
-      - name: Status
-        shell: bash
-        run: kaggle kernels status "$KERNEL_REF" || true
-
-      - name: Download the output and print every log file
+      - name: Download every kernel log
         shell: bash
         run: |
           mkdir -p out
-          kaggle kernels output "$KERNEL_REF" -p out || true
-          echo "===== files ====="
-          find out -maxdepth 3 -type f | head -40
-          for f in out/*.log; do
-            [ -e "$f" ] || continue
-            echo "===== $f (tail ${{ inputs.lines }}) ====="
-            tail -n "${{ inputs.lines }}" "$f"
+          for ref in $(echo "$KERNEL_REF" | tr ',' ' '); do
+            echo "############################################################"
+            echo "### $ref"
+            echo "############################################################"
+            kaggle kernels status "$ref" || true
+            kaggle kernels output "$ref" -p "out/$(echo "$ref" | tr '/' '_')" || true
+            find "out/$(echo "$ref" | tr '/' '_')" -maxdepth 3 -type f 2>/dev/null | head -20
+            for f in "out/$(echo "$ref" | tr '/' '_')"/*.log; do
+              [ -e "$f" ] || continue
+              echo "===== $f (tail ${{ inputs.lines }}) ====="
+              tail -n "${{ inputs.lines }}" "$f"
+            done
           done
