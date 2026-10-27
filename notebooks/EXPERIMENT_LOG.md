@@ -195,3 +195,37 @@ from 0.620 to 0.636/0.639 by blending ~16 published readouts at 15% (stylegram, 
 UltraBERT, frozen Qwen/Gemma/GLM heads, ELECTRA, lora24 x3, token-attention x2), then to 0.641/0.642
 with ATLAS, spectral readouts and a full-text Qwen3.8-27B NF4 classifier. No new training, mostly
 plumbing, and each member needs its own loader.
+
+## Training Unit 0 (pipeline + throughput) — no score change, pipeline proven
+
+- Workflow `40505707919`, Kaggle kernel `janaiworkspace/ntl-train-lora24` v6, 90.5 min on one T4
+- Config: Qwen3-8B-Base, 12 of 36 layers, pooled at [2,4,6,8,12], LoRA r16/alpha32, max_len 256,
+  bs 2, gradient checkpointing, stage 1 on 8,000 pool passages, stage 2 on the host passages
+- **holdout balanced accuracy 0.3519** (prompt-grouped 20% holdout; random is 0.056)
+- 812 optimizer steps, 1,624 counted passages, **0.30 passages/s** counted
+  (each stage-2 batch also runs a same-prompt centred step over a whole prompt group, so the
+  effective rate is roughly 2 passages/s)
+- Hit the 90-minute time box during stage 2, so it stopped early and still wrote the artifact
+- Artifact came back with the kernel output: adapter 55.5 MB, heads.safetensors, meta.json with
+  `eos_id: 151643`, `keep: 12`, `layers: [2,4,6,8,12]`, `max_len: 256`
+
+Four infrastructure bugs found and fixed, each one fatal before:
+
+1. `ImportError: incompatible version of torchao (0.10.0, needs >0.16)` on `import peft`. The
+   training kernel has no internet, so this cannot be pip-fixed → peft dropped, LoRA hand-rolled.
+2. `RuntimeError: mat2 is on cpu` — LoRA matrices were created on CPU in fp32 while activations
+   were fp16 on cuda. Now created on the base layer's device in fp32, and the LoRA branch casts
+   activations to fp32, so the frozen trunk can stay 16-bit with no gradient scaler.
+3. `CUDA out of memory` on a single 14.56 GiB T4 — fixed with `expandable_segments`, bs 4→2,
+   max_len 384→256, gradient checkpointing, and forcing the trunk to 16-bit after load.
+4. The workflow tailed `train-lora24.log` while Kaggle writes `ntl-train-lora24.log`, so failures
+   came back with no log. Added `fetch-kernel-log.yml`, which pulls any kernel log with no GPU cost.
+
+The adapter format was verified against the inference notebook's merge: a hand-rolled LoRA and the
+`merge_lora` used at inference produce the same output to 1.2e-07.
+
+Sizing implication, from the measured rate: a 76,783-passage stage-1 epoch at this config is
+13-18 GPU-hours, i.e. most of the weekly 30-hour quota for one member. A useful unit instead is a
+10,000-15,000 passage stage 1 plus two host epochs, about 3-4 GPU-hours. At +0.003 to +0.006 per
+member in the blend, that is a much worse return per hour than the published complementary readouts,
+which is why the daily plan keeps score work first and training on the night shift.
