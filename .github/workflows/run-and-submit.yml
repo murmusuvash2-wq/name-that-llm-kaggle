@@ -56,10 +56,11 @@ jobs:
               "is_private": True,
               "enable_gpu": True,
               "enable_internet": False,
-              "dataset_sources": ["nishantdahal/ntl-two-stage-lora"],
+              "dataset_sources": ["nishantdahal/ntl-handwriting-blend"],
               "competition_sources": ["name-that-llm"],
               "kernel_sources": [],
-              "model_sources": ["qwen-lm/qwen-3/transformers/8b/1", "qwen-lm/qwen-3/transformers/14b/1"]
+              "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
+                                "qwen-lm/qwen2.5/transformers/14b/1"]
           }
           with open("kaggle_kernel/kernel-metadata.json", "w") as f:
               json.dump(metadata, f, indent=2)
@@ -103,9 +104,9 @@ jobs:
           echo "===== validation_results.json ====="
           cat kaggle-output/validation_results.json 2>/dev/null || echo "(not present)"
           echo "===== notebook log tail ====="
-          tail -n 120 kaggle-output/llm-gmc.log 2>/dev/null || true
+          tail -n 80 kaggle-output/llm-gmc.log 2>/dev/null || true
 
-      - name: Submit this kernel version to the competition
+      - name: Submit this kernel version and wait for scoring
         if: ${{ inputs.submit == true }}
         shell: bash
         run: |
@@ -113,30 +114,17 @@ jobs:
           if [ -n "${KERNEL_VERSION:-}" ]; then
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
               -f submission.parquet \
-              -m "v41: pool-trained specialists + OOF-selected post-processing (kernel v$KERNEL_VERSION)"
+              -m "v42: public part-two reproduction (pool_v4 + Qwen3-14B + Qwen2.5-14B + DeBERTa), kernel v$KERNEL_VERSION" \
+              --wait 10800 --poll-interval 60
           else
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
               -f submission.parquet \
-              -m "v41: pool-trained specialists + OOF-selected post-processing (latest kernel)"
+              -m "v42: public part-two reproduction, latest kernel" \
+              --wait 10800 --poll-interval 60
           fi
 
-      - name: Wait for the public leaderboard score
-        if: ${{ inputs.submit == true }}
+      - name: Show the submissions table
+        if: always()
         shell: bash
         run: |
-          for attempt in $(seq 1 150); do
-            table="$(kaggle competitions submissions -c "$COMP" 2>&1 || true)"
-            line="$(echo "$table" | sed -n '2p')"
-            echo "attempt $attempt/150 -> $line"
-            status="$(echo "$line" | cut -d, -f4)"
-            public="$(echo "$line" | cut -d, -f5)"
-            if echo "$status" | grep -qiE "complete|error" && [ -n "$public" ]; then
-              echo "=============================================="
-              echo "SUBMISSION: $line"
-              echo "PUBLIC SCORE: $public"
-              echo "=============================================="
-              exit 0
-            fi
-            sleep 60
-          done
-          echo "Submission is still pending; check the Kaggle submissions page."
+          kaggle competitions submissions -c "$COMP" | head -6
