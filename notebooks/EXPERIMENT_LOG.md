@@ -129,3 +129,33 @@ Next, to 0.65: the 0.620 -> 0.636/0.639 step in the public notebooks is a ~16-me
 stack blended at 15% (stylegram, stylometry LightGBM, UltraBERT, frozen Qwen/Gemma/GLM heads,
 ELECTRA, lora24 x3, token-attention x2), then ATLAS + spectral readouts + full-text Qwen3.8-27B NF4
 at 0.05-0.10 for 0.641-0.642. All published assets, no new training, mostly plumbing.
+
+## Version 43: the attached "0.700 plan", code-only items — Public LB 0.599
+
+- Kaggle kernel version **61**, workflow `40466767606`, interactive run ~78 min
+- **Public LB 0.599**, against 0.620 for v42. **Rejected; production restored to v42.**
+- Extra pool loaded: **62,375** usable passages from `illiadolenko/ntl-merged-corpus-v1`
+  (SVC fitted on 2,699 + 75,783 + 62,375 = 140,857 rows)
+
+Four of the plan's seven items were implemented, the other three are not implementable in an
+inference-only notebook:
+
+1. Hungarian assignment (`linear_sum_assignment` on the log probabilities inside each topic
+   cluster, forcing distinct predicted classes) — implemented.
+2. Bigger pool (any attached parquet/CSV with a text and a model column, 30-300 words, deduped
+   against train and pool_v4) — implemented, 62,375 rows.
+3. Test-time augmentation on the SVC (original text plus a punctuation-spacing variant) — implemented.
+4. Four hardcoded EDA rules (curly quotes veto Claude/GLM x0.01, em dash vetoes Gemini x0.05,
+   a python code fence boosts the GPT family x1.2, a bullet boosts Claude x1.1) — implemented,
+   and applied before the assignment so a hard one-hot assignment cannot neutralise them.
+
+Not implemented: a Llama-3-70B / Gemma-2-27B / Qwen3-32B LoRA needs a published checkpoint to
+attach and none exists in this competition's public assets; a LightGBM stacker needs out-of-fold
+predictions for every member, which the LoRAs cannot supply because their stage two saw the
+training passages.
+
+Reading: the run cannot separate the four mechanisms, because the interactive report skips the
+assignment and the rules below 50 rows (`hungarian_rows: 0`). What it does establish is that the
+whole package is 0.021 worse than the untouched v42, which is consistent with the public part-two
+notebook's own finding that "at most one passage per model inside a topic cluster" is better in
+simulation and worse on the leaderboard.
