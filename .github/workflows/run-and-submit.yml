@@ -112,11 +112,11 @@ jobs:
           set -o pipefail
           if [ -n "${KERNEL_VERSION:-}" ]; then
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
-              -f kaggle-output/submission.parquet \
+              -f submission.parquet \
               -m "v41: pool-trained specialists + OOF-selected post-processing (kernel v$KERNEL_VERSION)"
           else
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
-              -f kaggle-output/submission.parquet \
+              -f submission.parquet \
               -m "v41: pool-trained specialists + OOF-selected post-processing (latest kernel)"
           fi
 
