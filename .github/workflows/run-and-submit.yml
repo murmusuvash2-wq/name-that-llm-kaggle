@@ -1,0 +1,142 @@
+name: Run and submit LLM GMC on Kaggle
+
+on:
+  workflow_dispatch:
+    inputs:
+      submit:
+        description: "Submit the new kernel version to the competition and wait for the public score"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  run-submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/llm-gmc
+      COMP: name-that-llm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+
+      - name: Check Kaggle credentials
+        shell: bash
+        run: |
+          test -n "$KAGGLE_API_TOKEN" || { echo "Missing repository secret KAGGLE_API_TOKEN"; exit 1; }
+          kaggle competitions list --search "Name That LLM"
+
+      - name: Prepare LLM GMC notebook metadata
+        shell: bash
+        run: |
+          mkdir -p kaggle_kernel
+          cp notebooks/llm-gmc.ipynb kaggle_kernel/llm-gmc.ipynb
+          python - <<'PY'
+          import json, os
+          metadata = {
+              "title": "LLM GMC",
+              "id": f"{os.environ['KAGGLE_USERNAME']}/llm-gmc",
+              "code_file": "llm-gmc.ipynb",
+              "language": "python",
+              "kernel_type": "notebook",
+              "is_private": True,
+              "enable_gpu": True,
+              "enable_internet": False,
+              "dataset_sources": ["nishantdahal/ntl-two-stage-lora"],
+              "competition_sources": ["name-that-llm"],
+              "kernel_sources": [],
+              "model_sources": ["qwen-lm/qwen-3/transformers/8b/1", "qwen-lm/qwen-3/transformers/14b/1"]
+          }
+          with open("kaggle_kernel/kernel-metadata.json", "w") as f:
+              json.dump(metadata, f, indent=2)
+          PY
+
+      - name: Push notebook and capture the version number
+        shell: bash
+        run: |
+          set -o pipefail
+          kaggle kernels push -p kaggle_kernel 2>&1 | tee push.log
+          VER="$(grep -oiE 'version[^0-9]*[0-9]+' push.log | grep -oE '[0-9]+' | head -1 || true)"
+          echo "KERNEL_VERSION=$VER" >> "$GITHUB_ENV"
+          echo "pushed kernel version: '${VER:-unknown}'"
+
+      - name: Wait for the interactive Kaggle run
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p kaggle-output
+          completed=false
+          for attempt in $(seq 1 150); do
+            status="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Status check $attempt/150: $status"
+            if echo "$status" | grep -qi "COMPLETE"; then completed=true; break; fi
+            if echo "$status" | grep -qiE "ERROR|CANCEL"; then
+              echo "Kaggle notebook reported a failure."
+              exit 1
+            fi
+            sleep 60
+          done
+          if [ "$completed" != true ]; then
+            echo "Timed out waiting for the Kaggle notebook."
+            exit 1
+          fi
+
+      - name: Download Kaggle notebook outputs
+        shell: bash
+        run: |
+          kaggle kernels output "$KERNEL_REF" -p kaggle-output || true
+          ls -lah kaggle-output || true
+          echo "===== validation_results.json ====="
+          cat kaggle-output/validation_results.json 2>/dev/null || echo "(not present)"
+          echo "===== notebook log tail ====="
+          tail -n 120 kaggle-output/llm-gmc.log 2>/dev/null || true
+
+      - name: Submit this kernel version to the competition
+        if: ${{ inputs.submit == true }}
+        shell: bash
+        run: |
+          set -o pipefail
+          if [ -n "${KERNEL_VERSION:-}" ]; then
+            kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
+              -f kaggle-output/submission.parquet \
+              -m "v41: pool-trained specialists + OOF-selected post-processing (kernel v$KERNEL_VERSION)"
+          else
+            kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
+              -f kaggle-output/submission.parquet \
+              -m "v41: pool-trained specialists + OOF-selected post-processing (latest kernel)"
+          fi
+
+      - name: Wait for the public leaderboard score
+        if: ${{ inputs.submit == true }}
+        shell: bash
+        run: |
+          for attempt in $(seq 1 150); do
+            table="$(kaggle competitions submissions -c "$COMP" 2>&1 || true)"
+            line="$(echo "$table" | sed -n '2p')"
+            echo "attempt $attempt/150 -> $line"
+            status="$(echo "$line" | cut -d, -f4)"
+            public="$(echo "$line" | cut -d, -f5)"
+            if echo "$status" | grep -qiE "complete|error" && [ -n "$public" ]; then
+              echo "=============================================="
+              echo "SUBMISSION: $line"
+              echo "PUBLIC SCORE: $public"
+              echo "=============================================="
+              exit 0
+            fi
+            sleep 60
+          done
+          echo "Submission is still pending; check the Kaggle submissions page."
