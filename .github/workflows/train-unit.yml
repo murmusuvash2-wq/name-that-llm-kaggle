@@ -96,6 +96,7 @@ jobs:
           fi
 
       - name: Download the artifact and show the unit report
+        if: always()
         shell: bash
         run: |
           mkdir -p kaggle-output
@@ -106,7 +107,7 @@ jobs:
           echo "===== meta.json ====="
           cat kaggle-output/unit/meta.json 2>/dev/null | head -40 || true
           echo "===== notebook log tail ====="
-          tail -n 60 kaggle-output/train-lora24.log 2>/dev/null || true
+          tail -n 120 kaggle-output/train-lora24.log 2>/dev/null || true
 
       - name: Publish the artifact as a Kaggle dataset
         if: ${{ inputs.publish == true }}
