@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 300
     env:
       KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
-      TASK: ntl-real-prompts
+      TASK: ntl-real-prompt-generation
       MODELS: ${{ inputs.models }}
       N_PROMPTS: ${{ inputs.n_prompts }}
     steps:
