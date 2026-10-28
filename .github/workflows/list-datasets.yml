@@ -1,0 +1,35 @@
+name: List candidate member datasets
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  l:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Search
+        shell: bash
+        run: |
+          for q in ultrabert lora24 atlas stylegram tokattn; do
+            echo "########## search: $q"
+            kaggle datasets list -s "$q" --csv 2>&1 | head -12 || true
+          done
+      - name: Files in the hub we already attach
+        shell: bash
+        run: |
+          echo "########## hub top level"
+          kaggle datasets files lightningv08/ntl-olmo2-native24-final-inference-assets 2>&1 | head -40 || true
+      - name: Files in the candidates
+        shell: bash
+        run: |
+          for d in pjmathematician/ultrabert-380m-ntl josephadamski91/ntl-atlas-qwen3-8b-v1; do
+            echo "########## $d"
+            kaggle datasets files "$d" 2>&1 | head -25 || true
+          done
