@@ -7,6 +7,11 @@ on:
         description: "Model slugs, comma separated"
         required: true
         default: "gpt-5.6-luna,gpt-5.6-sol,gpt-5.6-terra"
+      do_push:
+        description: "Push the task first (runs a validation pass, so only once per prompt set)"
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: read
@@ -14,7 +19,7 @@ permissions:
 jobs:
   task:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 300
     env:
       KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
       TASK: ntl-passage-generation
@@ -32,6 +37,7 @@ jobs:
         run: kaggle benchmarks quota || true
 
       - name: Push the task
+        if: ${{ inputs.do_push }}
         shell: bash
         run: |
           kaggle benchmarks tasks push "$TASK" -f benchmarks/ntl_passage_generation.py --wait 900 --poll-interval 30 -v 2>&1 | tail -60 || true
@@ -39,10 +45,10 @@ jobs:
       - name: Run against the models
         shell: bash
         run: |
-          ARGS=""
-          for m in $(echo "$MODELS" | tr ',' ' '); do ARGS="$ARGS -m $m"; done
-          echo "running:$ARGS"
-          kaggle benchmarks tasks run "$TASK" $ARGS --wait 2400 --poll-interval 45 -v 2>&1 | tail -60 || true
+          for m in $(echo "$MODELS" | tr ',' ' '); do
+            echo "########## running $m"
+            kaggle benchmarks tasks run "$TASK" -m "$m" --wait 2400 --poll-interval 45 -v 2>&1 | tail -12 || true
+          done
 
       - name: Status
         shell: bash
