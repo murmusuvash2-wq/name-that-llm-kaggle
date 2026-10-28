@@ -1,0 +1,47 @@
+name: Kaggle Benchmarks quota and models
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+
+      - name: Model Proxy spend quota
+        shell: bash
+        run: |
+          echo "===== quota (table) ====="
+          kaggle benchmarks quota || true
+          echo
+          echo "===== quota (json) ====="
+          kaggle benchmarks quota --format json || true
+
+      - name: Reachable models
+        shell: bash
+        run: |
+          echo "===== models available to tasks ====="
+          kaggle benchmarks tasks models || true
+
+      - name: My benchmark tasks
+        shell: bash
+        run: |
+          echo "===== own tasks ====="
+          kaggle benchmarks tasks list || true
+          echo
+          echo "===== benchmark leaderboards ====="
+          kaggle benchmarks leaderboard || true
