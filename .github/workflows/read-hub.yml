@@ -1,0 +1,37 @@
+name: Read hub docs
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      HUB: lightningv08/ntl-olmo2-native24-final-inference-assets
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Pull the small documentation files
+        shell: bash
+        run: |
+          mkdir -p out
+          for f in "README.md" \
+                   "gsq120k-trained/gsq120k-inference/gaussian/q14v5/metadata.json" \
+                   "gsq120k-trained/gsq120k-inference/gsq/final.json" \
+                   "gsq120k-trained/gsq120k-inference/svc4/metadata.json"; do
+            echo "########## $f"
+            kaggle datasets download "$HUB" -f "$f" -p out --unzip 2>&1 | tail -3 || true
+          done
+          find out -type f | head -20
+      - name: Print them
+        shell: bash
+        run: |
+          for f in $(find out -type f | head -10); do
+            echo "===================== $f"
+            head -c 4000 "$f"
+            echo
+          done
