@@ -1,0 +1,28 @@
+name: Kaggle benchmarks CLI help
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  h:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: help
+        shell: bash
+        run: |
+          for c in "benchmarks tasks --help" "benchmarks tasks push --help" "benchmarks tasks run --help" "benchmarks tasks download --help" "benchmarks tasks status --help"; do
+            echo "############ kaggle $c"
+            kaggle $c 2>&1 | head -45 || true
+          done
+      - name: full model catalogue
+        shell: bash
+        run: |
+          echo "############ tasks models (full)"
+          kaggle benchmarks tasks models 2>&1 | head -80 || true
