@@ -24,6 +24,7 @@ jobs:
       MODELS: ${{ inputs.models }}
       N_PROMPTS: ${{ inputs.n_prompts }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -44,7 +45,7 @@ jobs:
           CSV="$(find ref -name "prompts.csv" | head -1)"
           [ -z "$CSV" ] && CSV="$(find ref -name "*.csv" | head -1)"
           echo "using $CSV"
-          python build_task.py "$CSV" task.py "$N_PROMPTS"
+          python benchmarks/build_task.py "$CSV" task.py "$N_PROMPTS"
       - name: Push
         if: ${{ inputs.do_push }}
         shell: bash
@@ -62,7 +63,7 @@ jobs:
         run: |
           mkdir -p out
           kaggle benchmarks tasks download "$TASK" -o out -f 2>&1 | tail -12 || true
-          python count_passages.py out
+          python benchmarks/count_passages.py out
       - name: Quota after
         if: always()
         shell: bash
