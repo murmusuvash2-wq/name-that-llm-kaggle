@@ -1,0 +1,89 @@
+name: Generate NTL passages through the Model Proxy
+
+on:
+  workflow_dispatch:
+    inputs:
+      n_prompts:
+        description: "How many of the 50 prompts to use"
+        required: true
+        default: "50"
+      publish:
+        description: "Publish the generated passages as a private Kaggle dataset"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  gen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/ntl-bench-pilot
+      N_PROMPTS: ${{ inputs.n_prompts }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle
+
+      - name: Quota before
+        shell: bash
+        run: kaggle benchmarks quota || true
+
+      - name: Prepare the kernel metadata
+        shell: bash
+        run: |
+          mkdir -p kaggle_kernel
+          cp notebooks/ntl-bench-pilot.ipynb kaggle_kernel/ntl-bench-pilot.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL bench pilot", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-bench-pilot",
+               "code_file": "ntl-bench-pilot.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": False, "enable_tpu": False,
+               "enable_internet": True,
+               "dataset_sources": [], "competition_sources": [], "kernel_sources": [],
+               "model_sources": []}
+          json.dump(m, open("kaggle_kernel/kernel-metadata.json", "w"), indent=2)
+          PY
+
+      - name: Push
+        shell: bash
+        run: |
+          kaggle kernels push -p kaggle_kernel 2>&1 | tee push.log
+          VER="$(grep -oiE 'version[^0-9]*[0-9]+' push.log | grep -oE '[0-9]+' | head -1 || true)"
+          echo "KERNEL_VERSION=$VER" >> "$GITHUB_ENV"
+
+      - name: Wait
+        shell: bash
+        run: |
+          for i in $(seq 1 100); do
+            out="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "check $i: $out"
+            echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break
+            sleep 45
+          done
+
+      - name: Download the passages
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          kaggle kernels output "$KERNEL_REF" -p out || true
+          find out -maxdepth 2 -type f | head -20
+          echo "===== summary ====="
+          cat out/pilot_summary.json 2>/dev/null || true
+          echo "===== log tail ====="
+          tail -n 60 out/*.log 2>/dev/null || true
+
+      - name: Quota after
+        if: always()
+        shell: bash
+        run: kaggle benchmarks quota || true
