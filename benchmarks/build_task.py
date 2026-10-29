@@ -18,7 +18,14 @@ cols = {c.lower(): c for c in df.columns}
 key = next((cols[k] for k in ("prompt", "question", "instruction", "text") if k in cols), None)
 if key is None:
     raise SystemExit(f"no prompt column in {list(df.columns)}")
-prompts = [p for p in df[key].dropna().astype(str).tolist() if p.strip()][:n]
+raw = [p for p in df[key].dropna().astype(str).tolist() if p.strip()][:n]
+
+# The real bank asks questions but never constrains the answer, so a model writes 1,000+ words while
+# the host's passages are 40-250. Measured on the first run: median 1,062 words, 0 of 226 inside the
+# range. The question stays the same; only the output shape is pinned to the host's.
+INSTRUCTION = ("\n\nAnswer in a single self-contained paragraph of about 150 words. "
+               "No preamble, no bullet points, no headings, no markdown.")
+prompts = [p if p.rstrip().endswith(INSTRUCTION.strip()) else p.rstrip() + INSTRUCTION for p in raw]
 print(f"{src}: using column {key}, {len(prompts)} prompts")
 print("first:", prompts[0][:160])
 
