@@ -1,0 +1,33 @@
+name: Check submissions and quota
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  c:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Submissions
+        shell: bash
+        run: |
+          echo "===== submissions ====="
+          kaggle competitions submissions -c name-that-llm 2>&1 | head -15 || true
+      - name: Kernel versions
+        shell: bash
+        run: |
+          echo "===== kernel status ====="
+          kaggle kernels status janaiworkspace/llm-gmc 2>&1 | head -5 || true
+          kaggle kernels list -u janaiworkspace --search llm-gmc --csv 2>&1 | head -6 || true
+      - name: Quota
+        shell: bash
+        run: |
+          kaggle benchmarks quota || true
+          echo "===== gpu ====="
+          kaggle quota 2>&1 | head -12 || true
