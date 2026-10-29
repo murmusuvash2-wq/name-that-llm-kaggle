@@ -1,0 +1,47 @@
+name: Submit a specific kernel version
+on:
+  workflow_dispatch:
+    inputs:
+      kernel_version:
+        required: true
+        default: "72"
+      message:
+        required: true
+        default: "v53: pool 228k merged-corpus-v2 + trnhip glm-5.3 + harshitkmr gemini-3.7"
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KV: ${{ inputs.kernel_version }}
+      MSG: ${{ inputs.message }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Submissions before
+        shell: bash
+        run: kaggle competitions submissions -c name-that-llm 2>&1 | head -6 || true
+      - name: Submit
+        shell: bash
+        run: |
+          kaggle competitions submit -c name-that-llm -k janaiworkspace/llm-gmc -v "$KV" \
+            -f submission.parquet -m "$MSG" 2>&1 | tail -6 || true
+      - name: Wait for the score
+        shell: bash
+        run: |
+          for i in $(seq 1 40); do
+            out="$(kaggle competitions submissions -c name-that-llm 2>&1 || true)"
+            echo "$out" | head -4
+            echo "$out" | grep -q "SubmissionStatus.COMPLETE" && \
+              echo "$out" | sed -n '3p' | grep -qiE "0\.[0-9]{3}" && break
+            sleep 45
+          done
+      - name: Final table
+        if: always()
+        shell: bash
+        run: kaggle competitions submissions -c name-that-llm 2>&1 | head -6 || true
