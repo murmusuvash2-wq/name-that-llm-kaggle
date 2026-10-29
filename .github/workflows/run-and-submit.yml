@@ -3,6 +3,10 @@ name: Run and submit LLM GMC on Kaggle
 on:
   workflow_dispatch:
     inputs:
+      msg:
+        description: "Label for the submission (shown in the Kaggle submissions table)"
+        required: false
+        default: "v54: SVC 1.5 + damped non-uniform Sinkhorn + tfidf/distortion LR"
       submit:
         description: "Submit the new kernel version to the competition and wait for the public score"
         required: true
@@ -18,6 +22,7 @@ jobs:
     timeout-minutes: 350
     env:
       KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      MSG: ${{ inputs.msg }}
       KAGGLE_USERNAME: janaiworkspace
       KERNEL_REF: janaiworkspace/llm-gmc
       COMP: name-that-llm
@@ -119,12 +124,12 @@ jobs:
           if [ -n "${KERNEL_VERSION:-}" ]; then
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
               -f submission.parquet \
-              -m "v45: v44 + stylegram portable readout, kernel v$KERNEL_VERSION" \
+              -m "$MSG, kernel v$KERNEL_VERSION" \
               --wait 10800 --poll-interval 60
           else
             kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
               -f submission.parquet \
-              -m "v45: v44 + stylegram portable readout, latest kernel" \
+              -m "$MSG, latest kernel" \
               --wait 10800 --poll-interval 60
           fi
 
