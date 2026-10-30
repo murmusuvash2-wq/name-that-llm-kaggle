@@ -31,7 +31,7 @@ jobs:
           mkdir -p kk && cp notebooks/ntl-cpu.ipynb kk/ntl-cpu.ipynb
           python - <<'PY'
           import json, os
-          m = {"title": "NTL cpu half", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu",
+          m = {"title": "NTL cpu", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu",
                "code_file": "ntl-cpu.ipynb", "language": "python", "kernel_type": "notebook",
                "is_private": True, "enable_gpu": False, "enable_internet": False,
                "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
@@ -55,7 +55,7 @@ jobs:
           ls -la cpout | head
           python - <<'PY'
           import json, os
-          m = {"title": "NTL cpu half output", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu-output",
+          m = {"title": "NTL cpu output", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu-output",
                "licenses": [{"name": "CC0-1.0"}]}
           json.dump(m, open("cpout/dataset-metadata.json", "w"), indent=2)
           PY
