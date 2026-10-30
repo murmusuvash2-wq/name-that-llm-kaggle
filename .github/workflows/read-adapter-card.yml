@@ -1,0 +1,29 @@
+name: Read the adapter dataset card
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Dataset metadata
+        shell: bash
+        run: |
+          for d in dhruvtibarewal/nlm-l24-adapters-v5 dhruvtibarewal/nlm-matched-clean; do
+            echo "########## $d"
+            rm -rf meta; mkdir -p meta
+            kaggle datasets metadata "$d" -p meta >/dev/null 2>&1 || true
+            python3 -c "import glob,json;ms=[json.load(open(p)) for p in glob.glob('meta/**/*.json',recursive=True)];[print('--',k,':',str(m.get(k))[:2500]) for m in ms for k in ('title','subtitle','description') if m.get(k)]"
+          done
+      - name: Any docs in the dataset
+        shell: bash
+        run: |
+          kaggle datasets files dhruvtibarewal/nlm-l24-adapters-v5 --csv 2>&1 | grep -iE "readme|\.md|\.json|\.txt" | head -20 || true
