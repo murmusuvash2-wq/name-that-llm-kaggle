@@ -1,0 +1,65 @@
+name: Benchmark setting-varied test
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        required: true
+        default: "gpt-5.6-sol,gemini-3.8-flash"
+      n_prompts:
+        required: true
+        default: "40"
+permissions:
+  contents: read
+jobs:
+  g:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      TASK: ntl-setting-varied
+      MODELS: ${{ inputs.models }}
+      N_PROMPTS: ${{ inputs.n_prompts }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle pandas
+      - name: Quota before
+        shell: bash
+        run: kaggle benchmarks quota || true
+      - name: Fetch prompts and build
+        shell: bash
+        run: |
+          mkdir -p ref
+          kaggle datasets download seyitkaangunes/ntl-extra-api-passages -f prompts.csv -p ref --unzip 2>&1 | tail -2 || true
+          python benchmarks/build_task_setting.py ref/prompts.csv task.py "$N_PROMPTS" none,low,high
+      - name: Push
+        shell: bash
+        run: kaggle benchmarks tasks push "$TASK" -f task.py --wait 1500 --poll-interval 30 -v 2>&1 | tail -20 || true
+      - name: Wait for Completed
+        shell: bash
+        run: |
+          for i in $(seq 1 50); do
+            st="$(kaggle benchmarks tasks status "$TASK" 2>&1 || true)"
+            echo "check $i: $(echo "$st" | grep -iE 'Status:' | head -1)"
+            echo "$st" | grep -qiE "Status:[[:space:]]+Completed" && exit 0
+            sleep 30
+          done
+          echo "never reached Completed"
+      - name: Run each model
+        shell: bash
+        run: |
+          for m in $(echo "$MODELS" | tr ',' ' '); do
+            echo "########## $m"
+            kaggle benchmarks tasks run "$TASK" -m "$m" --wait 2400 --poll-interval 45 -v 2>&1 | tail -8 || true
+          done
+      - name: Download and count
+        shell: bash
+        run: |
+          mkdir -p out
+          kaggle benchmarks tasks download "$TASK" -o out 2>&1 | tail -3 || true
+          python benchmarks/count_passages.py out
+      - name: Quota after
+        shell: bash
+        run: kaggle benchmarks quota || true
