@@ -1,0 +1,111 @@
+name: Run the CPU half then the GPU half
+on:
+  workflow_dispatch:
+    inputs:
+      submit:
+        required: true
+        default: true
+        type: boolean
+      msg:
+        required: false
+        default: "v61: CPU/GPU split — 90 min of GPU quota down to ~40"
+permissions:
+  contents: read
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      CPU_REF: janaiworkspace/ntl-cpu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Push the CPU kernel (no GPU)
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/ntl-cpu.ipynb kk/ntl-cpu.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL cpu half", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu",
+               "code_file": "ntl-cpu.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": False, "enable_internet": False,
+               "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
+                                   "lightningv08/ntl-olmo2-native24-final-inference-assets",
+                                   "illiadolenko/ntl-merged-corpus-v2",
+                                   "trnhip/ntl-api-gen",
+                                   "harshitkmr/ntl-google-gen-v1",
+                                   "dhruvtibarewal/nlm-l24-adapters-v5"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [], "model_sources": []}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk 2>&1 | tail -3
+          for i in $(seq 1 80); do
+            out="$(kaggle kernels status "$CPU_REF" 2>&1 || true)"; echo "cpu $i: $out"
+            echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break; sleep 45
+          done
+      - name: Publish the CPU output as a dataset
+        shell: bash
+        run: |
+          mkdir -p cpout && kaggle kernels output "$CPU_REF" -p cpout 2>&1 | tail -3
+          ls -la cpout | head
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL cpu half output", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu-output",
+               "licenses": [{"name": "CC0-1.0"}]}
+          json.dump(m, open("cpout/dataset-metadata.json", "w"), indent=2)
+          PY
+          kaggle datasets create -p cpout 2>&1 | tail -3 || kaggle datasets version -p cpout -m "update" 2>&1 | tail -3
+  gpu:
+    needs: cpu
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      GPU_REF: janaiworkspace/llm-gmc
+      MSG: ${{ inputs.msg }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Push the GPU kernel
+        shell: bash
+        run: |
+          mkdir -p kk2 && cp notebooks/llm-gmc.ipynb kk2/llm-gmc.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "LLM GMC", "id": f"{os.environ['KAGGLE_USERNAME']}/llm-gmc",
+               "code_file": "llm-gmc.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": True, "enable_internet": False,
+               "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
+                                   "lightningv08/ntl-olmo2-native24-final-inference-assets",
+                                   "illiadolenko/ntl-merged-corpus-v2",
+                                   "trnhip/ntl-api-gen",
+                                   "harshitkmr/ntl-google-gen-v1",
+                                   "dhruvtibarewal/nlm-l24-adapters-v5",
+                                   "dhruvtibarewal/nlm-matched-clean",
+                                   f"{os.environ['KAGGLE_USERNAME']}/ntl-cpu-output"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [],
+               "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
+                                 "qwen-lm/qwen2.5/transformers/14b/1"]}
+          json.dump(m, open("kk2/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk2 2>&1 | tail -3
+          for i in $(seq 1 80); do
+            out="$(kaggle kernels status "$GPU_REF" 2>&1 || true)"; echo "gpu $i: $out"
+            echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break; sleep 45
+          done
+      - name: Submit
+        if: ${{ inputs.submit }}
+        shell: bash
+        run: |
+          kaggle competitions submit -c name-that-llm -k "$GPU_REF" -f submission.parquet -m "$MSG" 2>&1 | tail -4 || true
+          sleep 30
+          kaggle competitions submissions -c name-that-llm 2>&1 | head -4
