@@ -28,6 +28,13 @@ jobs:
       - name: Quota before
         shell: bash
         run: kaggle benchmarks quota || true
+      - name: Read the existing test output first
+        shell: bash
+        run: |
+          mkdir -p prev
+          kaggle benchmarks tasks download "$TASK" -o prev 2>&1 | tail -2 || true
+          python3 -c "import glob,json,collections;rows=[];[rows.extend([json.loads(l) for l in open(f) if l.strip()]) for f in glob.glob('prev/**/*.jsonl',recursive=True)];print('existing rows:',len(rows));c=collections.defaultdict(list);[c[r.get('setting')].append(len(str(r.get('text','')).split())) for r in rows];[print(' ',k,'n=',len(v),'median words',sorted(v)[len(v)//2] if v else 0) for k,v in sorted(c.items())]"
+
       - name: Fetch prompts and build
         shell: bash
         run: |
@@ -62,4 +69,8 @@ jobs:
           python benchmarks/count_passages.py out
       - name: Quota after
         shell: bash
-        run: kaggle benchmarks quota || true
+        run: |
+          kaggle benchmarks quota || true
+          echo "===== SUMMARY (also written to a file, in case the archive drops step logs) ====="
+          { kaggle benchmarks quota || true; } > summary.txt 2>&1
+          python benchmarks/count_passages.py out 2>/dev/null | tee -a summary.txt || true
