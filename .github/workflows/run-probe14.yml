@@ -1,0 +1,52 @@
+name: Run the q14v5 probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/ntl-q14-probe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Prepare
+        shell: bash
+        run: |
+          mkdir -p kaggle_kernel
+          cp notebooks/q14-probe.ipynb kaggle_kernel/q14-probe.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL q14 probe", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-q14-probe",
+               "code_file": "q14-probe.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": True, "enable_tpu": False, "enable_internet": False,
+               "dataset_sources": ["dhruvtibarewal/nlm-l24-adapters-v5"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [],
+               "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1"]}
+          json.dump(m, open("kaggle_kernel/kernel-metadata.json", "w"), indent=2)
+          PY
+      - name: Push and wait
+        shell: bash
+        run: |
+          kaggle kernels push -p kaggle_kernel 2>&1 | tail -4
+          for i in $(seq 1 90); do
+            out="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "check $i: $out"
+            echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break
+            sleep 45
+          done
+      - name: Result
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          kaggle kernels output "$KERNEL_REF" -p out || true
+          cat out/q14_probe.json 2>/dev/null || true
+          tail -n 60 out/*.log 2>/dev/null || true
