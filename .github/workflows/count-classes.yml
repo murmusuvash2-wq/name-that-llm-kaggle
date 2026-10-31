@@ -1,0 +1,36 @@
+name: Count rows per class in the pool
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  c:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle pandas pyarrow
+      - name: Merged corpus
+        shell: bash
+        run: |
+          mkdir -p d
+          kaggle datasets download illiadolenko/ntl-merged-corpus-v2 -p d --unzip 2>&1 | tail -2
+          ls -la d | head
+          python benchmarks/count_classes.py d
+      - name: trnhip
+        shell: bash
+        run: |
+          mkdir -p e1
+          kaggle datasets download trnhip/ntl-api-gen -p e1 --unzip 2>&1 | tail -1
+          python benchmarks/count_classes.py e1
+      - name: harshitkmr
+        shell: bash
+        run: |
+          mkdir -p e2
+          kaggle datasets download harshitkmr/ntl-google-gen-v1 -p e2 --unzip 2>&1 | tail -1
+          python benchmarks/count_classes.py e2
