@@ -97,7 +97,9 @@ jobs:
                                  "qwen-lm/qwen2.5/transformers/14b/1"]}
           json.dump(m, open("kk2/kernel-metadata.json", "w"), indent=2)
           PY
-          kaggle kernels push -p kk2 2>&1 | tail -3
+          PUSH="$(kaggle kernels push -p kk2 2>&1)"; echo "$PUSH" | tail -3
+          KV="$(echo "$PUSH" | grep -oE 'version [0-9]+' | grep -oE '[0-9]+' | head -1)"
+          echo "KV=$KV" >> "$GITHUB_ENV"
           for i in $(seq 1 80); do
             out="$(kaggle kernels status "$GPU_REF" 2>&1 || true)"; echo "gpu $i: $out"
             echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break; sleep 45
@@ -106,6 +108,7 @@ jobs:
         if: ${{ inputs.submit }}
         shell: bash
         run: |
-          kaggle competitions submit -c name-that-llm -k "$GPU_REF" -f submission.parquet -m "$MSG" 2>&1 | tail -4 || true
+          echo "submitting kernel version $KV"
+          kaggle competitions submit -c name-that-llm -k "$GPU_REF" -v "$KV" -f submission.parquet -m "$MSG" 2>&1 | tail -6 || true
           sleep 30
           kaggle competitions submissions -c name-that-llm 2>&1 | head -4
