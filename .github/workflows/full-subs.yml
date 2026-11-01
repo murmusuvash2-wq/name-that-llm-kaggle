@@ -1,0 +1,26 @@
+name: Full submissions table
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip kaggle
+      - name: Table
+        shell: bash
+        run: |
+          kaggle competitions submissions -c name-that-llm --csv 2>&1 | head -6
+          echo
+          echo "===== plain (all columns) ====="
+          kaggle competitions submissions -c name-that-llm 2>&1 | head -6
+          echo
+          echo "===== quota ====="
+          kaggle quota 2>&1 | head -12 || true
