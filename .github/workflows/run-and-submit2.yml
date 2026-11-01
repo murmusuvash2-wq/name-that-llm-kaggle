@@ -1,0 +1,87 @@
+name: Run and submit v2 (six-safe)
+on:
+  workflow_dispatch:
+    inputs:
+      submit:
+        required: true
+        default: true
+        type: boolean
+      msg:
+        required: false
+        default: "v65: LoRA members audited and weighted by measurement"
+permissions:
+  contents: read
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    timeout-minutes: 400
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/llm-gmc
+      MSG: ${{ inputs.msg }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the Kaggle CLI (six is imported but no longer declared)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+          python -c "import six, kaggle; print('kaggle', kaggle.__version__ if hasattr(kaggle,'__version__') else 'ok')"
+          test -n "$KAGGLE_API_TOKEN" || { echo "Missing KAGGLE_API_TOKEN"; exit 1; }
+      - name: Push the notebook
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/llm-gmc.ipynb kk/llm-gmc.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "LLM GMC", "id": f"{os.environ['KAGGLE_USERNAME']}/llm-gmc",
+               "code_file": "llm-gmc.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": True, "enable_internet": False,
+               "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
+                                   "lightningv08/ntl-olmo2-native24-final-inference-assets",
+                                   "pjmathematician/ultrabert-380m-ntl",
+                                   "illiadolenko/ntl-merged-corpus-v2",
+                                   "trnhip/ntl-api-gen",
+                                   "harshitkmr/ntl-google-gen-v1",
+                                   "dhruvtibarewal/nlm-l24-adapters-v5",
+                                   "dhruvtibarewal/nlm-matched-clean"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [],
+               "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
+                                 "qwen-lm/qwen2.5/transformers/14b/1"]}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          PUSH="$(kaggle kernels push -p kk 2>&1)"; echo "$PUSH" | tail -3
+          KV="$(echo "$PUSH" | grep -oE 'version [0-9]+' | grep -oE '[0-9]+' | head -1)"
+          echo "KV=$KV" >> "$GITHUB_ENV"
+      - name: Wait for the interactive run
+        shell: bash
+        run: |
+          for i in $(seq 1 90); do
+            out="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "check $i: $out"
+            echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break; sleep 45
+          done
+      - name: Download the outputs
+        shell: bash
+        run: |
+          rm -rf out && mkdir -p out
+          kaggle kernels output "$KERNEL_REF" -p out 2>&1 | tail -3 || true
+          ls -la out | head
+          cat out/validation_results.json 2>/dev/null | head -40 || true
+          if [ -f out/submission.parquet ]; then cp out/submission.parquet submission.parquet; fi
+          ls -la submission.parquet 2>/dev/null || echo "no submission.parquet in the output"
+      - name: Submit
+        if: ${{ inputs.submit }}
+        shell: bash
+        run: |
+          echo "submitting kernel version $KV"
+          kaggle competitions submit -c name-that-llm -k "$KERNEL_REF" -v "$KV" -f submission.parquet -m "$MSG" 2>&1 | tail -6 || true
+          for i in $(seq 1 30); do
+            out="$(kaggle competitions submissions -c name-that-llm 2>&1 || true)"
+            echo "$out" | head -4
+            echo "$out" | head -2 | grep -qE "COMPLETE" && break
+            sleep 30
+          done
