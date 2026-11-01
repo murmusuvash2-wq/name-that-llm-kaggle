@@ -104,6 +104,17 @@ jobs:
             out="$(kaggle kernels status "$GPU_REF" 2>&1 || true)"; echo "gpu $i: $out"
             echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break; sleep 45
           done
+      - name: Download the kernel output first
+        if: ${{ inputs.submit }}
+        shell: bash
+        run: |
+          # run-and-submit.yml has always done this, and it is the difference between a scored
+          # submission and a COMPLETE one with an empty score: v62 and v63 were submitted with -f
+          # pointing at a file that was never downloaded, so Kaggle accepted them and scored nothing.
+          rm -rf out && mkdir -p out
+          kaggle kernels output "$GPU_REF" -p out 2>&1 | tail -3 || true
+          if [ -f out/submission.parquet ]; then cp out/submission.parquet submission.parquet; fi
+          ls -la submission.parquet && python3 -c "import pandas as pd; d=pd.read_csv('submission.parquet') if open('submission.parquet','rb').read(4)==b'id,c' else pd.read_parquet('submission.parquet'); print('rows:', len(d), 'cols:', list(d.columns))" || true
       - name: Submit
         if: ${{ inputs.submit }}
         shell: bash
