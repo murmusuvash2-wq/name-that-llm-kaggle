@@ -1,0 +1,54 @@
+name: Run the TPU probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      TPU_REF: janaiworkspace/ntl-tpu-probe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CLI (six is imported but undeclared)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Push the TPU kernel
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/tpu-probe.ipynb kk/tpu-probe.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL tpu probe", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-tpu-probe",
+               "code_file": "tpu-probe.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": False, "enable_tpu": True, "enable_internet": False,
+               "dataset_sources": [], "competition_sources": [], "kernel_sources": [],
+               "model_sources": ["qwen-lm/qwen-3/transformers/8b/1"]}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk 2>&1 | tail -3
+          for i in $(seq 1 120); do
+            out="$(kaggle kernels status "$TPU_REF" 2>&1 || true)"
+            st="$(echo "$out" | grep -oE 'KernelWorkerStatus\.[A-Z]+' | head -1)"
+            echo "check $i: $st"
+            case "$st" in *COMPLETE*|*ERROR*|*CANCEL*) break ;; esac
+            sleep 30
+          done
+      - name: Read the number
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          kaggle kernels output "$TPU_REF" -p out 2>&1 | tail -3 || true
+          echo "===== tpu_probe.json ====="
+          cat out/tpu_probe.json 2>/dev/null || echo "(no json)"
+          echo "===== log ====="
+          grep -iE "torch_xla|device:|trainable|RESULT|tokens/s|passages/s|epoch|warmup|Error" out/*.log 2>/dev/null | tail -25 || true
