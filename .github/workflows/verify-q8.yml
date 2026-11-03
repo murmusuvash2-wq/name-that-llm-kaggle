@@ -1,0 +1,36 @@
+name: Verify q8v5 and ll8v5
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Full folder list, no truncation
+        shell: bash
+        run: |
+          echo "===== every folder in nlm-l24-adapters-v5 ====="
+          kaggle datasets files dhruvtibarewal/nlm-l24-adapters-v5 --csv 2>&1 | cut -d, -f1 | grep "/" | sed 's#/[^/]*$##' | sort -u
+          echo
+          echo "===== q8v5 files with sizes ====="
+          kaggle datasets files dhruvtibarewal/nlm-l24-adapters-v5 --csv 2>&1 | grep -E "^q8v5" | head -20
+      - name: The llama prefix
+        shell: bash
+        run: |
+          echo "===== llama31-prefix24 ====="
+          kaggle datasets files lightningv08/ntl-olmo2-native24-final-inference-assets --csv 2>&1 | grep -i "llama31" | head -20
+      - name: The new pool
+        shell: bash
+        run: |
+          echo "===== crtproduction open pool ====="
+          kaggle datasets files crtproduction/name-that-llm-open-pool --csv 2>&1 | head -10
