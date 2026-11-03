@@ -1,0 +1,37 @@
+name: Verify llama on kaggle models
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Kaggle models for llama
+        shell: bash
+        run: |
+          for q in meta-llama llama-3.1 llama3.1; do
+            echo "===== models: $q ====="
+            kaggle models list -s "$q" --csv 2>&1 | head -8 || true
+          done
+      - name: Datasets with a llama base
+        shell: bash
+        run: |
+          for q in "llama-3.1-8b-base" "llama31 8b"; do
+            echo "===== datasets: $q ====="
+            kaggle datasets list -s "$q" --csv 2>&1 | head -6 || true
+          done
+      - name: What our hub actually contains
+        shell: bash
+        run: |
+          echo "===== hub top-level folders ====="
+          kaggle datasets files lightningv08/ntl-olmo2-native24-final-inference-assets --csv 2>&1 | cut -d, -f1 | grep "/" | sed 's#/[^/]*$##' | sort -u | head -30
