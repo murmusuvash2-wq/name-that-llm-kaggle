@@ -1,0 +1,33 @@
+name: Verify llama base and adapter
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: The llama-3.1 model versions
+        shell: bash
+        run: |
+          echo "===== metaresearch/llama-3.1 ====="
+          kaggle models instances versions metaresearch/llama-3.1 2>&1 | head -30 || true
+      - name: The alexchilton llama adapter
+        shell: bash
+        run: |
+          echo "===== alexchilton/ntl-ts-llama31-8b files ====="
+          kaggle datasets files alexchilton/ntl-ts-llama31-8b --csv 2>&1 | head -20
+      - name: The gaussian q8v5 state in the hub
+        shell: bash
+        run: |
+          echo "===== gaussian/q8v5 ====="
+          kaggle datasets files lightningv08/ntl-olmo2-native24-final-inference-assets --csv 2>&1 | grep "gaussian/q8v5" | head -10
