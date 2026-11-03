@@ -1,0 +1,61 @@
+name: Fetch the llama prefix
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  f:
+    runs-on: ubuntu-latest
+    timeout-minutes: 250
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      REF: janaiworkspace/ntl-llama-fetch
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CLI (six is imported but undeclared)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Push with internet on
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/llama-fetch.ipynb kk/llama-fetch.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL llama fetch", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-llama-fetch",
+               "code_file": "llama-fetch.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": False, "enable_tpu": False, "enable_internet": True,
+               "dataset_sources": [], "competition_sources": [], "kernel_sources": [], "model_sources": []}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk 2>&1 | tail -3
+          for i in $(seq 1 200); do
+            out="$(kaggle kernels status "$REF" 2>&1 || true)"
+            st="$(echo "$out" | grep -oE 'KernelWorkerStatus\.[A-Z]+' | head -1)"
+            echo "check $i: $st"
+            case "$st" in *COMPLETE*|*ERROR*|*CANCEL*) break ;; esac
+            sleep 45
+          done
+      - name: Publish the prefix as a dataset
+        shell: bash
+        run: |
+          rm -rf out && mkdir -p out
+          kaggle kernels output "$REF" -p out 2>&1 | tail -3 || true
+          ls -la out | head
+          du -sh out/* 2>/dev/null | head
+          if [ -d out/llama31-prefix24 ]; then
+            python - <<'PY'
+          import json, os
+          m = {"title": "NTL llama prefix", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-llama-prefix",
+               "licenses": [{"name": "other"}]}
+          json.dump(m, open("out/llama31-prefix24/dataset-metadata.json", "w"), indent=2)
+          PY
+            kaggle datasets create -p out/llama31-prefix24 2>&1 | tail -3 || kaggle datasets version -p out/llama31-prefix24 -m "update" 2>&1 | tail -3
+          else
+            echo "no llama31-prefix24 directory in the output"
+          fi
