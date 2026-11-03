@@ -1,0 +1,41 @@
+name: Verify the four real candidates
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: llama31 prefix in the hub
+        shell: bash
+        run: |
+          echo "===== llama31 in lightningv08 hub ====="
+          kaggle datasets files lightningv08/ntl-olmo2-native24-final-inference-assets --csv 2>&1 | grep -i llama | head -15 || echo "none"
+      - name: prvsiyan q8 adapters
+        shell: bash
+        run: |
+          echo "===== prvsiyan ====="
+          kaggle datasets files prvsiyan/ntl-qwen3-8b-lora24-two-stage-adapters --csv 2>&1 | head -15 || echo "not found"
+      - name: zbigniewkirchner
+        shell: bash
+        run: |
+          echo "===== claude head ====="
+          kaggle datasets files zbigniewkirchner/ntl-qwen3-8b-lora-claude-head --csv 2>&1 | head -10 || echo "not found"
+          echo "===== instyle ====="
+          kaggle datasets files zbigniewkirchner/ntl-qwen3-8b-lora-instyle --csv 2>&1 | head -10 || echo "not found"
+      - name: crtproduction pool
+        shell: bash
+        run: |
+          echo "===== open pool ====="
+          kaggle datasets files crtproduction/name-that-llm-open-pool --csv 2>&1 | head -10 || echo "not found"
+          kaggle datasets list -s "name-that-llm-open-pool" --csv 2>&1 | head -4 || true
