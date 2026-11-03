@@ -1,0 +1,35 @@
+name: Verify the three real refs
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: The llama base as a kaggle model
+        shell: bash
+        run: |
+          echo "===== alexchilton/llama-3-1-8b-base ====="
+          kaggle models instances files alexchilton/llama-3-1-8b-base/Transformers/default 2>&1 | head -12 || true
+          echo "===== list variations ====="
+          kaggle models instances list alexchilton/llama-3-1-8b-base 2>&1 | head -6 || true
+      - name: deb_pool
+        shell: bash
+        run: |
+          echo "===== bgunshui/ntl-train-deberta-b ====="
+          kaggle datasets files bgunshui/ntl-train-deberta-b --csv 2>&1 | head -14 || echo "not found"
+      - name: the clean pool
+        shell: bash
+        run: |
+          echo "===== crtproduction/name-that-llm-open-pool ====="
+          kaggle datasets files crtproduction/name-that-llm-open-pool --csv 2>&1 | head -14 || echo "not found"
