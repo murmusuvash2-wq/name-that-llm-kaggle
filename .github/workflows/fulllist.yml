@@ -1,0 +1,36 @@
+name: Full folder lists
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Every folder, no truncation
+        shell: bash
+        run: |
+          for d in dhruvtibarewal/nlm-l24-adapters-v5 dhruvtibarewal/nlm-l24-adapters; do
+            echo "########## $d"
+            kaggle datasets files "$d" --csv 2>&1 | cut -d, -f1 | grep "/" | sed 's#/[^/]*$##' | sort -u
+            echo
+          done
+      - name: Where is q8v5
+        shell: bash
+        run: |
+          echo "===== search datasets for q8v5 ====="
+          for q in q8v5 "lora24 q8"; do
+            kaggle datasets list -s "$q" --csv 2>&1 | head -6
+          done
+          echo "===== alexchilton model ====="
+          kaggle models instances list alexchilton/llama-3-1-8b-base 2>&1 | head -5
+          kaggle models list -s "llama-3-1-8b-base" --csv 2>&1 | head -5
