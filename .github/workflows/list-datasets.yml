@@ -33,3 +33,20 @@ jobs:
             echo "########## $d"
             kaggle datasets files "$d" 2>&1 | head -25 || true
           done
+      - name: Inspect ATLAS bundle
+        shell: bash
+        run: |
+          mkdir -p atlas_bundle
+          kaggle datasets download -d josephadamski91/ntl-atlas-qwen3-8b-v1 -p atlas_bundle --unzip
+          find atlas_bundle -maxdepth 5 -type f -printf '%p %s bytes\n' | sort
+          echo "===== atlas_bundle.json ====="
+          cat atlas_bundle/atlas_adapter/atlas_adapter/atlas_bundle.json
+          echo "===== inference.py ====="
+          cat atlas_bundle/atlas_adapter/atlas_adapter/ntl_atlas/inference.py
+          echo "===== model.py header ====="
+          sed -n '1,240p' atlas_bundle/atlas_adapter/atlas_adapter/ntl_atlas/model.py
+      - name: Upload ATLAS bundle inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-bundle-inspection
+          path: atlas_bundle/
