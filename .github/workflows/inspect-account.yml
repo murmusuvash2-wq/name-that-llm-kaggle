@@ -22,22 +22,22 @@ jobs:
           python-version: "3.12"
 
       - name: Install Kaggle CLI
-        run: python -m pip install --upgrade pip kaggle
+        run: python -m pip install --upgrade pip kaggle six
 
       - name: Submissions
         shell: bash
         run: |
           echo "===== all submissions, newest first ====="
-          kaggle competitions submissions -c "$COMP" || true
+          kaggle competitions submissions -c "$COMP"
 
       - name: Kernels
         shell: bash
         run: |
           echo "===== own kernels, most recent first ====="
-          kaggle kernels list --user "$USER" --page-size 100 --sort-by dateRun || true
+          kaggle kernels list --user "$USER" --page-size 100 --sort-by dateRun
           echo
           echo "===== own kernels, by score ====="
-          kaggle kernels list --user "$USER" --page-size 100 --sort-by scoreDescending || true
+          kaggle kernels list --user "$USER" --page-size 100 --sort-by scoreDescending
 
       - name: Datasets and models
         shell: bash
