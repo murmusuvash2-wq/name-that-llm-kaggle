@@ -1,0 +1,27 @@
+name: LB (six-safe)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - run: |
+          echo "===== leaderboard top 15 ====="
+          kaggle competitions leaderboard -c name-that-llm --show 2>&1 | head -20 || true
+      - name: llama fetch log
+        shell: bash
+        run: |
+          mkdir -p out
+          kaggle kernels output janaiworkspace/ntl-llama-fetch -p out 2>&1 | tail -2 || true
+          ls out 2>/dev/null | head
