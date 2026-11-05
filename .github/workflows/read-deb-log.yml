@@ -22,14 +22,14 @@ jobs:
         run: |
           mkdir -p out reports
           kaggle kernels output janaiworkspace/ntl-train-deb-ours -p out 2>&1 | tail -2 || true
-          python3 benchmarks/dump_kernel_log.py "out/*.log" > reports/deb_log_body.txt
-          wc -l reports/deb_log_body.txt
-          tail -40 reports/deb_log_body.txt
+          python3 benchmarks/dump_kernel_log.py "out/*.log" > reports/deb_log_body2.txt
+          wc -l reports/deb_log_body2.txt
+          tail -40 reports/deb_log_body2.txt
       - name: Commit
         shell: bash
         run: |
           git config user.name "report-bot"
           git config user.email "report-bot@users.noreply.github.com"
-          git add reports/deb_log_body.txt
+          git add reports/deb_log_body2.txt
           git commit -m "report: deb training log body" || echo "nothing"
           git push
