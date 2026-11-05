@@ -1,0 +1,88 @@
+kernel: janaiworkspace/llm-gmc
+pulled: Thu Nov  5 06:33:13 UTC 2026
+--- files ---
+total 44
+drwxr-xr-x  2 runner runner  4096 Nov  5 06:33 .
+drwxr-xr-x 13 runner runner  4096 Nov  5 06:33 ..
+-rw-r--r--  1 runner runner 27159 Nov  5 06:33 llm-gmc.log
+-rw-r--r--  1 runner runner  1755 Nov  5 06:09 submission.parquet
+-rw-r--r--  1 runner runner  3852 Nov  5 06:09 validation_results.json
+--- validation_results.json ---
+{
+  "oof_svc_ba_2fold": 0.4882227193636589,
+  "oof_per_class_recall": {
+    "gpt-5.5": 0.4533,
+    "gpt-5.6-luna": 0.4667,
+    "gpt-5.6-sol": 0.3467,
+    "gpt-5.6-terra": 0.4667,
+    "gpt-6-astra": 0.6867,
+    "gemini-3.1-pro-preview": 0.7733,
+    "gemini-3.6-flash": 0.7667,
+    "gemini-3.7-flash": 0.2933,
+    "gemini-3.8-flash": 0.5867,
+    "claude-opus-4-6": 0.5933,
+    "claude-opus-4-8": 0.3733,
+    "claude-opus-5": 0.6467,
+    "claude-sonnet-5": 0.7133,
+    "claude-fable-5": 0.2013,
+    "qwen3.8-max": 0.62,
+    "glm-5.3": 0.2867,
+    "glm-5.3-flash": 0.28,
+    "kimi-k3": 0.2333
+  },
+  "weakest_confusion": {
+    "claude-fable-5": {
+      "recall": 0.201,
+      "goes_to": {
+        "glm-5.3": 0.228,
+        "claude-fable-5": 0.201,
+        "claude-sonnet-5": 0.161,
+        "glm-5.3-flash": 0.128
+      }
+    },
+    "kimi-k3": {
+      "recall": 0.233,
+      "goes_to": {
+        "kimi-k3": 0.233,
+        "gpt-5.5": 0.133,
+        "qwen3.8-max": 0.113,
+        "gpt-5.6-terra": 0.093
+      }
+    },
+    "glm-5.3-flash": {
+      "recall": 0.28,
+      "goes_to": {
+        "glm-5.3-flash": 0.28,
+        "glm-5.3": 0.233,
+        "claude-fable-5": 0.133,
+        "claude-sonnet-5": 0.1
+      }
+    },
+    "glm-5.3": {
+      "recall": 0.287,
+      "goes_to": {
+        "glm-5.3": 0.287,
+        "glm-5.3-flash": 0.173,
+        "claude-fable-5": 0.12,
+        "claude-sonnet-5": 0.113
+      }
+    },
+    "gemini-3.7-flash": {
+--- log: measurements ---
+,{"stream_name":"stdout","time":40.075035461,"data":"twin clusters: 3 passages alone, 0 in 2-18\n"}
+,{"stream_name":"stdout","time":2872.467736407,"data":"k=2 diagnostic failed: IndexError index 198792 is out of bounds for axis 0 with size 2699\n"}
+,{"stream_name":"stdout","time":3321.144168248,"data":"Q14V5 IN-SAMPLE (as loaded): accuracy 0.2150 | mean top-share 0.93\n"}
+,{"stream_name":"stdout","time":3321.145947396,"data":"Q14V5 IN-SAMPLE (head reordered by the derived permutation): accuracy 0.9350\n"}
+,{"stream_name":"stdout","time":3321.191544053,"data":"Q14V5 MEASURED: pool accuracy 0.6233 over 1,500 rows -\u003e weight 3.00\n"}
+,{"stream_name":"stdout","time":3325.273324425,"data":"ll8v5: /kaggle/input/nlm-l24-adapters-v5/ll8v5 | base /kaggle/input/models/alexchilton/llama-3-1-8b-base/transformers/default/1\n"}
+,{"stream_name":"stdout","time":3375.610485956,"data":"LL8V5 IN-SAMPLE: as loaded 0.1600 -\u003e reordered 0.8750\n"}
+,{"stream_name":"stdout","time":3375.610521496,"data":"ll8v5: weight 1.0, done after 3358s\n"}
+,{"stream_name":"stdout","time":3375.87653787,"data":"ll8v5 admitted at weight 1.0\n"}
+,{"stream_name":"stdout","time":3678.69154789,"data":"typography: 47 markers x 231,455 rows\n"}
+,{"stream_name":"stdout","time":3678.90417099,"data":"TYPOGRAPHY MEASURED: held-out prompt-group accuracy 0.1835 on 44,927 rows\n"}
+,{"stream_name":"stdout","time":3678.905669862,"data":"TYPOGRAPHY vs SVC agreement on the same rows: nan (lower is more useful to the blend)\n"}
+,{"stream_name":"stdout","time":3678.907125715,"data":"typography NOT admitted\n"}
+,{"stream_name":"stdout","time":3679.237186348,"data":"per-class offsets: OOF BA 0.4882 -\u003e 0.4931 (gain +0.0048)\n"}
+,{"stream_name":"stdout","time":3679.238085783,"data":"offsets APPLIED to the blend (gain +0.0048 clears the 0.002 floor)\n"}
+,{"stream_name":"stdout","time":3679.277234584,"data":"sinkhorn skipped: fewer than 50 test rows (interactive run)\n"}
+,{"stream_name":"stdout","time":3679.314534728,"data":"done in 3662s\n"}
