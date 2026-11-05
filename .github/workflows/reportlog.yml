@@ -1,0 +1,52 @@
+name: Report the kernel log into the repo
+on:
+  workflow_dispatch:
+    inputs:
+      kernel:
+        required: true
+        default: janaiworkspace/llm-gmc
+      out:
+        required: true
+        default: reports/last_kernel_report.txt
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KERNEL_REF: ${{ inputs.kernel }}
+      OUT_FILE: ${{ inputs.out }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Pull and grep
+        shell: bash
+        run: |
+          mkdir -p out "$(dirname "$OUT_FILE")"
+          kaggle kernels output "$KERNEL_REF" -p out 2>&1 | tail -2 || true
+          {
+            echo "kernel: $KERNEL_REF"
+            echo "pulled: $(date -u)"
+            echo "--- files ---"
+            ls -la out | head -15
+            echo "--- validation_results.json ---"
+            cat out/validation_results.json 2>/dev/null | head -60 || echo "(none)"
+            echo "--- log: measurements ---"
+            grep -aiE "OOF BA|LL8V5|ll8v5|admitted|MEASURED|IN-SAMPLE|sinkhorn|done in|twin clusters|typography|offsets|Error|Traceback" out/*.log 2>/dev/null | tail -60 || echo "(no log)"
+          } > "$OUT_FILE"
+          wc -l "$OUT_FILE"
+      - name: Commit the report
+        shell: bash
+        run: |
+          git config user.name  "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add "$OUT_FILE"
+          git commit -m "report: $KERNEL_REF" || echo "nothing to commit"
+          git push
