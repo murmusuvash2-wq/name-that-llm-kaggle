@@ -47,8 +47,16 @@ class Resume:
         except Exception as e:
             print(f"[{self.tag}] resume state unreadable ({type(e).__name__}: {e}) — starting fresh", flush=True)
             return None
+        ba = float(self.state.get("best_ba", -1.0))
+        # A diverged run still writes a state file, and resuming from one poisons the next session. Anything
+        # at or below chance (1/18 = 0.056, so 0.10 with margin) is a failed run, not a checkpoint.
+        if ba < 0.10:
+            print(f"[{self.tag}] resume state has best BA {ba:.4f}, at chance level — treating it as a "
+                  f"failed run and starting fresh", flush=True)
+            self.state = None
+            return None
         print(f"[{self.tag}] RESUMING from {src}: step {self.state.get('step', 0):,}, "
-              f"rows seen {self.state.get('seen', 0):,}, best BA {self.state.get('best_ba', -1):.4f}", flush=True)
+              f"rows seen {self.state.get('seen', 0):,}, best BA {ba:.4f}", flush=True)
         return self.state
 
     # ------------------------------------------------------------------ save
