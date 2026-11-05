@@ -21,6 +21,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Is there a checkpoint from a previous session
+        shell: bash
+        run: |
+          if kaggle datasets files "$KAGGLE_USERNAME/ntl-q8-ours" --csv >/dev/null 2>&1; then
+            echo "HAS_RESUME=yes" >> "$GITHUB_ENV"; echo "resuming from the published checkpoint"
+          else
+            echo "HAS_RESUME=no" >> "$GITHUB_ENV"; echo "first session, no checkpoint yet"
+          fi
       - name: Push the 8B training kernel
         shell: bash
         run: |
@@ -31,7 +39,7 @@ jobs:
                "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-train-q8-ours",
                "code_file": "ntl-train-q8-ours.ipynb", "language": "python", "kernel_type": "notebook",
                "is_private": True, "enable_gpu": True, "enable_internet": False,
-               "dataset_sources": ["illiadolenko/ntl-merged-corpus-v2",
+               "dataset_sources": ([f"{os.environ['KAGGLE_USERNAME']}/ntl-q8-ours"] if os.environ.get("HAS_RESUME")=="yes" else []) + ["illiadolenko/ntl-merged-corpus-v2",
                                    "trnhip/ntl-api-gen",
                                    "harshitkmr/ntl-google-gen-v1"],
                "competition_sources": ["name-that-llm"], "kernel_sources": [],
