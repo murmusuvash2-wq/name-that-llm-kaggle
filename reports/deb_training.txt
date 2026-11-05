@@ -1,0 +1,21 @@
+kernel: janaiworkspace/ntl-train-deb-ours
+pulled: Thu Nov  5 11:02:25 UTC 2026
+--- files ---
+total 36
+drwxr-xr-x  4 runner runner 4096 Nov  5 11:02 .
+drwxr-xr-x 13 runner runner 4096 Nov  5 11:02 ..
+drwxr-xr-x  2 runner runner 4096 Nov  5 11:02 __pycache__
+drwxr-xr-x  3 runner runner 4096 Nov  5 11:02 deberta_ours
+-rw-r--r--  1 runner runner 9349 Nov  5 11:02 ntl-train-deb-ours.log
+-rw-r--r--  1 runner runner 5311 Nov  5 09:57 resume_lib.py
+--- validation_results.json ---
+(none)
+--- log: measurements ---
+,{"stream_name":"stderr","time":4001.503766853,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":4001.50465372,"data":"    import sys;import papermill as pm;pm.execute_notebook(\"__notebook__.ipynb\",\"__notebook__.ipynb\",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=43200)\n"}
+,{"stream_name":"stderr","time":4001.50467335,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":4001.504683117,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":4001.504687908,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":4001.504713544,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":4001.504734256,"data":"NameError                                 Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":4001.504775472,"data":"NameError: name 'norms' is not defined\n"}
