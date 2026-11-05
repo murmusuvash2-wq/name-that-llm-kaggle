@@ -1,0 +1,14 @@
+kernel: janaiworkspace/ntl-train-deb-ours
+pulled: Thu Nov  5 15:06:23 UTC 2026
+--- files ---
+total 36
+drwxr-xr-x  4 runner runner  4096 Nov  5 15:06 .
+drwxr-xr-x 13 runner runner  4096 Nov  5 15:04 ..
+drwxr-xr-x  2 runner runner  4096 Nov  5 15:04 __pycache__
+drwxr-xr-x  3 runner runner  4096 Nov  5 15:06 deberta_ours
+-rw-r--r--  1 runner runner 10080 Nov  5 15:06 ntl-train-deb-ours.log
+-rw-r--r--  1 runner runner  5311 Nov  5 13:13 resume_lib.py
+--- validation_results.json ---
+(none)
+--- log: measurements ---
+(no log)
