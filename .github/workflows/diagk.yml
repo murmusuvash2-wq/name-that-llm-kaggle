@@ -1,0 +1,39 @@
+name: Read the diagnostic kernel
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Status
+        shell: bash
+        run: |
+          for k in janaiworkspace/qwen-svc-atlas-oof-diagnostic janaiworkspace/ntl-tpu-probe; do
+            echo "===== $k ====="
+            kaggle kernels status "$k" 2>&1 | tail -2
+          done
+      - name: Output of the diagnostic
+        shell: bash
+        run: |
+          rm -rf o1 && mkdir -p o1
+          kaggle kernels output janaiworkspace/qwen-svc-atlas-oof-diagnostic -p o1 2>&1 | tail -3 || true
+          ls -la o1 | head -12
+          for f in o1/*.json o1/*.txt; do [ -f "$f" ] && { echo "##### $f"; head -60 "$f"; }; done
+      - name: TPU probe output
+        shell: bash
+        run: |
+          rm -rf o2 && mkdir -p o2
+          kaggle kernels output janaiworkspace/ntl-tpu-probe -p o2 2>&1 | tail -3 || true
+          ls -la o2 | head
+          cat o2/tpu_probe.json 2>/dev/null || echo "(no json)"
