@@ -1,0 +1,98 @@
+===== out/ntl-train-deb-ours.log =====
+[{"stream_name":"stderr","time":8.42271936,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+Writing resume_lib.py
+CONFIG: {"epochs": 2, "bs": 16, "max_len": 256, "lr_encoder": 1e-05, "lr_head": 0.0001, "warmup": 0.06, "val_frac": 0.15, "pool_cap_per_class": 6000, "seed": 7}
+official train 2,699 rows, 150 prompts, 18 labels
+  pool_v4.parquet                                 75,783 rows
+pool after filter/dedup: 75,783 rows
+pool used: 74,927 rows, per class 2,338-6,000
+val 395 rows / 22 prompts | official-train 2,304 rows (folded into the pool)
+training rows: 77,231
+encoder from /kaggle/input/ntl-handwriting-blend/deberta_v3_large/encoder
+trainable parameters: 434,030,610 (434M)
+class weights (min/median/max): 0.81/0.98/1.27
+steps/epoch 4,827 | total 9,654
+tokenised 77,231 rows in 82s
+[deb] no resume state — starting from step 0
+  ep1      16/77,231 loss 2.9713 (2s)
+  ep1   3,216/77,231 loss nan (157s)
+  ep1   6,416/77,231 loss nan (314s)
+  ep1   9,616/77,231 loss nan (470s)
+  ep1  12,816/77,231 loss nan (628s)
+  ep1  16,016/77,231 loss nan (786s)
+  ep1  19,216/77,231 loss nan (943s)
+  ep1  22,416/77,231 loss nan (1100s)
+  ep1  25,616/77,231 loss nan (1257s)
+  ep1  28,816/77,231 loss nan (1413s)
+  ep1  32,016/77,231 loss nan (1571s)
+  ep1  35,216/77,231 loss nan (1729s)
+  ep1  38,416/77,231 loss nan (1887s)
+  ep1  41,616/77,231 loss nan (2043s)
+  ep1  44,816/77,231 loss nan (2201s)
+  ep1  48,016/77,231 loss nan (2357s)
+  ep1  51,216/77,231 loss nan (2514s)
+  ep1  54,416/77,231 loss nan (2671s)
+  ep1  57,616/77,231 loss nan (2829s)
+  ep1  60,816/77,231 loss nan (2986s)
+  ep1  64,016/77,231 loss nan (3144s)
+  ep1  67,216/77,231 loss nan (3301s)
+  ep1  70,416/77,231 loss nan (3458s)
+  ep1  73,616/77,231 loss nan (3615s)
+  ep1  76,816/77,231 loss nan (3772s)
+EPOCH 1: loss nan | HOLDOUT BA 0.0556 (3799s)
+  saved (best so far, BA 0.0556)
+  resume state written (next session starts at epoch 1)
+  ep2      16/77,231 loss nan (1s)
+  ep2   3,216/77,231 loss nan (158s)
+  ep2   6,416/77,231 loss nan (315s)
+  ep2   9,616/77,231 loss nan (471s)
+  ep2  12,816/77,231 loss nan (628s)
+  ep2  16,016/77,231 loss nan (785s)
+  ep2  19,216/77,231 loss nan (942s)
+  ep2  22,416/77,231 loss nan (1099s)
+  ep2  25,616/77,231 loss nan (1257s)
+  ep2  28,816/77,231 loss nan (1414s)
+  ep2  32,016/77,231 loss nan (1572s)
+  ep2  35,216/77,231 loss nan (1729s)
+  ep2  38,416/77,231 loss nan (1885s)
+  ep2  41,616/77,231 loss nan (2042s)
+  ep2  44,816/77,231 loss nan (2200s)
+  ep2  48,016/77,231 loss nan (2356s)
+  ep2  51,216/77,231 loss nan (2513s)
+  ep2  54,416/77,231 loss nan (2670s)
+  ep2  57,616/77,231 loss nan (2827s)
+  ep2  60,816/77,231 loss nan (2984s)
+  ep2  64,016/77,231 loss nan (3141s)
+  ep2  67,216/77,231 loss nan (3299s)
+  ep2  70,416/77,231 loss nan (3454s)
+  ep2  73,616/77,231 loss nan (3612s)
+  ep2  76,816/77,231 loss nan (3770s)
+EPOCH 2: loss nan | HOLDOUT BA 0.0556 (3797s)
+  resume state written (next session starts at epoch 2)
+BEST HOLDOUT BA 0.0556 at epoch 1
+=== deb_ours ===
+{
+ "holdout_ba": 0.0556,
+ "holdout_epoch": 1,
+ "holdout_prompts": 22,
+ "trained_in_seconds": 7686
+}
+files: ['encoder', 'head.safetensors', 'meta.json', 'resume_state.pt']
+encoder size 836 MB
+DROP-IN READY: attach this dataset and the existing deberta cell loads it unchanged
+/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+[NbConvertApp] Writing 58254 bytes to __notebook__.ipynb
+[NbConvertApp] Converting notebook __notebook__.ipynb to html
+[NbConvertApp] Writing 404478 bytes to __results__.html
+]
