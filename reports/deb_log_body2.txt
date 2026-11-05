@@ -1,0 +1,164 @@
+===== out/ntl-train-deb-ours.log =====
+[{"stream_name":"stderr","time":7.992003427,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+Writing resume_lib.py
+CONFIG: {"epochs": 2, "bs": 16, "max_len": 256, "lr_encoder": 1e-05, "lr_head": 0.0001, "warmup": 0.06, "val_frac": 0.15, "pool_cap_per_class": 6000, "seed": 7}
+official train 2,699 rows, 150 prompts, 18 labels
+  pool_v4.parquet                                 75,783 rows
+read 1 pool files
+pool after filter/dedup: 75,783 rows
+pool used: 74,927 rows, per class 2,338-6,000
+val 395 rows / 22 prompts | official-train 2,304 rows (folded into the pool)
+training rows: 77,231
+encoder from /kaggle/input/ntl-handwriting-blend/deberta_v3_large/encoder
+trainable parameters: 434,030,610 (434M)
+class weights (min/median/max): 0.81/0.98/1.27
+steps/epoch 4,827 | total 9,654
+tokenised 77,231 rows in 82s
+[deb] no resume state — starting from step 0
+  ep1      16/77,231 loss 2.8968 (5s)
+  step 1: non-finite loss, batch skipped (1 so far)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys;import papermill as pm;pm.execute_notebook("__notebook__.ipynb","__notebook__.ipynb",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=43200)
+                                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/papermill/execute.py", line 131, in execute_notebook
+    raise_for_execution_errors(nb, output_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/papermill/execute.py", line 251, in raise_for_execution_errors
+    raise error
+papermill.exceptions.PapermillExecutionError: 
+---------------------------------------------------------------------------
+Exception encountered at "In [5]":
+---------------------------------------------------------------------------
+OutOfMemoryError                          Traceback (most recent call last)
+/tmp/ipykernel_23/3212409703.py in <cell line: 0>()
+     40             continue
+     41         bt = tok.pad({"input_ids": [ids_all[i] for i in idx]}, return_tensors="pt").to("cuda:0")
+---> 42         logits = head(pooled_fp32(bt))
+     43         yb = torch.from_numpy(labels_all[idx]).to("cuda:0")
+     44         loss = F.cross_entropy(logits.float(), yb, weight=w_cls, label_smoothing=0.05)
+/tmp/ipykernel_23/1116181726.py in pooled_fp32(bt)
+     55     m = bt["attention_mask"].unsqueeze(-1).float()
+     56     with torch.autocast("cuda", dtype=torch.bfloat16):
+---> 57         h = enc(**bt).last_hidden_state
+     58     pooled = (h.float() * m).sum(1) / m.sum(1).clamp(min=1)
+     59     return pooled / FEAT_SCALE
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1777             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1778         else:
+-> 1779             return self._call_impl(*args, **kwargs)
+   1780 
+   1781     # torchrec tests the code consistency with the following code
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1788                 or _global_backward_pre_hooks or _global_backward_hooks
+   1789                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1790             return forward_call(*args, **kwargs)
+   1791 
+   1792         result = None
+/usr/local/lib/python3.13/dist-packages/transformers/models/deberta_v2/modeling_deberta_v2.py in forward(self, input_ids, attention_mask, token_type_ids, position_ids, inputs_embeds, output_attentions, output_hidden_states, return_dict, **kwargs)
+    761         )
+    762 
+--> 763         encoder_outputs = self.encoder(
+    764             embedding_output,
+    765             attention_mask,
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1777             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1778         else:
+-> 1779             return self._call_impl(*args, **kwargs)
+   1780 
+   1781     # torchrec tests the code consistency with the following code
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1788                 or _global_backward_pre_hooks or _global_backward_hooks
+   1789                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1790             return forward_call(*args, **kwargs)
+   1791 
+   1792         result = None
+/usr/local/lib/python3.13/dist-packages/transformers/models/deberta_v2/modeling_deberta_v2.py in forward(self, hidden_states, attention_mask, output_hidden_states, output_attentions, query_states, relative_pos, return_dict)
+    649         rel_embeddings = self.get_rel_embedding()
+    650         for i, layer_module in enumerate(self.layer):
+--> 651             output_states, attn_weights = layer_module(
+    652                 next_kv,
+    653                 attention_mask,
+/usr/local/lib/python3.13/dist-packages/transformers/modeling_layers.py in __call__(self, *args, **kwargs)
+    109 
+    110             return self._gradient_checkpointing_func(partial(super().__call__, **kwargs), *args)
+--> 111         return super().__call__(*args, **kwargs)
+    112 
+    113 
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1777             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1778         else:
+-> 1779             return self._call_impl(*args, **kwargs)
+   1780 
+   1781     # torchrec tests the code consistency with the following code
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1788                 or _global_backward_pre_hooks or _global_backward_hooks
+   1789                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1790             return forward_call(*args, **kwargs)
+   1791 
+   1792         result = None
+/usr/local/lib/python3.13/dist-packages/transformers/models/deberta_v2/modeling_deberta_v2.py in forward(self, hidden_states, attention_mask, query_states, relative_pos, rel_embeddings, output_attentions)
+    430         output_attentions: bool = False,
+    431     ) -> tuple[torch.Tensor, torch.Tensor | None]:
+--> 432         attention_output, att_matrix = self.attention(
+    433             hidden_states,
+    434             attention_mask,
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1777             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1778         else:
+-> 1779             return self._call_impl(*args, **kwargs)
+   1780 
+   1781     # torchrec tests the code consistency with the following code
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1788                 or _global_backward_pre_hooks or _global_backward_hooks
+   1789                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1790             return forward_call(*args, **kwargs)
+   1791 
+   1792         result = None
+/usr/local/lib/python3.13/dist-packages/transformers/models/deberta_v2/modeling_deberta_v2.py in forward(self, hidden_states, attention_mask, output_attentions, query_states, relative_pos, rel_embeddings)
+    363         rel_embeddings=None,
+    364     ) -> tuple[torch.Tensor, torch.Tensor | None]:
+--> 365         self_output, att_matrix = self.self(
+    366             hidden_states,
+    367             attention_mask,
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1777             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1778         else:
+-> 1779             return self._call_impl(*args, **kwargs)
+   1780 
+   1781     # torchrec tests the code consistency with the following code
+/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1788                 or _global_backward_pre_hooks or _global_backward_hooks
+   1789                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1790             return forward_call(*args, **kwargs)
+   1791 
+   1792         result = None
+/usr/local/lib/python3.13/dist-packages/transformers/models/deberta_v2/modeling_deberta_v2.py in forward(self, hidden_states, attention_mask, output_attentions, query_states, relative_pos, rel_embeddings)
+    244         if self.relative_attention:
+    245             rel_embeddings = self.pos_dropout(rel_embeddings)
+--> 246             rel_att = self.disentangled_attention_bias(
+    247                 query_layer, key_layer, relative_pos, rel_embeddings, scale_factor
+    248             )
+/usr/local/lib/python3.13/dist-packages/transformers/models/deberta_v2/modeling_deberta_v2.py in disentangled_attention_bias(self, query_layer, key_layer, relative_pos, rel_embeddings, scale_factor)
+    336             p2c_pos = torch.clamp(-r_pos + att_span, 0, att_span * 2 - 1)
+    337             p2c_att = torch.bmm(key_layer, pos_query_layer.transpose(-1, -2))
+--> 338             p2c_att = torch.gather(
+    339                 p2c_att,
+    340                 dim=-1,
+OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 0 has a total capacity of 14.56 GiB of which 28.81 MiB is free. Including non-PyTorch memory, this process has 14.53 GiB memory in use. Of the allocated memory 14.09 GiB is allocated by PyTorch, and 308.86 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+[NbConvertApp] Writing 71443 bytes to __notebook__.ipynb
+[NbConvertApp] Converting notebook __notebook__.ipynb to html
+[NbConvertApp] Writing 424366 bytes to __results__.html
+]
