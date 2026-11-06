@@ -1,5 +1,5 @@
 ===== out/ntl-train-deb-ours.log =====
-[{"stream_name":"stderr","time":8.245536524,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+[{"stream_name":"stderr","time":8.169205769,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
 0.00s - to python to disable frozen modules.
 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
@@ -8,7 +8,7 @@
 0.00s - to python to disable frozen modules.
 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
 Writing resume_lib.py
-CONFIG: {"epochs": 2, "bs": 4, "grad_accum": 4, "grad_ckpt": true, "max_len": 192, "lr_encoder": 1e-05, "lr_head": 0.0001, "warmup": 0.06, "val_frac": 0.15, "pool_cap_per_class": 6000, "seed": 7}
+CONFIG: {"epochs": 2, "bs": 4, "grad_accum": 4, "grad_ckpt": true, "max_len": 192, "lr_encoder": 5e-06, "lr_head": 5e-05, "warmup": 0.06, "val_frac": 0.15, "pool_cap_per_class": 6000, "seed": 7}
 official train 2,699 rows, 150 prompts, 18 labels
 scanning 5 parquet files for text+model columns
   nlm-matched-clean/nlm_matched_clean.parquet             24,443
@@ -25,7 +25,7 @@ gradient checkpointing on — recomputes activations instead of storing them
 trainable parameters: 434,030,610 (434M)
 class weights (min/median/max): 0.94/0.94/1.26
 steps/epoch 24,737 | total 49,474
-tokenised 98,947 rows in 64s
+tokenised 98,947 rows in 86s
 [deb] no resume state — starting from step 0
   step 1: non-finite loss, batch skipped (1 so far)
   step 1: non-finite loss, batch skipped (2 so far)
@@ -37,7 +37,7 @@ tokenised 98,947 rows in 64s
   step 1: non-finite loss, batch skipped (150 so far)
   step 1: non-finite loss, batch skipped (200 so far)
 ABORT: 201 non-finite losses — the run is diverged, stopping
-EPOCH 1: loss 2.8950 | HOLDOUT BA 0.0556 (74s)
+EPOCH 1: loss 2.9031 | HOLDOUT BA 0.0556 (24s)
   saved (best so far, BA 0.0556)
   resume state written (next session starts at epoch 1)
   step 0: non-finite loss, batch skipped (1 so far)
@@ -50,7 +50,7 @@ EPOCH 1: loss 2.8950 | HOLDOUT BA 0.0556 (74s)
   step 0: non-finite loss, batch skipped (150 so far)
   step 0: non-finite loss, batch skipped (200 so far)
 ABORT: 201 non-finite losses — the run is diverged, stopping
-EPOCH 2: loss 0.0000 | HOLDOUT BA 0.0556 (71s)
+EPOCH 2: loss 0.0000 | HOLDOUT BA 0.0556 (23s)
   resume state written (next session starts at epoch 2)
 BEST HOLDOUT BA 0.0556 at epoch 1
 === deb_ours ===
@@ -58,7 +58,7 @@ BEST HOLDOUT BA 0.0556 at epoch 1
  "holdout_ba": 0.0556,
  "holdout_epoch": 1,
  "holdout_prompts": 22,
- "trained_in_seconds": 216
+ "trained_in_seconds": 142
 }
 files: ['encoder', 'head.safetensors', 'meta.json', 'resume_state.pt']
 encoder size 836 MB
@@ -68,7 +68,7 @@ DROP-IN READY: attach this dataset and the existing deberta cell loads it unchan
 /usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
   text = re.sub(r'_', '\_', text) # Escape underscores in display text
 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
-[NbConvertApp] Writing 61051 bytes to __notebook__.ipynb
+[NbConvertApp] Writing 61775 bytes to __notebook__.ipynb
 [NbConvertApp] Converting notebook __notebook__.ipynb to html
-[NbConvertApp] Writing 413729 bytes to __results__.html
+[NbConvertApp] Writing 415768 bytes to __results__.html
 ]
