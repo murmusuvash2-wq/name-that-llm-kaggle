@@ -13,25 +13,25 @@ ref,fileName,date,description,status,publicScore,privateScore
 57768694,submission.parquet,2026-10-29 11:02:47.753000,"v57: + q14v5 (w3.0), OOF crash fixed, CONFIG centralised, kernel v76",SubmissionStatus.COMPLETE,0.627,
 
 # leaderboard top 12
-Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7jxpjP9MWNKhyNNV4IWvgswtW8Vv78EjXzd4q41OmqRBVGRU_ov97h6Om9MJsHDac0
+Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7hb0J5AnCnmgAxEdlnAI_9Mvp3gQxwrwsxUuHoTWb40ILIwf01wS68537CKmpj6nKE
   teamId  teamName              submissionDate              score  
 --------  --------------------  --------------------------  -----  
-17109889  Le Viet               2026-11-05 00:30:22.026000  0.747  
+17109889  Le Viet               2026-11-05 12:55:56.923000  0.747  
 17109387  Hod Carriers          2026-11-04 22:38:02.526000  0.747  
-17137893  Team Aillis           2026-11-05 00:04:00.416000  0.743  
+17137893  Team Aillis           2026-11-05 15:29:22.513000  0.743  
 17171621  Lian Matsuo           2026-11-03 23:24:08.130000  0.742  
-17133127  kulshekhar            2026-11-04 12:30:45.360000  0.733  
+17133127  kulshekhar            2026-11-05 17:31:05.796000  0.736  
+17135987  Meni David Gottesman  2026-11-05 08:05:14.070000  0.727  
+17181735  t_shiga               2026-11-05 18:11:50.660000  0.727  
 17122191  Harveen Singh Chadha  2026-11-04 18:31:16.280000  0.724  
-17130821  Civitasmass           2026-11-05 05:44:33.133000  0.723  
-17181735  t_shiga               2026-11-04 20:37:17.410000  0.723  
-17135987  Meni David Gottesman  2026-11-05 00:28:13.696000  0.719  
+17130821  Civitasmass           2026-11-05 06:44:44.580000  0.723  
+17121590  LLM Hunter            2026-11-05 08:43:13.400000  0.719  
+17205073  ML_Bear               2026-11-05 23:57:03.386000  0.715  
+17176617  Santos x Cantone      2026-11-05 21:44:12.353000  0.715  
 17124498  Bootstrapping         2026-11-02 15:50:04.493000  0.714  
-17148682  James Liebel          2026-11-01 01:01:41.816000  0.713  
-17142716  BoW                   2026-11-05 07:39:05.316000  0.710  
-17177020  Liaaar                2026-11-04 17:20:51.280000  0.706  
 
 # quota
 resource  used    remaining  total   refreshAt                  
 --------  ------  ---------  ------  -------------------------  
-GPU       10.16h  19.84h     30.00h  2026-11-07T00:00:00+00:00  
+GPU       16.64h  13.36h     30.00h  2026-11-07T00:00:00+00:00  
 TPU       0.04h   19.96h     20.00h  2026-11-07T00:00:00+00:00  
