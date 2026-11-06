@@ -1,0 +1,18 @@
+===== janaiworkspace/ntl-pool-test =====
+janaiworkspace/ntl-pool-test has status "KernelWorkerStatus.RUNNING"
+===== janaiworkspace/llm-gmc =====
+janaiworkspace/llm-gmc has status "KernelWorkerStatus.COMPLETE"
+===== janaiworkspace/ntl-probe-deb-ours =====
+janaiworkspace/ntl-probe-deb-ours has status "KernelWorkerStatus.COMPLETE"
+===== janaiworkspace/ntl-tpu-probe =====
+janaiworkspace/ntl-tpu-probe has status "KernelWorkerStatus.CANCEL_ACKNOWLEDGED"
+===== quota =====
+resource  used    remaining  total   refreshAt                  
+--------  ------  ---------  ------  -------------------------  
+GPU       17.71h  12.29h     30.00h  2026-11-07T00:00:00+00:00  
+TPU       0.04h   19.96h     20.00h  2026-11-07T00:00:00+00:00  
+===== submissions =====
+ref,fileName,date,description,status,publicScore,privateScore
+58050358,submission.parquet,2026-11-06 07:44:46.157000,"v69: q3-8b w2.0 (in-sample 0.785, fills the q8v5 slot) + ll8v5 w1.0 + reference weights",SubmissionStatus.COMPLETE,0.636,
+58012932,submission.parquet,2026-11-05 06:36:41.580000,v68: 0.668 reference weights + ll8v5 (in-sample 0.16->0.875 after permutation recovery),SubmissionStatus.COMPLETE,0.640,
+57894605,submission.parquet,2026-11-02 04:08:06.387000,v67: capped_agglo + confidence-gated Sinkhorn,SubmissionStatus.COMPLETE,0.635,
