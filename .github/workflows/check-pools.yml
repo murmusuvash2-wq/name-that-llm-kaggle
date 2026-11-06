@@ -1,0 +1,39 @@
+name: Check the pool datasets
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: List the candidate pools
+        shell: bash
+        run: |
+          mkdir -p reports
+          {
+            for d in gtuli12/ntl-own-pool crtproduction/name-that-llm-open-pool illiadolenko/ntl-merged-corpus-v2 lucasboesen/ntl-free-proxy-generations; do
+              echo "===== $d ====="
+              kaggle datasets files "$d" --csv 2>&1 | head -12
+              echo
+            done
+          } > reports/pools.txt
+          cat reports/pools.txt
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/pools.txt
+          git commit -m "report: pool candidates" || echo nothing
+          git push
