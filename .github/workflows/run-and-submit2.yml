@@ -48,11 +48,13 @@ jobs:
                                    "trnhip/ntl-api-gen",
                                    "harshitkmr/ntl-google-gen-v1",
                                    "dhruvtibarewal/nlm-l24-adapters-v5",
-                                   "dhruvtibarewal/nlm-matched-clean"],
+                                   "dhruvtibarewal/nlm-matched-clean",
+                                   "alexchilton/ntl-ts-q3-8b"],
                "competition_sources": ["name-that-llm"], "kernel_sources": [],
                "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
                                  "qwen-lm/qwen2.5/transformers/14b/1",
-                                 "alexchilton/llama-3-1-8b-base/transformers/default/1"]}
+                                 "alexchilton/llama-3-1-8b-base/transformers/default/1",
+                                 "qwen-lm/qwen-3/transformers/8b-base/1"]}
           json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
           PY
           PUSH="$(kaggle kernels push -p kk 2>&1)"; echo "$PUSH" | tail -3
