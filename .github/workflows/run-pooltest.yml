@@ -1,0 +1,64 @@
+name: Pool comparison test
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      REF: janaiworkspace/ntl-pool-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Push and wait
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/pool-test.ipynb kk/pool-test.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL pool test", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-pool-test",
+               "code_file": "pool-test.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": False, "enable_internet": False,
+               "dataset_sources": ["illiadolenko/ntl-merged-corpus-v2",
+                                   "crtproduction/name-that-llm-open-pool",
+                                   "gtuli12/ntl-own-pool"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [], "model_sources": []}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk 2>&1 | tail -3
+          for i in $(seq 1 150); do
+            st="$(kaggle kernels status "$REF" 2>&1 | grep -oE 'KernelWorkerStatus\.[A-Z]+' | head -1)"
+            echo "check $i: $st"
+            case "$st" in *COMPLETE*|*ERROR*|*CANCEL*) break ;; esac
+            sleep 45
+          done
+      - name: Read the comparison
+        shell: bash
+        run: |
+          mkdir -p out reports
+          kaggle kernels output "$REF" -p out 2>&1 | tail -2 || true
+          {
+            echo "===== pool_comparison.json ====="
+            cat out/pool_comparison.json 2>/dev/null || echo "(none)"
+            echo
+            echo "===== log ====="
+            python3 benchmarks/dump_kernel_log.py "out/*.log" 2>/dev/null | grep -iE "official|pool|rows|columns|dropped|k18|k2|RESULT|BEST|candidate" | head -40
+          } > reports/pool_comparison.txt
+          cat reports/pool_comparison.txt
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/pool_comparison.txt
+          git commit -m "report: pool comparison" || echo nothing
+          git push
