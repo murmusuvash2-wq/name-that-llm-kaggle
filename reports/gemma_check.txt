@@ -1,0 +1,34 @@
+===== alexchilton/ntl-ts-gemma2-9b files =====
+name,size,creationDate
+adapter/README.md,5158,2026-10-20 18:11:17.033000
+adapter/adapter_config.json,1273,2026-10-20 18:11:16.982000
+adapter/adapter_model.safetensors,123512688,2026-10-20 18:11:20.099000
+anchor_features.npz,344334,2026-10-20 18:11:12.897000
+heads.safetensors,4359888,2026-10-20 18:11:13.027000
+meta.json,916,2026-10-20 18:11:12.853000
+
+===== gemma on kaggle models =====
+Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7h2KKJjxRCyCCpLYSAK3Xlj83ozFLEmWSeXOSz4eKYg1JMKiNUatuPVe4XCu_j1Llo
+id,ref,title,subtitle,author
+76277,google/gemma-2,Gemma 2,"Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models.",Google
+78150,keras/gemma2,Gemma 2,"Keras implementation of the Gemma 2 model. This Keras 3 implementation will run on JAX, TensorFlow and PyTorch.",Keras
+121954,google/gemma-2-2b-jpn-it,Gemma 2 2b JPN IT,"Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models.",Google
+86587,emiz6413/gemma-2,gemma-2,,Eisuke Mizutani
+3533,keras/gemma,Gemma,"Keras implementation of the Gemma model. This Keras 3 implementation will run on JAX, TensorFlow and PyTorch.",Keras
+96696,nikhiltumbde/gemma-2-9b-hf,gemma-2-9b-hf,gemma 2 9B variant from huggingface,Nikhil Tumbde
+Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7g6GSg4PeFsr1WE6-5WCUZNoYCp8DsxdH3j-jI1K-Rl5JV-kuHJaf64ES4GPUJZlT8
+id,ref,title,subtitle,author
+3301,google/gemma,Gemma,"Gemma is a family of lightweight, open models built from the research and technology that Google used to create the Gemini models.",Google
+3533,keras/gemma,Gemma,"Keras implementation of the Gemma model. This Keras 3 implementation will run on JAX, TensorFlow and PyTorch.",Keras
+76277,google/gemma-2,Gemma 2,"Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models.",Google
+222398,google/gemma-3,Gemma 3,"Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models.",Google
+624400,google/gemma-4,Gemma 4,"Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models.",Google
+78150,keras/gemma2,Gemma 2,"Keras implementation of the Gemma 2 model. This Keras 3 implementation will run on JAX, TensorFlow and PyTorch.",Keras
+
+===== other ntl-ts datasets =====
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+alexchilton/ntl-ts-mistral7b,ntl-ts-mistral7b,121587449,2026-10-20 19:05:22.743000,65,0,0.6875
+alexchilton/ntl-ts-llama31-8b,ntl-ts-llama31-8b,121598038,2026-10-20 16:08:03.613000,55,0,0.75
+alexchilton/ntl-ts-gemma2-9b,ntl-ts-gemma2-9b,118796129,2026-10-20 18:10:35.287000,78,0,0.75
+alexchilton/ntl-ts-olmo2-7b,ntl-ts-olmo2-7b,116271699,2026-10-20 17:07:47.570000,61,0,0.75
+alexchilton/ntl-ts-q3-8b,ntl-ts-q3-8b,112833626,2026-10-20 20:04:42.723000,43,0,0.6875
