@@ -1,0 +1,43 @@
+name: Dataset check only
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Write the report first
+        shell: bash
+        run: |
+          mkdir -p reports out
+          {
+            echo "===== janaiworkspace/ntl-deb-ours ====="
+            kaggle datasets files janaiworkspace/ntl-deb-ours --csv 2>&1 | head -10 || echo "NOT FOUND"
+            echo
+            echo "===== my datasets ====="
+            kaggle datasets list --user janaiworkspace --csv 2>&1 | head -12
+            echo
+            echo "===== probe kernel output tree ====="
+            kaggle kernels output janaiworkspace/ntl-probe-deb-ours -p out 2>&1 | tail -3 || true
+            find out -maxdepth 3 | head -20
+          } > reports/dscheck.txt
+          cat reports/dscheck.txt
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/dscheck.txt
+          git commit -m "report: dataset check" || echo nothing
+          git push
