@@ -1,0 +1,35 @@
+name: Dump the llm-gmc log
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Pull and dump
+        shell: bash
+        run: |
+          mkdir -p out reports
+          kaggle kernels output janaiworkspace/llm-gmc -p out 2>&1 | tail -2 || true
+          python3 benchmarks/dump_kernel_log.py "out/*.log" > reports/llmgmc_full.txt 2>&1 || true
+          wc -l reports/llmgmc_full.txt
+          grep -iE "pool source|passages|prompt-group|twin clusters|correction clusters" reports/llmgmc_full.txt | head -10
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/llmgmc_full.txt
+          git commit -m "report: full llm-gmc log" || echo nothing
+          git push
