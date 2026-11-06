@@ -1,0 +1,76 @@
+===== out/ntl-probe-deb-ours.log =====
+[{"stream_name":"stderr","time":9.275336144,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+CONFIG: {"max_len": 192, "bs": 64, "pool_cap_per_class": 6000, "val_frac": 0.15, "seed": 7, "C": 1.0, "max_iter": 400}
+official 2,699 rows, 18 labels
+  nlm_matched_clean.parquet                   24,443
+  nlm_pool_v2.parquet                         37,252
+  nlm_pool_v5.parquet                        119,899
+  pool_v4.parquet                             75,783
+pool after filter/dedup: 123,298
+pool used: 96,643, per class 3259-6000
+val 395 rows / 22 prompts | official-train 2,304 folded in
+feature rows: 98,947
+encoder from /kaggle/input/datasets/nishantdahal/ntl-handwriting-blend/deberta_v3_large/encoder | source meta keys: ['labels', 'max_len', 'pool', 'train_info']
+hidden 1024, max_len 192
+  train       0/98,947 (2s)
+  train  12,800/98,947 (216s)
+  train  25,600/98,947 (496s)
+  train  38,400/98,947 (834s)
+  train  51,200/98,947 (1273s)
+  train  64,000/98,947 (1810s)
+  train  76,800/98,947 (2415s)
+  train  89,600/98,947 (3028s)
+  val       0/395 (1s)
+features: train (98947, 1024) | val (395, 1024) | 3668s total
+/usr/local/lib/python3.13/dist-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/usr/local/lib/python3.13/dist-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/usr/local/lib/python3.13/dist-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+/usr/local/lib/python3.13/dist-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+/usr/local/lib/python3.13/dist-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+PROBE HOLDOUT BA 0.7900 on 395 rows / 22 prompts
+per-class recall min/median/max: 0.364/0.860/1.000
+frozen-encoder reference BA: unknown (published pool DeBERTa: 0.5763)
+folded-head agreement with the probe: 1.0000
+=== deb_ours (probe) ===
+{
+ "holdout_ba": 0.79,
+ "seconds": 3870
+}
+files: ['encoder', 'head.safetensors', 'meta.json']
+DROP-IN READY
+/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+[NbConvertApp] Writing 34313 bytes to __notebook__.ipynb
+[NbConvertApp] Converting notebook __notebook__.ipynb to html
+[NbConvertApp] Writing 346105 bytes to __results__.html
+]
