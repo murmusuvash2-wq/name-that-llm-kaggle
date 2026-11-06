@@ -2,7 +2,7 @@ name: Verify the gemma member
 on:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   s:
     runs-on: ubuntu-latest
@@ -10,28 +10,34 @@ jobs:
     env:
       KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: |
           python -m pip install --upgrade pip
           python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
-      - name: The gemma dataset
+      - name: Check and write the report
         shell: bash
         run: |
-          echo "===== alexchilton/ntl-ts-gemma2-9b ====="
-          kaggle datasets files alexchilton/ntl-ts-gemma2-9b --csv 2>&1 | head -14 || echo "not found"
-          echo "===== its card ====="
-          kaggle datasets metadata alexchilton/ntl-ts-gemma2-9b 2>&1 | head -20 || true
-      - name: Gemma base on kaggle models
+          mkdir -p reports
+          {
+            echo "===== alexchilton/ntl-ts-gemma2-9b files ====="
+            kaggle datasets files alexchilton/ntl-ts-gemma2-9b --csv 2>&1 | head -16 || echo "NOT FOUND"
+            echo
+            echo "===== gemma on kaggle models ====="
+            kaggle models list -s "gemma-2" --csv 2>&1 | head -8
+            kaggle models list -s "gemma" --csv 2>&1 | head -8
+            echo
+            echo "===== other ntl-ts datasets ====="
+            kaggle datasets list -s "ntl-ts" --csv 2>&1 | head -10
+          } > reports/gemma_check.txt
+          cat reports/gemma_check.txt
+      - name: Commit
         shell: bash
         run: |
-          kaggle models list -s "gemma-2" --csv 2>&1 | head -8
-          kaggle models list -s "gemma2" --csv 2>&1 | head -6
-      - name: Any other new-family member
-        shell: bash
-        run: |
-          for q in "ntl-ts" "ntl two stage"; do
-            echo "===== $q ====="
-            kaggle datasets list -s "$q" --csv 2>&1 | head -8
-          done
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/gemma_check.txt
+          git commit -m "report: gemma member check" || echo nothing
+          git push
