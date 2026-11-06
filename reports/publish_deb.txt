@@ -1,57 +1,21 @@
---- pulling kernel output ---
-Downloading Z_tr.npy to out
-  0%|          | 0.00/387M [00:00<?, ?B/s]  1%|▏         | 5.00M/387M [00:00<00:07, 52.1MB/s]  3%|▎         | 13.0M/387M [00:00<00:05, 67.0MB/s]  6%|▌         | 22.0M/387M [00:00<00:05, 75.7MB/s]  8%|▊         | 30.0M/387M [00:00<00:04, 77.4MB/s] 10%|█         | 39.0M/387M [00:00<00:04, 81.1MB/s] 12%|█▏        | 48.0M/387M [00:00<00:04, 82.4MB/s] 14%|█▍        | 56.0M/387M [00:00<00:04, 82.8MB/s] 17%|█▋        | 65.0M/387M [00:00<00:03, 84.5MB/s] 19%|█▉        | 74.0M/387M [00:00<00:03, 84.7MB/s] 21%|██▏       | 83.0M/387M [00:01<00:03, 83.9MB/s] 24%|██▍       | 92.0M/387M [00:01<00:03, 81.5MB/s] 26%|██▌       | 101M/387M [00:01<00:03, 84.1MB/s]  28%|██▊       | 110M/387M [00:01<00:03, 84.0MB/s] 31%|███       | 119M/387M [00:01<00:03, 82.1MB/s] 33%|███▎      | 128M/387M [00:01<00:03, 83.5MB/s] 35%|███▌      | 137M/387M [00:01<00:03, 85.9MB/s] 38%|███▊      | 146M/387M [00:01<00:02, 86.0MB/s] 40%|████      | 155M/387M [00:01<00:02, 85.3MB/s] 42%|████▏     | 164M/387M [00:02<00:02, 84.2MB/s] 45%|████▍     | 173M/387M [00:02<00:02, 85.6MB/s] 47%|████▋     | 182M/387M [00:02<00:02, 83.6MB/s] 49%|████▉     | 191M/387M [00:02<00:02, 83.8MB/s] 52%|█████▏    | 200M/387M [00:02<00:02, 85.1MB/s] 54%|█████▍    | 209M/387M [00:02<00:02, 86.7MB/s] 57%|█████▋    | 219M/387M [00:02<00:01, 90.6MB/s] 60%|█████▉    | 230M/387M [00:02<00:01, 97.0MB/s] 62%|██████▏   | 240M/387M [00:03<00:01, 83.1MB/s] 64%|██████▍   | 249M/387M [00:03<00:01, 76.8MB/s] 66%|██████▋   | 257M/387M [00:03<00:01, 76.1MB/s] 69%|██████▊   | 265M/387M [00:03<00:01, 73.5MB/s] 71%|███████   | 273M/387M [00:03<00:01, 68.4MB/s] 72%|███████▏  | 280M/387M [00:03<00:01, 65.4MB/s] 75%|███████▌  | 291M/387M [00:03<00:01, 77.4MB/s] 77%|███████▋  | 299M/387M [00:03<00:01, 77.9MB/s] 80%|███████▉  | 308M/387M [00:03<00:01, 81.1MB/s] 83%|████████▎ | 319M/387M [00:04<00:00, 88.1MB/s] 86%|████████▌ | 331M/387M [00:04<00:00, 97.3MB/s] 88%|████████▊ | 342M/387M [00:04<00:00, 102MB/s]  92%|█████████▏| 354M/387M [00:04<00:00, 108MB/s] 95%|█████████▍| 366M/387M [00:04<00:00, 110MB/s] 98%|█████████▊| 377M/387M [00:04<00:00, 110MB/s]100%|██████████| 387M/387M [00:04<00:00, 86.3MB/s]
-
-Output file downloaded to out/Z_tr.npy
-Downloading Z_va.npy to out
-  0%|          | 0.00/1.54M [00:00<?, ?B/s]100%|██████████| 1.54M/1.54M [00:00<00:00, 23.2MB/s]
-
-Output file downloaded to out/Z_va.npy
-Downloading config.json to out/deberta_ours/encoder
-  0%|          | 0.00/945 [00:00<?, ?B/s]100%|██████████| 945/945 [00:00<00:00, 5.06MB/s]
-
-Output file downloaded to out/deberta_ours/encoder/config.json
-Downloading model.safetensors to out/deberta_ours/encoder
-  0%|          | 0.00/828M [00:00<?, ?B/s]  1%|          | 7.00M/828M [00:00<00:14, 58.2MB/s]  2%|▏         | 17.0M/828M [00:00<00:10, 79.8MB/s]  3%|▎         | 27.0M/828M [00:00<00:09, 88.8MB/s]  4%|▍         | 37.0M/828M [00:00<00:08, 93.9MB/s]  6%|▌         | 47.0M/828M [00:00<00:08, 94.8MB/s]  7%|▋         | 57.0M/828M [00:00<00:08, 96.6MB/s]  8%|▊         | 67.0M/828M [00:00<00:08, 97.7MB/s]  9%|▉         | 77.0M/828M [00:00<00:08, 98.2MB/s] 11%|█         | 87.0M/828M [00:00<00:07, 99.8MB/s] 12%|█▏        | 97.0M/828M [00:01<00:07, 100MB/s]  13%|█▎        | 107M/828M [00:01<00:07, 101MB/s]  14%|█▍        | 117M/828M [00:01<00:07, 102MB/s] 15%|█▌        | 127M/828M [00:01<00:07, 99.5MB/s] 17%|█▋        | 137M/828M [00:01<00:07, 99.7MB/s] 18%|█▊        | 147M/828M [00:01<00:07, 100MB/s]  19%|█▉        | 157M/828M [00:01<00:07, 99.8MB/s] 20%|██        | 167M/828M [00:01<00:06, 101MB/s]  21%|██▏       | 177M/828M [00:01<00:06, 100MB/s] 23%|██▎       | 187M/828M [00:02<00:06, 99.7MB/s] 24%|██▍       | 197M/828M [00:02<00:06, 99.0MB/s] 25%|██▌       | 207M/828M [00:02<00:06, 100MB/s]  26%|██▌       | 217M/828M [00:02<00:06, 98.7MB/s] 27%|██▋       | 227M/828M [00:02<00:06, 98.3MB/s] 29%|██▊       | 237M/828M [00:02<00:06, 98.8MB/s] 30%|██▉       | 247M/828M [00:02<00:06, 100MB/s]  31%|███       | 257M/828M [00:02<00:06, 98.4MB/s] 32%|███▏      | 267M/828M [00:02<00:05, 98.1MB/s] 33%|███▎      | 277M/828M [00:02<00:05, 99.9MB/s] 35%|███▍      | 287M/828M [00:03<00:05, 99.5MB/s] 36%|███▌      | 297M/828M [00:03<00:05, 100MB/s]  37%|███▋      | 307M/828M [00:03<00:05, 99.6MB/s] 38%|███▊      | 317M/828M [00:03<00:05, 97.6MB/s] 39%|███▉      | 327M/828M [00:03<00:05, 97.8MB/s] 41%|████      | 337M/828M [00:03<00:05, 97.9MB/s] 42%|████▏     | 347M/828M [00:03<00:05, 99.5MB/s] 43%|████▎     | 357M/828M [00:03<00:04, 99.7MB/s] 44%|████▍     | 367M/828M [00:03<00:04, 99.7MB/s] 46%|████▌     | 377M/828M [00:04<00:04, 100MB/s]  47%|████▋     | 387M/828M [00:04<00:04, 99.4MB/s] 48%|████▊     | 397M/828M [00:04<00:04, 101MB/s]  49%|████▉     | 407M/828M [00:04<00:04, 101MB/s] 50%|█████     | 417M/828M [00:04<00:04, 100MB/s] 52%|█████▏    | 427M/828M [00:04<00:04, 99.4MB/s] 53%|█████▎    | 437M/828M [00:04<00:04, 99.7MB/s] 54%|█████▍    | 447M/828M [00:04<00:03, 100MB/s]  55%|█████▌    | 457M/828M [00:04<00:03, 101MB/s] 56%|█████▋    | 467M/828M [00:04<00:03, 101MB/s] 58%|█████▊    | 477M/828M [00:05<00:03, 99.0MB/s] 59%|█████▉    | 487M/828M [00:05<00:03, 99.0MB/s] 60%|██████    | 497M/828M [00:05<00:03, 98.2MB/s] 61%|██████    | 507M/828M [00:05<00:03, 99.0MB/s] 62%|██████▏   | 517M/828M [00:05<00:03, 98.1MB/s] 64%|██████▎   | 527M/828M [00:05<00:03, 97.9MB/s] 65%|██████▍   | 537M/828M [00:05<00:03, 93.9MB/s] 66%|██████▌   | 547M/828M [00:05<00:03, 95.5MB/s] 67%|██████▋   | 557M/828M [00:05<00:02, 97.9MB/s] 68%|██████▊   | 567M/828M [00:06<00:02, 97.5MB/s] 70%|██████▉   | 577M/828M [00:06<00:02, 96.0MB/s] 71%|███████   | 587M/828M [00:06<00:02, 97.1MB/s] 72%|███████▏  | 597M/828M [00:06<00:02, 99.0MB/s] 73%|███████▎  | 607M/828M [00:06<00:02, 97.6MB/s] 75%|███████▍  | 617M/828M [00:06<00:02, 98.7MB/s] 76%|███████▌  | 627M/828M [00:06<00:02, 97.8MB/s] 77%|███████▋  | 637M/828M [00:06<00:02, 98.4MB/s] 78%|███████▊  | 647M/828M [00:06<00:01, 99.3MB/s] 79%|███████▉  | 657M/828M [00:07<00:01, 98.3MB/s] 81%|████████  | 667M/828M [00:07<00:01, 99.8MB/s] 82%|████████▏ | 677M/828M [00:07<00:01, 99.9MB/s] 83%|████████▎ | 687M/828M [00:07<00:01, 101MB/s]  84%|████████▍ | 697M/828M [00:07<00:01, 101MB/s] 85%|████████▌ | 707M/828M [00:07<00:01, 99.7MB/s] 87%|████████▋ | 717M/828M [00:07<00:01, 58.3MB/s] 88%|████████▊ | 727M/828M [00:07<00:01, 66.6MB/s] 89%|████████▉ | 737M/828M [00:08<00:01, 74.5MB/s] 90%|█████████ | 746M/828M [00:08<00:01, 78.7MB/s] 91%|█████████▏| 756M/828M [00:08<00:00, 83.3MB/s] 93%|█████████▎| 766M/828M [00:08<00:00, 88.1MB/s] 94%|█████████▎| 776M/828M [00:08<00:00, 90.5MB/s] 95%|█████████▍| 786M/828M [00:08<00:00, 92.3MB/s] 96%|█████████▌| 796M/828M [00:08<00:00, 93.4MB/s] 97%|█████████▋| 806M/828M [00:08<00:00, 94.9MB/s] 99%|█████████▊| 816M/828M [00:08<00:00, 96.1MB/s]100%|█████████▉| 826M/828M [00:09<00:00, 97.3MB/s]100%|██████████| 828M/828M [00:09<00:00, 95.7MB/s]
-
-Output file downloaded to out/deberta_ours/encoder/model.safetensors
-Downloading tokenizer.json to out/deberta_ours/encoder
-  0%|          | 0.00/7.95M [00:00<?, ?B/s]100%|██████████| 7.95M/7.95M [00:00<00:00, 88.7MB/s]
-
-Output file downloaded to out/deberta_ours/encoder/tokenizer.json
-Downloading tokenizer_config.json to out/deberta_ours/encoder
-  0%|          | 0.00/645 [00:00<?, ?B/s]100%|██████████| 645/645 [00:00<00:00, 3.12MB/s]
-
-Output file downloaded to out/deberta_ours/encoder/tokenizer_config.json
-Downloading head.safetensors to out/deberta_ours
-  0%|          | 0.00/72.2k [00:00<?, ?B/s]100%|██████████| 72.2k/72.2k [00:00<00:00, 2.69MB/s]
-
-Output file downloaded to out/deberta_ours/head.safetensors
-Downloading meta.json to out/deberta_ours
-  0%|          | 0.00/1.02k [00:00<?, ?B/s]100%|██████████| 1.02k/1.02k [00:00<00:00, 4.32MB/s]
-
-Output file downloaded to out/deberta_ours/meta.json
-Kernel log downloaded to out/ntl-probe-deb-ours.log 
---- out tree ---
-out
-out/Z_tr.npy
-out/deberta_ours
-out/deberta_ours/encoder
-out/deberta_ours/encoder/config.json
-out/deberta_ours/encoder/tokenizer_config.json
-out/deberta_ours/encoder/model.safetensors
-out/deberta_ours/encoder/tokenizer.json
-out/deberta_ours/head.safetensors
-out/deberta_ours/meta.json
-out/Z_va.npy
-out/ntl-probe-deb-ours.log
---- publishing ---
-folder out/deberta_ours contains: ['encoder', 'head.safetensors', 'meta.json']
-checkpoint: holdout_ba 0.79, 18 labels
-Dataset creation error: The requested slug "ntl-deb-ours" is already in use by a dataset. Please choose another slug.
-
+total 92
+drwxr-xr-x 3 runner runner  4096 Nov  6 17:42 .
+drwxr-xr-x 3 runner runner  4096 Nov  6 17:42 ..
+drwxr-xr-x 2 runner runner  4096 Nov  6 17:42 encoder
+-rw-r--r-- 1 runner runner 73936 Nov  6 04:02 head.safetensors
+-rw-r--r-- 1 runner runner  1040 Nov  6 04:02 meta.json
+836M	out/deberta_ours/encoder
+wrote dataset-metadata.json
+--- version (create already exists) ---
+Skipping folder: encoder; use '--dir-mode' to upload folders
+Starting upload for file head.safetensors
+  0%|          | 0.00/72.2k [00:00<?, ?B/s]100%|██████████| 72.2k/72.2k [00:00<00:00, 112kB/s]
+Upload successful: head.safetensors (72KB)
+Starting upload for file meta.json
+  0%|          | 0.00/1.02k [00:00<?, ?B/s]100%|██████████| 1.02k/1.02k [00:00<00:00, 1.70kB/s]
+Upload successful: meta.json (1KB)
+Dataset version is being created. Please check progress at https://www.kaggle.com/datasets/janaiworkspace/ntl-deb-ours
+--- verify ---
 name,size,creationDate
 head.safetensors,73936,2026-11-06 17:39:30.266000
 meta.json,1040,2026-11-06 17:39:30.223000
-
-VERIFIED: janaiworkspace/ntl-deb-ours exists and lists head.safetensors
