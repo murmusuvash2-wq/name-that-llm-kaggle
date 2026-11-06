@@ -1,0 +1,37 @@
+===== janaiworkspace/ntl-deb-ours =====
+403 Client Error: Forbidden for url: https://api.kaggle.com/v1/datasets.DatasetApiService/ListDatasetFiles
+
+You don't have access to this resource.
+If this is a competition, you may need to accept its rules first at
+  https://www.kaggle.com/competitions/<competition>/rules
+NOT FOUND
+
+===== my datasets =====
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+janaiworkspace/llm-gmc-compedition-1,LLM  GMC compedition  1,8046,2026-10-27 03:01:20.760000,4,0,0.125
+janaiworkspace/approved-parallel,Santali AI Licensed Parallel Corpus,2659101,2026-10-26 20:02:00.730000,0,0,0.23529412
+janaiworkspace/indictrans2-en-indic-200m,IndicTrans2 En-Indic 200M,1329918616,2026-10-26 20:04:58.900000,0,0,0.125
+janaiworkspace/ol-chiki-dataset,Ol-chiki-dataset,406090,2025-09-03 16:04:33.440000,1,0,0.25
+janaiworkspace/janai-rawdata-sample,janai_olchiki_pdf.zip,2391124,2025-09-02 16:05:50.033000,0,0,0.0625
+janaiworkspace/noto-sans-ol-chiki,Noto_Sans_Ol_Chiki,149925,2025-09-02 12:10:48.050000,0,0,0.125
+janaiworkspace/janai-ocr-dataset-v1,JanAI OCR Dataset V1,7609971,2025-09-09 07:01:58.820000,1,0,0.25
+janaiworkspace/indictrans2-320m,IndicTrans2 320M Indic Indic,1556949518,2026-09-21 06:19:54.270000,0,0,0.125
+janaiworkspace/ntl-cpu-output,NTL cpu output,179682,2026-10-30 17:24:26.793000,0,0,0.25
+janaiworkspace/ntl-llama-prefix,NTL llama prefix,569,2026-11-03 04:43:28.720000,0,0,0.25
+
+===== probe kernel output tree =====
+
+Output file downloaded to out/deberta_ours/meta.json
+Kernel log downloaded to out/ntl-probe-deb-ours.log 
+out
+out/Z_tr.npy
+out/deberta_ours
+out/deberta_ours/encoder
+out/deberta_ours/encoder/config.json
+out/deberta_ours/encoder/tokenizer_config.json
+out/deberta_ours/encoder/model.safetensors
+out/deberta_ours/encoder/tokenizer.json
+out/deberta_ours/head.safetensors
+out/deberta_ours/meta.json
+out/Z_va.npy
+out/ntl-probe-deb-ours.log
