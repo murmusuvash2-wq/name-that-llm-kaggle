@@ -1,0 +1,32 @@
+===== gtuli12/ntl-own-pool =====
+name,size,creationDate
+build_report.csv,879,2026-11-04 18:12:55.996000
+build_report_v2.csv,2125,2026-11-04 18:12:56.131000
+pool_own_v1.parquet,22000961,2026-11-04 18:12:56.743000
+pool_own_v2.parquet,89145308,2026-11-04 18:12:59.585000
+pool_own_v3.parquet,123117794,2026-11-04 18:13:01.120000
+registry.json,37624,2026-11-04 18:12:55.914000
+
+===== crtproduction/name-that-llm-open-pool =====
+Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7j8sWbFzSqu3T1jqd87As1uBGzZXWSmYBOeHgf62kldbr3klq0UW9zDMcIEEwYWU0tVjmW5sYd-ko9OfBLos2bB8Jck3Y-zWdhEJOsMF3VXtbWzhCWmdfhsR12kjJnqO5xK
+name,size,creationDate
+dataq4_paired.csv,1885,2026-11-05 05:46:21.945000
+dataq4_runs.csv,911,2026-11-05 05:46:21.942000
+dataq_results.csv,1514,2026-11-05 05:46:21.937000
+fig1_clean_vs_raw.png,82858,2026-11-05 05:46:21.685000
+fig2_label_gain.png,83155,2026-11-05 05:46:21.756000
+fig3_style_gap.png,89960,2026-11-05 05:46:21.776000
+fig4_round2.png,82347,2026-11-05 05:46:21.686000
+fig5_v11_overview.png,494753,2026-11-05 05:46:21.684000
+gemini37_unverified.parquet,5478635,2026-11-05 05:46:22.452000
+ntl_open_pool.parquet,105708387,2026-11-05 05:46:26.412000
+
+===== illiadolenko/ntl-merged-corpus-v2 =====
+name,size,creationDate
+merged_corpus.csv,212596395,2026-10-24 15:16:46.806000
+
+===== lucasboesen/ntl-free-proxy-generations =====
+name,size,creationDate
+README.md,4720,2026-11-01 14:39:54.921000
+gen_passages.csv,7666492,2026-11-01 14:39:55.686000
+
