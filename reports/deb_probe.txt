@@ -1,0 +1,14 @@
+kernel: janaiworkspace/ntl-probe-deb-ours
+pulled: Fri Nov  6 12:48:33 UTC 2026
+--- files ---
+total 397400
+drwxr-xr-x  3 runner runner      4096 Nov  6 12:48 .
+drwxr-xr-x 13 runner runner      4096 Nov  6 12:48 ..
+-rw-r--r--  1 runner runner 405287040 Nov  6 04:02 Z_tr.npy
+-rw-r--r--  1 runner runner   1618048 Nov  6 04:02 Z_va.npy
+drwxr-xr-x  3 runner runner      4096 Nov  6 12:48 deberta_ours
+-rw-r--r--  1 runner runner      9419 Nov  6 12:48 ntl-probe-deb-ours.log
+--- validation_results.json ---
+(none)
+--- log: measurements ---
+(no log)
