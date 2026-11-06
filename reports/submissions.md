@@ -13,7 +13,7 @@ ref,fileName,date,description,status,publicScore,privateScore
 57768694,submission.parquet,2026-10-29 11:02:47.753000,"v57: + q14v5 (w3.0), OOF crash fixed, CONFIG centralised, kernel v76",SubmissionStatus.COMPLETE,0.627,
 
 # leaderboard top 12
-Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7hb0J5AnCnmgAxEdlnAI_9Mvp3gQxwrwsxUuHoTWb40ILIwf01wS68537CKmpj6nKE
+Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7iSmcRoO7haBKRSEAl_ukwtgbC_1XYD67R_9aU5EQq3K1nR9wzVjR0N1wjtadt5f-E
   teamId  teamName              submissionDate              score  
 --------  --------------------  --------------------------  -----  
 17109889  Le Viet               2026-11-05 12:55:56.923000  0.747  
@@ -33,5 +33,5 @@ Next Page Token = CfDJ8FwkkMkekkBCtzoFDl4Vj7hb0J5AnCnmgAxEdlnAI_9Mvp3gQxwrwsxUuH
 # quota
 resource  used    remaining  total   refreshAt                  
 --------  ------  ---------  ------  -------------------------  
-GPU       16.64h  13.36h     30.00h  2026-11-07T00:00:00+00:00  
+GPU       16.71h  13.29h     30.00h  2026-11-07T00:00:00+00:00  
 TPU       0.04h   19.96h     20.00h  2026-11-07T00:00:00+00:00  
