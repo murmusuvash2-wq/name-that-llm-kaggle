@@ -1,0 +1,37 @@
+name: Verify the gemma member
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: The gemma dataset
+        shell: bash
+        run: |
+          echo "===== alexchilton/ntl-ts-gemma2-9b ====="
+          kaggle datasets files alexchilton/ntl-ts-gemma2-9b --csv 2>&1 | head -14 || echo "not found"
+          echo "===== its card ====="
+          kaggle datasets metadata alexchilton/ntl-ts-gemma2-9b 2>&1 | head -20 || true
+      - name: Gemma base on kaggle models
+        shell: bash
+        run: |
+          kaggle models list -s "gemma-2" --csv 2>&1 | head -8
+          kaggle models list -s "gemma2" --csv 2>&1 | head -6
+      - name: Any other new-family member
+        shell: bash
+        run: |
+          for q in "ntl-ts" "ntl two stage"; do
+            echo "===== $q ====="
+            kaggle datasets list -s "$q" --csv 2>&1 | head -8
+          done
