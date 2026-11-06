@@ -1,0 +1,63 @@
+name: Train our DeBERTa probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      REF: janaiworkspace/ntl-probe-deb-ours
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CLI (six is imported but undeclared)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Push and wait
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/ntl-probe-deb-ours.ipynb kk/ntl-probe-deb-ours.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "NTL probe deb ours", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-probe-deb-ours",
+               "code_file": "ntl-probe-deb-ours.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": True, "enable_internet": False,
+               "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
+                                   "illiadolenko/ntl-merged-corpus-v2",
+                                   "trnhip/ntl-api-gen",
+                                   "harshitkmr/ntl-google-gen-v1",
+                                   "dhruvtibarewal/nlm-matched-clean"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [], "model_sources": []}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk 2>&1 | tail -3
+          for i in $(seq 1 120); do
+            out="$(kaggle kernels status "$REF" 2>&1 || true)"
+            st="$(echo "$out" | grep -oE 'KernelWorkerStatus\.[A-Z]+' | head -1)"
+            echo "check $i: $st"
+            case "$st" in *COMPLETE*|*ERROR*|*CANCEL*) break ;; esac
+            sleep 45
+          done
+      - name: Publish the checkpoint
+        shell: bash
+        run: |
+          rm -rf out && mkdir -p out
+          kaggle kernels output "$REF" -p out 2>&1 | tail -3 || true
+          ls -la out | head -12
+          cat out/deberta_ours/meta.json 2>/dev/null || echo "(no meta)"
+          if [ -d out/deberta_ours ]; then
+            python - <<'PY'
+          import json, os
+          json.dump({"title": "NTL deb ours", "id": f"{os.environ['KAGGLE_USERNAME']}/ntl-deb-ours"},
+                    open("out/deberta_ours/dataset-metadata.json", "w"), indent=2)
+          PY
+            kaggle datasets create -p out/deberta_ours 2>&1 | tail -3 || kaggle datasets version -p out/deberta_ours -m "probe" 2>&1 | tail -3
+          fi
