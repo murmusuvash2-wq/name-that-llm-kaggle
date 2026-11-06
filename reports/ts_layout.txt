@@ -1,0 +1,36 @@
+===== out/ntl-inspect-ts.log =====
+[{"stream_name":"stderr","time":9.125007717,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+===== ntl-ts-q3-8b: ['/kaggle/input/datasets/alexchilton/ntl-ts-q3-8b/meta.json']
+  meta.json: {'cfg': {'model_dir': 'Qwen/Qwen3-8B-Base', 'keep': 24, 'layers': [2, 4, 6, 8, 12, 16, 20, 24], 'max_len': 447, 'r': 16, 'alpha': 32, 'ldrop': 0.05, 'head_drop': 0.1, 'wd': 0.01, 'warmup': 0.1, 'triplets_per_step': 6, 'seed': 42, 'stage1_epochs': 1.0, 'stage2_epochs': 2.0}, 'labels': ['gpt-5.5', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'gemini-3.1-pro-preview', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash', 'claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5', 'claude-sonnet-5', 'claude-fable-5', 'qwen3.8-max', 'glm-5.3', 'glm-5.3-flash', 'kimi-k3'], 'base': {'model_type': 'qwen3', 'hidden_size': 4096, 'num_hidden_layers': 36}, 'recipe': 'alexchilton name-that-llm colab/two_stage_lora.py (two-stage recipe of nishantdahal/two-stage-lora-on-the-public-pool)'}
+    adapter/README.md                                     5,160
+    adapter/adapter_config.json                           1,271
+    adapter/adapter_model.safetensors               116,434,760
+    anchor_features.npz                                 393,486
+    heads.safetensors                                 4,982,480
+    meta.json                                               916
+  heads keys in heads.safetensors (20): ['centered.bias', 'centered.weight', 'norms.0.bias', 'norms.0.weight', 'norms.1.bias', 'norms.1.weight', 'norms.2.bias', 'norms.2.weight', 'norms.3.bias', 'norms.3.weight', 'norms.4.bias', 'norms.4.weight']
+===== ntl-ts-gemma2-9b: ['/kaggle/input/datasets/alexchilton/ntl-ts-gemma2-9b/meta.json']
+  meta.json: {'cfg': {'model_dir': 'google/gemma-2-9b', 'keep': 24, 'layers': [2, 4, 6, 8, 12, 16, 20, 24], 'max_len': 447, 'r': 16, 'alpha': 32, 'ldrop': 0.05, 'head_drop': 0.1, 'wd': 0.01, 'warmup': 0.1, 'triplets_per_step': 6, 'seed': 42, 'stage1_epochs': 1.0, 'stage2_epochs': 2.0}, 'labels': ['gpt-5.5', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'gemini-3.1-pro-preview', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash', 'claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5', 'claude-sonnet-5', 'claude-fable-5', 'qwen3.8-max', 'glm-5.3', 'glm-5.3-flash', 'kimi-k3'], 'base': {'model_type': 'gemma2', 'hidden_size': 3584, 'num_hidden_layers': 42}, 'recipe': 'alexchilton name-that-llm colab/two_stage_lora.py (two-stage recipe of nishantdahal/two-stage-lora-on-the-public-pool)'}
+    adapter/README.md                                     5,158
+    adapter/adapter_config.json                           1,273
+    adapter/adapter_model.safetensors               123,512,688
+    anchor_features.npz                                 344,334
+    heads.safetensors                                 4,359,888
+    meta.json                                               916
+  heads keys in heads.safetensors (20): ['centered.bias', 'centered.weight', 'norms.0.bias', 'norms.0.weight', 'norms.1.bias', 'norms.1.weight', 'norms.2.bias', 'norms.2.weight', 'norms.3.bias', 'norms.3.weight', 'norms.4.bias', 'norms.4.weight']
+/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+[NbConvertApp] Writing 6434 bytes to __notebook__.ipynb
+[NbConvertApp] Converting notebook __notebook__.ipynb to html
+[NbConvertApp] Writing 283498 bytes to __results__.html
+]
