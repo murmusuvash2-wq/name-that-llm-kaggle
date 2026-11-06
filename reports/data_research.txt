@@ -1,0 +1,96 @@
+########## search: name-that-llm
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+mercurydust/ntllm-chatgpt-a-b,NTLLM-ChatGPT-A_B,32068557,2026-11-06 06:36:36.133000,1459,2,0.5294118
+markrowset/arc-ttt-coverage-code,Out of Reach: ARC-AGI-2 TTT coverage code,837248,2026-11-06 03:28:02.523000,96,0,0.5625
+joelcyriscroy/impossible-twins-replies,Impossible Twins: puzzles and model replies,2257861,2026-11-06 02:00:25.427000,22,0,0.5625
+joannaciesielski/ntllm-external-v1,NTLLM External v1,59376493,2026-11-05 23:10:01.833000,103,0,0.9411765
+zaherelsiddik/planb-deep-value,Plan B Contrarian Deep-Value US Equities.,142297,2026-11-05 21:15:24.523000,15,0,0.64705884
+takasuh168/name-that-llm-q27-twin-fold-heads,Name That LLM Q27 Twin Fold-Specific Heads,39838671,2026-11-05 18:42:53.323000,9,0,0.25
+antriksht/llm-api-pricing,LLM API Pricing Timeline,25812,2026-11-05 17:43:39.570000,111,0,0.64705884
+prvsiyan/prvsiyans-extended-name-that-llm-dataset,prvsiyan's Extended Name That LLM Dataset,22936526,2026-11-05 16:53:03.487000,8095,58,0.9411765
+takasuh168/name-that-llm-q27-twin-head,Name That LLM Q27 Centered Twin Head,39130845,2026-11-05 12:06:05.117000,10,0,0.25
+alanone/born-after-the-cutoff,Born After the Cutoff: agentloc v0.1,295787049,2026-11-05 07:30:27.533000,33,0,0.6875
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 213k Clean Passages,98483289,2026-11-05 05:46:17.910000,10245,68,0.9411765
+gtuli12/ntl-own-pool,NTL own pool,201916834,2026-11-04 18:12:54.010000,1065,0,0.47058824
+arshianrax/name-that-llm-dataset,name_that_llm_dataset,874800,2026-11-04 17:23:11.080000,47,0,0.23529412
+
+########## search: ntl pool
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 213k Clean Passages,98483289,2026-11-05 05:46:17.910000,10245,68,0.9411765
+gtuli12/ntl-own-pool,NTL own pool,201916834,2026-11-04 18:12:54.010000,1065,0,0.47058824
+melvindenishl/ntl-open-pool-v13-snapshot,NTL Open Pool v13 Snapshot,82779554,2026-11-04 13:58:19.293000,108,1,0.64705884
+zbigniewkirchner/ntl-extra-gpt-passages,Name That LLM: Extra GPT + Gemini Passages,844739,2026-11-03 16:20:42.537000,839,5,0.9411765
+lightningv08/ntl-olmo2-native24-final-inference-assets,Name That LLM Artifacts,86684528719,2026-11-03 15:46:53.060000,25268,5,0.5625
+hongjianhe/ntl-v16-public-input-snapshot,Name That LLM V16 Public Input Snapshot,84213784,2026-11-03 14:14:04.910000,81,0,0.4117647
+zeminglii/ntl-own-exact-route-generations,NTL own exact-route generations,710549,2026-11-03 00:16:58.350000,464,0,0.64705884
+riccapucho/gaggle-ntl-superset-v1,Gaggle NTL superset,105205670,2026-11-02 18:55:37.807000,716,1,0.47058824
+yukailiu/ntl-open-pool-svc4-200k,NTL Open Pool 200k 4-View LinearSVC Readout,110911445,2026-11-02 10:40:06.633000,102,0,0.25
+harshitkmr/ntl-pool-s3,ntl pool s3,29458459,2026-11-02 04:04:09.340000,22,0,0.29411766
+utkarshkviim/ntl-lora-v3-qwen3-artifacts,Name That LLM: Qwen3-8B Two-Stage LoRA + OOF,226009924,2026-11-01 14:15:52.217000,315,0,0.8125
+elliotthankinson/ntl-exact-gens-v3,NTL exact-identity gens v3,14315163,2026-10-30 18:42:06.870000,1833,1,0.5882353
+samarth1006/nthl-pool-v10,Name That LLM Training Passages v10,22809305,2026-10-29 21:21:34.170000,273,0,0.64705884
+
+########## search: ntl generations
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 213k Clean Passages,98483289,2026-11-05 05:46:17.910000,10245,68,0.9411765
+gtuli12/ntl-own-pool,NTL own pool,201916834,2026-11-04 18:12:54.010000,1065,0,0.47058824
+abdullah1afify/ntl-generations,Name That LLM: extra GPT and Gemini generations,4830394,2026-11-04 00:46:07.903000,4327,1,0.3529412
+hongjianhe/ntl-v16-public-input-snapshot,Name That LLM V16 Public Input Snapshot,84213784,2026-11-03 14:14:04.910000,81,0,0.4117647
+zeminglii/ntl-own-exact-route-generations,NTL own exact-route generations,710549,2026-11-03 00:16:58.350000,464,0,0.64705884
+lucasboesen/ntl-free-proxy-generations,NTL free-proxy GPT and Gemini generations,2684752,2026-11-01 14:39:54,3734,9,0.64705884
+arnabkarmakar/ntl-pinned-060,ntl-pinned-060,4736270,2026-10-30 00:44:33.750000,101,0,0.47058824
+samarth1006/nthl-pool-v10,Name That LLM Training Passages v10,22809305,2026-10-29 21:21:34.170000,273,0,0.64705884
+mathleteutd/ntl-12-model-proxy-passages,NTL 12-model passages (free Kaggle proxy),941677,2026-10-28 13:14:43.730000,503,1,0.9411765
+davidpiln/ntl-vertex-gemini-gen,NTL Vertex Gemini 3.7 / 3.8 passages,2163869,2026-10-28 12:32:20.903000,752,0,0.47058824
+jadkutbi/ntl-own-proxy-generations,NTL free-proxy GPT and Gemini passages,2271440,2026-10-27 03:06:00.217000,1235,2,0.3529412
+prvsiyan/ntl-public-in-style-pool-v1,NTL public in-style pool v1,0,2026-10-26 20:59:56.097000,1058,7,1
+abhinavsaipodugu/ntl-proxy-gpt-gemini-passages,NTL proxy GPT/Gemini passages (abhinavsaipodugu),0,2026-10-26 11:22:16.730000,1153,2,0.5294118
+
+########## search: ntl proxy
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+adurey/ntl-proxy-gen-20261031,NTL proxy gen 20261031 (adurey),3988777,2026-11-06 02:38:34.143000,506,1,0.23529412
+lawalemmanuel/cattle-transport-data-across-nigeria,Cattle Transport data across Nigeria,251645499,2026-11-05 18:03:46.177000,5,0,0.64705884
+prvsiyan/prvsiyans-extended-name-that-llm-dataset,prvsiyan's Extended Name That LLM Dataset,22936526,2026-11-05 16:53:03.487000,8095,58,0.9411765
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 213k Clean Passages,98483289,2026-11-05 05:46:17.910000,10245,68,0.9411765
+gtuli12/ntl-own-pool,NTL own pool,201916834,2026-11-04 18:12:54.010000,1065,0,0.47058824
+parkjinsu1/ntl-kb-proxy-panels,NTL Kaggle Benchmarks proxy panels,409358,2026-11-04 15:20:55.603000,211,1,0.23529412
+zbigniewkirchner/ntl-extra-gpt-passages,Name That LLM: Extra GPT + Gemini Passages,844739,2026-11-03 16:20:42.537000,839,5,0.9411765
+zeminglii/ntl-own-exact-route-generations,NTL own exact-route generations,710549,2026-11-03 00:16:58.350000,464,0,0.64705884
+lucasboesen/ntl-free-proxy-generations,NTL free-proxy GPT and Gemini generations,2684752,2026-11-01 14:39:54,3734,9,0.64705884
+elliotthankinson/ntl-exact-gens-v3,NTL exact-identity gens v3,14315163,2026-10-30 18:42:06.870000,1833,1,0.5882353
+aswathvanan/ntl-proxy-passages,NTL Kaggle-proxy passages (aswathvanan),1445851,2026-10-30 07:55:06.123000,901,0,0.23529412
+arnabkarmakar/ntl-pinned-060,ntl-pinned-060,4736270,2026-10-30 00:44:33.750000,101,0,0.47058824
+samarth1006/nthl-pool-v10,Name That LLM Training Passages v10,22809305,2026-10-29 21:21:34.170000,273,0,0.64705884
+
+########## search: ntl adapters
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+clustifier/ntl-candidate-v12-adapters,NTL Candidate v12 Llama3.1 LoRA Adapter,57307083,2026-11-04 19:08:25.233000,29,0,0.375
+qiuzilang/ntl-qwen3-8b-loraplus-r4-r8-weights,NTL Qwen3 8B LoRA Plus R4 R8 Weights,337312607,2026-11-04 13:12:42.917000,51,1,0.4375
+lightningv08/ntl-olmo2-native24-final-inference-assets,Name That LLM Artifacts,86684528719,2026-11-03 15:46:53.060000,25268,5,0.5625
+prvsiyan/ntl-two-stage-pre-adapters-v2,NTL two-stage LoRA stage-1 adapters v2,225029888,2026-10-27 08:08:28.987000,103,0,1
+prvsiyan/ntl-qwen3-8b-lora24-two-stage-adapters,NTL Qwen3-8B LoRA24 two-stage adapters (ours),1351140035,2026-10-26 22:48:39.323000,1357,1,1
+prvsiyan/ntl-two-stage-lora-adapters-v3,NTL two-stage LoRA adapters v3 (full-pool seed),0,2026-10-26 20:58:23.543000,113,1,1
+dhruvtibarewal/nlm-q25-v5,NTL Qwen2.5-14B Two-Stage Adapters (120k pool),0,2026-10-26 13:19:22.903000,540,0,0.4375
+dhruvtibarewal/nlm-l24-adapters-v5,NTL Two-Stage LoRA24 Adapters (120k pool),0,2026-10-25 04:45:56.100000,12020,2,0.4375
+harshitakumari256/ntl-atlas-bundle,ntl-atlas-bundle,481369441,2026-10-24 03:01:35.047000,192,2,0.5294118
+kirilltym/ntl-spectral-style-heads-paired-4404,NTL Spectral Style Heads - Paired 4404,34318834,2026-10-24 00:59:10.490000,598,2,0.4375
+swaroopmeher/ntl-public-heads,ntl-public-heads,2145443380,2026-10-21 07:22:49.057000,2382,1,0.64705884
+zibowang819/ntl-v1-artifacts,NTL V1 Artifacts,198398699,2026-10-21 07:16:43.357000,92,0,0.23529412
+josephadamski91/ntl-atlas-qwen3-8b-v1,NTL ATLAS Qwen3 8B v1,428745101,2026-10-20 14:22:33.173000,6319,6,1
+
+########## search: ntl lora
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 213k Clean Passages,98483289,2026-11-05 05:46:17.910000,10245,68,0.9411765
+clustifier/ntl-candidate-v12-adapters,NTL Candidate v12 Llama3.1 LoRA Adapter,57307083,2026-11-04 19:08:25.233000,29,0,0.375
+qiuzilang/ntl-qwen3-8b-loraplus-r4-r8-weights,NTL Qwen3 8B LoRA Plus R4 R8 Weights,337312607,2026-11-04 13:12:42.917000,51,1,0.4375
+zbigniewkirchner/ntl-extra-gpt-passages,Name That LLM: Extra GPT + Gemini Passages,844739,2026-11-03 16:20:42.537000,839,5,0.9411765
+lightningv08/ntl-olmo2-native24-final-inference-assets,Name That LLM Artifacts,86684528719,2026-11-03 15:46:53.060000,25268,5,0.5625
+lucasboesen/ntl-free-proxy-generations,NTL free-proxy GPT and Gemini generations,2684752,2026-11-01 14:39:54,3734,9,0.64705884
+utkarshkviim/ntl-lora-v3-qwen3-artifacts,Name That LLM: Qwen3-8B Two-Stage LoRA + OOF,226009924,2026-11-01 14:15:52.217000,315,0,0.8125
+nuridudak/ntl-q14-lora-v5d-aug,NTL Qwen3-14B LoRA v5d Augmented,166654368,2026-11-01 09:23:43.493000,115,0,0.3125
+nuridudak/ntl-q14-lora-v5d-orig,NTL Qwen3-14B LoRA v5d Original,166653928,2026-11-01 09:22:04.737000,91,0,0.3125
+nuridudak/ntl-gemma4b-lora,ntl-gemma4b-lora,184646994,2026-10-28 23:11:43.017000,73,0,0.25
+prvsiyan/ntl-two-stage-pre-adapters-v2,NTL two-stage LoRA stage-1 adapters v2,225029888,2026-10-27 08:08:28.987000,103,0,1
+prvsiyan/ntl-qwen3-8b-lora24-two-stage-adapters,NTL Qwen3-8B LoRA24 two-stage adapters (ours),1351140035,2026-10-26 22:48:39.323000,1357,1,1
+prvsiyan/ntl-public-in-style-pool-v1,NTL public in-style pool v1,0,2026-10-26 20:59:56.097000,1058,7,1
+
