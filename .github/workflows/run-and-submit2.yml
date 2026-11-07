@@ -1,14 +1,15 @@
-name: Run and submit v2 (six-safe)
+name: Run and submit v2 (guarded)
 on:
   workflow_dispatch:
     inputs:
       submit:
+        description: "Submit this completed Kaggle kernel version for scoring (uses a submission)"
         required: true
-        default: true
+        default: false
         type: boolean
       msg:
         required: false
-        default: "v65: LoRA members audited and weighted by measurement"
+        default: "guarded run: verified kernel completion and output"
 permissions:
   contents: read
 jobs:
@@ -25,17 +26,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install the Kaggle CLI (six is imported but no longer declared)
+      - name: Install Kaggle CLI
         shell: bash
         run: |
           python -m pip install --upgrade pip
           python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
-          python -c "import six, kaggle; print('kaggle', kaggle.__version__ if hasattr(kaggle,'__version__') else 'ok')"
-          test -n "$KAGGLE_API_TOKEN" || { echo "Missing KAGGLE_API_TOKEN"; exit 1; }
-      - name: Push the notebook
+          python -c "import six, kaggle; print('Kaggle CLI ready')"
+          test -n "$KAGGLE_API_TOKEN" || { echo "::error::Missing KAGGLE_API_TOKEN"; exit 1; }
+      - name: Push notebook and capture version
+        id: push
         shell: bash
         run: |
-          mkdir -p kk && cp notebooks/llm-gmc.ipynb kk/llm-gmc.ipynb
+          set -euo pipefail
+          mkdir -p kk
+          cp notebooks/llm-gmc.ipynb kk/llm-gmc.ipynb
           python - <<'PY'
           import json, os
           m = {"title": "LLM GMC", "id": f"{os.environ['KAGGLE_USERNAME']}/llm-gmc",
@@ -56,36 +60,62 @@ jobs:
                                  "qwen-lm/qwen2.5/transformers/14b/1",
                                  "alexchilton/llama-3-1-8b-base/transformers/default/1",
                                  "qwen-lm/qwen-3/transformers/8b-base/1"]}
-          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          with open("kk/kernel-metadata.json", "w") as f:
+              json.dump(m, f, indent=2)
           PY
-          PUSH="$(kaggle kernels push -p kk 2>&1)"; echo "$PUSH" | tail -3
-          KV="$(echo "$PUSH" | grep -oE 'version [0-9]+' | grep -oE '[0-9]+' | head -1)"
-          echo "KV=$KV" >> "$GITHUB_ENV"
-      - name: Wait for the interactive run
+          kaggle kernels push -p kk 2>&1 | tee push.log
+          KV="$(grep -oE 'version [0-9]+' push.log | grep -oE '[0-9]+' | tail -1)"
+          test -n "$KV" || { echo "::error::Could not determine pushed kernel version"; exit 1; }
+          echo "version=$KV" >> "$GITHUB_OUTPUT"
+          echo "Pushed kernel version: $KV"
+      - name: Wait for terminal Kaggle kernel status
+        id: status
         shell: bash
         run: |
+          set -euo pipefail
+          final=""
           for i in $(seq 1 90); do
-            out="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "check $i: $out"
-            echo "$out" | grep -qi "COMPLETE\|ERROR\|CANCEL" && break; sleep 45
+            out="$(kaggle kernels status "$KERNEL_REF" 2>&1)" || { echo "$out"; exit 1; }
+            echo "poll $i: $out"
+            if echo "$out" | grep -q "KernelWorkerStatus.COMPLETE"; then final="COMPLETE"; break; fi
+            if echo "$out" | grep -Eq "KernelWorkerStatus.(ERROR|CANCEL)"; then final="FAILED"; break; fi
+            sleep 45
           done
-      - name: Download the outputs
+          if [ "$final" != "COMPLETE" ]; then
+            echo "::error::Kaggle kernel did not complete successfully (terminal=$final)"
+            kaggle kernels logs "$KERNEL_REF" || true
+            exit 1
+          fi
+          echo "final=COMPLETE" >> "$GITHUB_OUTPUT"
+      - name: Download and validate notebook outputs
         shell: bash
         run: |
+          set -euo pipefail
           rm -rf out && mkdir -p out
-          kaggle kernels output "$KERNEL_REF" -p out 2>&1 | tail -3 || true
-          ls -la out | head
-          cat out/validation_results.json 2>/dev/null | head -40 || true
-          if [ -f out/submission.parquet ]; then cp out/submission.parquet submission.parquet; fi
-          ls -la submission.parquet 2>/dev/null || echo "no submission.parquet in the output"
-      - name: Submit
+          kaggle kernels output "$KERNEL_REF" -p out
+          test -f out/submission.parquet || { echo "::error::submission.parquet missing from Kaggle kernel output"; ls -la out; exit 1; }
+          python - <<'PY'
+          import pandas as pd
+          p = "out/submission.parquet"
+          d = pd.read_parquet(p)
+          labels = {"gpt-5.5","gpt-5.6-luna","gpt-5.6-sol","gpt-5.6-terra","gpt-6-astra",
+                    "gemini-3.1-pro-preview","gemini-3.6-flash","gemini-3.7-flash","gemini-3.8-flash",
+                    "claude-fable-5","claude-opus-4-6","claude-opus-4-8","claude-opus-5","claude-sonnet-5",
+                    "qwen3.8-max","glm-5.3","glm-5.3-flash","kimi-k3"}
+          assert list(d.columns) == ["id", "model"], f"unexpected columns: {list(d.columns)}"
+          assert len(d) > 0, "empty submission"
+          assert d["id"].notna().all() and d["model"].notna().all(), "null id/model"
+          assert d["id"].is_unique, "duplicate ids"
+          bad = sorted(set(d["model"]) - labels)
+          assert not bad, f"invalid labels: {bad}"
+          print(f"Validated preview output: {len(d)} rows; {d['model'].nunique()} distinct labels")
+          PY
+      - name: Submit completed kernel version
         if: ${{ inputs.submit }}
         shell: bash
         run: |
-          echo "submitting kernel version $KV"
-          kaggle competitions submit -c name-that-llm -k "$KERNEL_REF" -v "$KV" -f submission.parquet -m "$MSG" 2>&1 | tail -6 || true
-          for i in $(seq 1 30); do
-            out="$(kaggle competitions submissions -c name-that-llm 2>&1 || true)"
-            echo "$out" | head -4
-            echo "$out" | head -2 | grep -qE "COMPLETE" && break
-            sleep 30
-          done
+          set -euo pipefail
+          kaggle competitions submit name-that-llm -k "$KERNEL_REF" -v "${{ steps.push.outputs.version }}" -f submission.parquet -m "$MSG" --wait 0
+      - name: Report submission mode
+        if: ${{ !inputs.submit }}
+        run: echo "Kernel run and output validation succeeded. Leaderboard submission was intentionally disabled.";
