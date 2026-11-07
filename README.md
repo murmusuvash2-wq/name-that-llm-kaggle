@@ -1,37 +1,44 @@
 # Name That LLM — LLM GMC
 
-Repository for the Kaggle **Name That LLM** competition, using the Kaggle notebook `janaiworkspace/llm-gmc` as the main experiment runner.
+Repository for the Kaggle **Name That LLM** code competition. The primary inference notebook is `notebooks/llm-gmc.ipynb`, published as `janaiworkspace/llm-gmc`.
 
-## Current workflow
+## Current execution workflow
 
-1. Edit the notebook code in `notebooks/llm-gmc.ipynb` and commit it to GitHub.
-2. In GitHub, open **Actions → Publish and run LLM GMC on Kaggle → Run workflow**.
-3. GitHub Actions pushes the notebook to Kaggle using the `KAGGLE_API_TOKEN` repository secret.
-4. The workflow waits for the Kaggle run, downloads its outputs, and stores them as a GitHub Actions artifact.
-5. Review the local validation accuracy and balanced accuracy before choosing the next experiment.
+1. Update the notebook in GitHub.
+2. Open **Actions → Run and submit v2 (guarded) → Run workflow**.
+3. The workflow pushes the notebook to Kaggle and records the exact kernel version.
+4. It waits for a terminal Kaggle status and fails unless the kernel reaches `COMPLETE`.
+5. It downloads `submission.parquet` and validates the required columns, non-empty rows, unique IDs, nulls, and the 18 allowed labels.
+6. Leaderboard submission is **opt-in**: leave `submit=false` for a smoke/diagnostic run. Set `submit=true` only when you intentionally want to consume a competition submission.
 
-The workflow does **not** submit predictions to the Kaggle leaderboard.
+A green GitHub Actions run now means the Kaggle kernel completed and its output passed structural validation. It does not by itself mean a leaderboard score improved.
 
-## Baseline model
+## Competition metric and validation
 
-The LLM GMC notebook currently evaluates a word + character TF-IDF feature union with class-balanced `LinearSVC`. It uses a prompt-grouped validation split when `prompt_id` is available; otherwise it uses a stratified random split. The notebook writes `validation_results.json` under `/kaggle/working`.
+The competition metric is balanced accuracy across 18 models. The test prompts are unseen relative to training prompts, so random row-level validation is not a reliable estimate. Prefer prompt-grouped validation and inspect per-class recall/confusion matrices, not only aggregate accuracy.
 
-The printed accuracy is a **local validation score**, not the public leaderboard score.
+The public leaderboard is only a subset of the hidden test set. Avoid choosing weights solely because they improve one public score.
+
+## Current experiment notes
+
+- Current notebook header identifies the v68 experiment.
+- The notebook currently attempts a multi-member blend (four-view SVC, transformer/LoRA members, DeBERTa, lexical and typography features, class offsets, and damped Sinkhorn).
+- A component's presence in code is not proof it ran successfully or improved the final blend. Review the per-member run reports and OOF contribution before changing weights.
+- Keep a known-good incumbent and run one-variable ablations against it. Record full-pipeline prompt-grouped OOF balanced accuracy, per-class recall, public score, runtime, and whether every intended member actually ran.
 
 ## Required GitHub secret
 
-In **Settings → Secrets and variables → Actions**, create:
+In **Settings → Secrets and variables → Actions**, configure:
 
-- `KAGGLE_API_TOKEN`: your Kaggle API token. Do not commit or paste the token into source files.
-
-The workflow currently targets the Kaggle notebook reference `janaiworkspace/llm-gmc` and competition slug `name-that-llm`.
+- `KAGGLE_API_TOKEN`: Kaggle API token. Never commit or paste this token into source files.
 
 ## Repository layout
 
 ```text
-src/baseline.py                         Optional local/GitHub Actions baseline
-notebooks/llm-gmc.ipynb                 Main competition-linked notebook
-.github/workflows/llm-gmc-kaggle.yml    Push, run, and collect notebook outputs
+notebooks/llm-gmc.ipynb
+.github/workflows/run-and-submit2.yml
+.github/workflows/llm-gmc-kaggle.yml
+src/
 ```
 
-Competition data, API credentials, and generated submissions should not be committed to Git.
+Do not commit Kaggle credentials, competition data, or generated submission artifacts.
