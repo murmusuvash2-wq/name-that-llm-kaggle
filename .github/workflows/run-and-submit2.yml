@@ -1,5 +1,10 @@
 name: Run and submit v2 (guarded)
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/run-and-submit2.yml"
+      - "notebooks/llm-gmc.ipynb"
   workflow_dispatch:
     inputs:
       submit:
