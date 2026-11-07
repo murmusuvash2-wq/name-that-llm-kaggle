@@ -1,0 +1,44 @@
+name: Embed our head
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Download and base64 it into the repo
+        shell: bash
+        run: |
+          mkdir -p ds
+          kaggle datasets download janaiworkspace/ntl-deb-ours -f head.safetensors -p ds --unzip 2>&1 | tail -2
+          kaggle datasets download janaiworkspace/ntl-deb-ours -f meta.json -p ds --unzip 2>&1 | tail -2
+          ls -la ds
+          python3 - <<'PY'
+          import base64, json, os
+          head = base64.b64encode(open("ds/head.safetensors", "rb").read()).decode()
+          meta = json.load(open("ds/meta.json"))
+          payload = {"head_b64": head, "meta": meta}
+          json.dump(payload, open("benchmarks/deb_head_embedded.json", "w"))
+          print("head bytes:", os.path.getsize("ds/head.safetensors"))
+          print("b64 chars:", len(head))
+          print("labels:", len(meta["labels"]), "holdout_ba:", meta.get("holdout_ba"))
+          PY
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add benchmarks/deb_head_embedded.json
+          git commit -m "embed: our deberta head as base64 so no dataset mount is needed" || echo nothing
+          git push
