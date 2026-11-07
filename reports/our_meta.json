@@ -1,0 +1,40 @@
+{
+  "labels": [
+    "claude-fable-5",
+    "claude-opus-4-6",
+    "claude-opus-4-8",
+    "claude-opus-5",
+    "claude-sonnet-5",
+    "gemini-3.1-pro-preview",
+    "gemini-3.6-flash",
+    "gemini-3.7-flash",
+    "gemini-3.8-flash",
+    "glm-5.3",
+    "glm-5.3-flash",
+    "gpt-5.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "kimi-k3",
+    "qwen3.8-max"
+  ],
+  "max_len": 192,
+  "hidden_size": 1024,
+  "pooling": "attention-masked mean of last_hidden_state; scaler folded into the head",
+  "encoder": "frozen \u2014 copied unchanged from the attached deberta_v3_large checkpoint",
+  "head": "multinomial logistic regression on standardised pooled features, class_weight=balanced",
+  "trained_on": {
+    "rows": 98947,
+    "holdout_rows": 395,
+    "holdout_prompts": 22,
+    "C": 1.0
+  },
+  "holdout_ba": 0.79,
+  "reference": {
+    "frozen_head_ba": null,
+    "published_pool_deberta": 0.5763,
+    "note": "five full fine-tune attempts diverged; this is a frozen-encoder probe"
+  },
+  "seconds": 3870
+}

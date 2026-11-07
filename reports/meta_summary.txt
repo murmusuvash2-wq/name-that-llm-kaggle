@@ -1,0 +1,5 @@
+keys: ['labels', 'max_len', 'hidden_size', 'pooling', 'encoder', 'head', 'trained_on', 'holdout_ba', 'reference', 'seconds']
+labels count: 18
+head: multinomial logistic regression on standardised pooled features, class_weight=balanced
+pooling: attention-masked mean of last_hidden_state; scaler folded into the head
+holdout_ba: 0.79
