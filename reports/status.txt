@@ -1,5 +1,5 @@
 ===== janaiworkspace/ntl-pool-test =====
-janaiworkspace/ntl-pool-test has status "KernelWorkerStatus.RUNNING"
+janaiworkspace/ntl-pool-test has status "KernelWorkerStatus.COMPLETE"
 ===== janaiworkspace/llm-gmc =====
 janaiworkspace/llm-gmc has status "KernelWorkerStatus.COMPLETE"
 ===== janaiworkspace/ntl-probe-deb-ours =====
@@ -7,12 +7,12 @@ janaiworkspace/ntl-probe-deb-ours has status "KernelWorkerStatus.COMPLETE"
 ===== janaiworkspace/ntl-tpu-probe =====
 janaiworkspace/ntl-tpu-probe has status "KernelWorkerStatus.CANCEL_ACKNOWLEDGED"
 ===== quota =====
-resource  used    remaining  total   refreshAt                  
---------  ------  ---------  ------  -------------------------  
-GPU       17.71h  12.29h     30.00h  2026-11-07T00:00:00+00:00  
-TPU       0.04h   19.96h     20.00h  2026-11-07T00:00:00+00:00  
+resource  used   remaining  total   refreshAt                  
+--------  -----  ---------  ------  -------------------------  
+GPU       0.00h  30.00h     30.00h  2026-11-21T00:00:00+00:00  
+TPU       0.00h  20.00h     20.00h  2026-11-21T00:00:00+00:00  
 ===== submissions =====
 ref,fileName,date,description,status,publicScore,privateScore
-58050358,submission.parquet,2026-11-06 07:44:46.157000,"v69: q3-8b w2.0 (in-sample 0.785, fills the q8v5 slot) + ll8v5 w1.0 + reference weights",SubmissionStatus.COMPLETE,0.636,
-58012932,submission.parquet,2026-11-05 06:36:41.580000,v68: 0.668 reference weights + ll8v5 (in-sample 0.16->0.875 after permutation recovery),SubmissionStatus.COMPLETE,0.640,
-57894605,submission.parquet,2026-11-02 04:08:06.387000,v67: capped_agglo + confidence-gated Sinkhorn,SubmissionStatus.COMPLETE,0.635,
+58082378,submission.parquet,2026-11-07 06:34:28.697000,"v75: our DeBERTa head embedded, pre-flight gated",SubmissionStatus.COMPLETE,0.638,
+58066549,submission.parquet,2026-11-06 18:45:07.640000,"v73: our DeBERTa head, head-only swap",SubmissionStatus.COMPLETE,0.640,
+58062253,submission.parquet,2026-11-06 15:37:38.417000,"v72: our own DeBERTa head, correctly detected this time",SubmissionStatus.COMPLETE,0.640,
