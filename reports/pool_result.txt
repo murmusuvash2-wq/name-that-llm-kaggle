@@ -1,0 +1,45 @@
+===== pool_comparison.json =====
+{
+  "A merged (ours now)": {
+    "rows": 228756,
+    "oof_k18": 0.4879,
+    "oof_k2": 0.4486,
+    "seconds": 5188
+  },
+  "B open pool (clean)": {
+    "rows": 212623,
+    "oof_k18": 0.4916,
+    "oof_k2": 0.4838,
+    "seconds": 3693
+  },
+  "C gtuli12 (cleanest)": {
+    "rows": 239188,
+    "oof_k18": 0.489,
+    "oof_k2": 0.4888,
+    "seconds": 5219
+  }
+}
+===== pool log =====
+===== out/ntl-pool-test.log =====
+official 2,699 rows, 150 prompts, 18 labels
+  A merged                228,756 ->  228,756 rows | dropped     0 train-duplicates
+  open pool columns: ['id', 'text', 'model', 'lab', 'prompt_group', 'source_dataset', 'source_file', 'source_license', 'origin_hint', 'n_words', 'also_in', 'n_sources']
+  open pool: dropped 0 rows regenerated from train prompts
+  B open pool             212,623 ->  212,623 rows | dropped     0 train-duplicates
+  gtuli12 columns: ['text', 'model', 'id', 'source', 'licence', 'prompt_group', 'text_hash', 'train_topic_sim', 'train_topic_pid', 'train_prompt', 'kimi_reasoning_off', 'glm_low_reasoning', 'n_words', 'match_weight']
+  gtuli12: dropped 3,314 rows that answer a train prompt
+  C gtuli12               239,188 ->  239,188 rows | dropped     0 train-duplicates
+3 candidate pools built
+  A merged (ours now)     228,756 rows | per class 6,250-20,579 | classes present 18
+  B open pool (clean)     212,623 rows | per class 3,541-22,508 | classes present 18
+  C gtuli12 (cleanest)    239,188 rows | per class 4,816-23,999 | classes present 18
+A merged (ours now)      k18 0.4879 | k2 0.4486 | 5188s
+B open pool (clean)      k18 0.4916 | k2 0.4838 | 3693s
+C gtuli12 (cleanest)     k18 0.4890 | k2 0.4888 | 5219s
+=== RESULT ===
+  C gtuli12 (cleanest)     k2 0.4888  (239,188 rows)
+  B open pool (clean)      k2 0.4838  (212,623 rows)
+  A merged (ours now)      k2 0.4486  (228,756 rows)
+BEST on the metric the LB tracks (k=2): C gtuli12 (cleanest)
+wrote pool_comparison.json
+[NbConvertApp] Writing 326395 bytes to __results__.html
