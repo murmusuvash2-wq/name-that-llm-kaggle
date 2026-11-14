@@ -1,0 +1,38 @@
+name: Read both results
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Pool comparison
+        shell: bash
+        run: |
+          mkdir -p out reports
+          kaggle kernels output janaiworkspace/ntl-pool-test -p out 2>&1 | tail -2 || true
+          { echo "===== pool_comparison.json ====="; cat out/pool_comparison.json 2>/dev/null || echo none
+            echo; echo "===== pool log ====="
+            python3 benchmarks/dump_kernel_log.py "out/*.log" 2>/dev/null | grep -iE "official|pool|rows|columns|dropped|k18|k2|RESULT|BEST|candidate|classes" | head -40
+          } > reports/pool_result.txt
+          cat reports/pool_result.txt
+      - name: Commit
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/ || true
+          git commit -m "report: pool comparison result" || echo nothing
+          git push || echo "push failed"
