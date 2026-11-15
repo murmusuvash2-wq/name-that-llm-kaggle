@@ -1,0 +1,27 @@
+===== josephadamski91/ntl-atlas-qwen3-8b-v1 =====
+name,size,creationDate
+CREDITS.md,1533,2026-10-20 14:22:34.729000
+LICENSE-CODE-APACHE-2.0.txt,11358,2026-10-20 14:22:34.690000
+LICENSE-WEIGHTS-CC-BY-SA-4.0.txt,20138,2026-10-20 14:22:34.694000
+LICENSES.md,1521,2026-10-20 14:22:34.706000
+atlas_adapter/atlas_adapter/adapters.safetensors,462749776,2026-10-20 14:22:50.805000
+atlas_adapter/atlas_adapter/atlas_bundle.json,3011,2026-10-20 14:22:40.034000
+atlas_adapter/atlas_adapter/checkpoint.json,1928,2026-10-20 14:22:40.001000
+atlas_adapter/atlas_adapter/inference-source-manifest.json,712,2026-10-20 14:22:40.001000
+atlas_adapter/atlas_adapter/ntl_atlas/__init__.py,72,2026-10-20 14:22:39.960000
+atlas_adapter/atlas_adapter/ntl_atlas/inference.py,1505,2026-10-20 14:22:40.034000
+atlas_adapter/atlas_adapter/ntl_atlas/model.py,8502,2026-10-20 14:22:39.990000
+
+########## search: ntl comp stack
+No datasets found
+
+########## search: ntl atlas
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+maveriff/ntl-custom-atlas-lora,NTL Custom ATLAS LoRA Models,789126161,2026-11-14 14:38:52.777000,102,0,0.375
+harshitakumari256/ntl-atlas-bundle,ntl-atlas-bundle,481369441,2026-10-24 03:01:35.047000,240,2,0.5294118
+josephadamski91/ntl-atlas-qwen3-8b-v1,NTL ATLAS Qwen3 8B v1,428745101,2026-10-20 14:22:33.173000,7540,11,1
+verracodeguacas/name-that-llm-prism-feature-atlas,Name That LLM | Prism Feature Atlas,0,2026-10-15 21:40:59.280000,2053,2,0.8235294
+
+########## search: ntl comp logit
+No datasets found
+
