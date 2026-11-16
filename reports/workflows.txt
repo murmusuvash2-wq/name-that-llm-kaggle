@@ -1,0 +1,435 @@
+total 368
+drwxr-xr-x 2 runner runner 4096 Nov 16 10:49 .
+drwxr-xr-x 3 runner runner 4096 Nov 16 10:49 ..
+-rw-r--r-- 1 runner runner 2858 Nov 16 10:49 bench-generate.yml
+-rw-r--r-- 1 runner runner 1207 Nov 16 10:49 bench-quota.yml
+-rw-r--r-- 1 runner runner 2862 Nov 16 10:49 bench-real.yml
+-rw-r--r-- 1 runner runner 3128 Nov 16 10:49 bench-setting.yml
+-rw-r--r-- 1 runner runner 2347 Nov 16 10:49 bench-task.yml
+-rw-r--r-- 1 runner runner  944 Nov 16 10:49 check-adapters.yml
+-rw-r--r-- 1 runner runner  502 Nov 16 10:49 check-kaggle-secret.yml
+-rw-r--r-- 1 runner runner 1252 Nov 16 10:49 check-pools.yml
+-rw-r--r-- 1 runner runner 1010 Nov 16 10:49 check-subs.yml
+-rw-r--r-- 1 runner runner 1490 Nov 16 10:49 check-v5.yml
+-rw-r--r-- 1 runner runner 2403 Nov 16 10:49 collect-passages.yml
+-rw-r--r-- 1 runner runner 1108 Nov 16 10:49 count-classes.yml
+-rw-r--r-- 1 runner runner 1301 Nov 16 10:49 data-research.yml
+-rw-r--r-- 1 runner runner 1975 Nov 16 10:49 diag.yml
+-rw-r--r-- 1 runner runner  984 Nov 16 10:49 diag2.yml
+-rw-r--r-- 1 runner runner 1343 Nov 16 10:49 diagk.yml
+-rw-r--r-- 1 runner runner 2391 Nov 16 10:49 dscheck.yml
+-rw-r--r-- 1 runner runner 1476 Nov 16 10:49 dscheck2.yml
+-rw-r--r-- 1 runner runner 1229 Nov 16 10:49 dump-llm.yml
+-rw-r--r-- 1 runner runner 1115 Nov 16 10:49 dump-probe.yml
+-rw-r--r-- 1 runner runner 1712 Nov 16 10:49 embed-head.yml
+-rw-r--r-- 1 runner runner 2271 Nov 16 10:49 family-aware-kaggle.yml
+-rw-r--r-- 1 runner runner 1578 Nov 16 10:49 fetch-kernel-log.yml
+-rw-r--r-- 1 runner runner  733 Nov 16 10:49 full-subs.yml
+-rw-r--r-- 1 runner runner 1226 Nov 16 10:49 fulllist.yml
+-rw-r--r-- 1 runner runner 1910 Nov 16 10:49 hard-pair-diagnostic.yml
+-rw-r--r-- 1 runner runner  887 Nov 16 10:49 help-dump.yml
+-rw-r--r-- 1 runner runner 1451 Nov 16 10:49 hunt-q8v5.yml
+-rw-r--r-- 1 runner runner 1451 Nov 16 10:49 inspect-account.yml
+-rw-r--r-- 1 runner runner 1760 Nov 16 10:49 inspect-head.yml
+-rw-r--r-- 1 runner runner 1770 Nov 16 10:49 kaggle-test.yml
+-rw-r--r-- 1 runner runner 1391 Nov 16 10:49 kstatus.yml
+-rw-r--r-- 1 runner runner  817 Nov 16 10:49 lb.yml
+-rw-r--r-- 1 runner runner  538 Nov 16 10:49 lbonly.yml
+-rw-r--r-- 1 runner runner 1961 Nov 16 10:49 list-datasets.yml
+-rw-r--r-- 1 runner runner  901 Nov 16 10:49 list-wf.yml
+-rw-r--r-- 1 runner runner 3086 Nov 16 10:49 llm-gmc-kaggle.yml
+-rw-r--r-- 1 runner runner  832 Nov 16 10:49 mykernels.yml
+-rw-r--r-- 1 runner runner  773 Nov 16 10:49 now.yml
+-rw-r--r-- 1 runner runner  946 Nov 16 10:49 now2.yml
+-rw-r--r-- 1 runner runner 2033 Nov 16 10:49 oof-stacking-diagnostic.yml
+-rw-r--r-- 1 runner runner 2825 Nov 16 10:49 phase-validation-kaggle.yml
+-rw-r--r-- 1 runner runner 1519 Nov 16 10:49 print-meta.yml
+-rw-r--r-- 1 runner runner 2323 Nov 16 10:49 public-augmentation.yml
+-rw-r--r-- 1 runner runner 1884 Nov 16 10:49 publish-deb.yml
+-rw-r--r-- 1 runner runner  846 Nov 16 10:49 pullmine.yml
+-rw-r--r-- 1 runner runner 2524 Nov 16 10:49 qwen-two-stage-kaggle.yml
+-rw-r--r-- 1 runner runner 2114 Nov 16 10:49 qwen3-svm-kaggle.yml
+-rw-r--r-- 1 runner runner 1123 Nov 16 10:49 read-adapter-card.yml
+-rw-r--r-- 1 runner runner 1412 Nov 16 10:49 read-both.yml
+-rw-r--r-- 1 runner runner 1163 Nov 16 10:49 read-deb-log.yml
+-rw-r--r-- 1 runner runner 1192 Nov 16 10:49 read-hub.yml
+-rw-r--r-- 1 runner runner 1008 Nov 16 10:49 readlog.yml
+-rw-r--r-- 1 runner runner 1393 Nov 16 10:49 readmeta.yml
+-rw-r--r-- 1 runner runner 1964 Nov 16 10:49 ref-task.yml
+-rw-r--r-- 1 runner runner 1819 Nov 16 10:49 reportlog.yml
+-rw-r--r-- 1 runner runner 5235 Nov 16 10:49 run-and-submit.yml
+-rw-r--r-- 1 runner runner 4459 Nov 16 10:49 run-and-submit2.yml
+-rw-r--r-- 1 runner runner 2272 Nov 16 10:49 run-inspect.yml
+-rw-r--r-- 1 runner runner 2568 Nov 16 10:49 run-llama-fetch.yml
+-rw-r--r-- 1 runner runner 2654 Nov 16 10:49 run-pooltest.yml
+-rw-r--r-- 1 runner runner 2782 Nov 16 10:49 run-probe-deb.yml
+-rw-r--r-- 1 runner runner 1968 Nov 16 10:49 run-probe.yml
+-rw-r--r-- 1 runner runner 1945 Nov 16 10:49 run-probe14.yml
+-rw-r--r-- 1 runner runner 6099 Nov 16 10:49 run-split.yml
+-rw-r--r-- 1 runner runner 2211 Nov 16 10:49 run-tpu.yml
+-rw-r--r-- 1 runner runner 3443 Nov 16 10:49 run-train-deb.yml
+-rw-r--r-- 1 runner runner 3302 Nov 16 10:49 run-train-q8.yml
+-rw-r--r-- 1 runner runner  776 Nov 16 10:49 status.yml
+-rw-r--r-- 1 runner runner 1449 Nov 16 10:49 submit-only.yml
+-rw-r--r-- 1 runner runner 2508 Nov 16 10:49 submit-v.yml
+-rw-r--r-- 1 runner runner 1556 Nov 16 10:49 submit-version.yml
+-rw-r--r-- 1 runner runner  544 Nov 16 10:49 subs.yml
+-rw-r--r-- 1 runner runner 1342 Nov 16 10:49 subsreport.yml
+-rw-r--r-- 1 runner runner 4651 Nov 16 10:49 train-unit.yml
+-rw-r--r-- 1 runner runner 1447 Nov 16 10:49 verify-ac.yml
+-rw-r--r-- 1 runner runner 1137 Nov 16 10:49 verify-ds.yml
+-rw-r--r-- 1 runner runner 1490 Nov 16 10:49 verify-gemma.yml
+-rw-r--r-- 1 runner runner 1355 Nov 16 10:49 verify-q8.yml
+-rw-r--r-- 1 runner runner 1657 Nov 16 10:49 verify2.yml
+-rw-r--r-- 1 runner runner 1270 Nov 16 10:49 verify3.yml
+-rw-r--r-- 1 runner runner 1170 Nov 16 10:49 verify4.yml
+-rw-r--r-- 1 runner runner 1563 Nov 16 10:49 verify5.yml
+-rw-r--r-- 1 runner runner 1097 Nov 16 10:49 verify6.yml
+-rw-r--r-- 1 runner runner 1276 Nov 16 10:49 verify7.yml
+-rw-r--r-- 1 runner runner 1315 Nov 16 10:49 verify8.yml
+--- names ---
+== .github/workflows/bench-generate.yml
+name: Generate NTL passages through the Model Proxy
+on:
+  workflow_dispatch:
+== .github/workflows/bench-quota.yml
+name: Kaggle Benchmarks quota and models
+on:
+  workflow_dispatch:
+== .github/workflows/bench-real.yml
+name: Generate from the real prompt bank
+on:
+  workflow_dispatch:
+== .github/workflows/bench-setting.yml
+name: Benchmark setting-varied test
+on:
+  workflow_dispatch:
+== .github/workflows/bench-task.yml
+name: Run the NTL generation task on Benchmarks
+on:
+  workflow_dispatch:
+== .github/workflows/check-adapters.yml
+name: Check the adapter datasets
+on:
+  workflow_dispatch:
+== .github/workflows/check-kaggle-secret.yml
+name: Check Kaggle secret
+on:
+  workflow_dispatch:
+== .github/workflows/check-pools.yml
+name: Check the pool datasets
+on:
+  workflow_dispatch:
+== .github/workflows/check-subs.yml
+name: Check submissions and quota
+on:
+  workflow_dispatch:
+== .github/workflows/check-v5.yml
+name: Check l24 v5 adapters and the Llama base
+on:
+  workflow_dispatch:
+== .github/workflows/collect-passages.yml
+name: Collect generated passages
+on:
+  workflow_dispatch:
+== .github/workflows/count-classes.yml
+name: Count rows per class in the pool
+on:
+  workflow_dispatch:
+== .github/workflows/data-research.yml
+name: Data research
+on:
+  workflow_dispatch:
+== .github/workflows/diag.yml
+name: Diag (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/diag2.yml
+name: Diag2 (long kernel log)
+on:
+  workflow_dispatch:
+== .github/workflows/diagk.yml
+name: Read the diagnostic kernel
+on:
+  workflow_dispatch:
+== .github/workflows/dscheck.yml
+name: Does our checkpoint dataset exist
+on:
+  workflow_dispatch:
+== .github/workflows/dscheck2.yml
+name: Dataset check only
+on:
+  workflow_dispatch:
+== .github/workflows/dump-llm.yml
+name: Dump the llm-gmc log
+on:
+  workflow_dispatch:
+== .github/workflows/dump-probe.yml
+name: Dump the probe log
+on:
+  workflow_dispatch:
+== .github/workflows/embed-head.yml
+name: Embed our head
+on:
+  workflow_dispatch:
+== .github/workflows/family-aware-kaggle.yml
+name: Run family-aware TF-IDF diagnostic
+on:
+  workflow_dispatch:
+== .github/workflows/fetch-kernel-log.yml
+name: Fetch a Kaggle kernel log
+on:
+  workflow_dispatch:
+== .github/workflows/full-subs.yml
+name: Full submissions table
+on:
+  workflow_dispatch:
+== .github/workflows/fulllist.yml
+name: Full folder lists
+on:
+  workflow_dispatch:
+== .github/workflows/hard-pair-diagnostic.yml
+name: Hard-pair specialist diagnostic
+on:
+  workflow_dispatch:
+== .github/workflows/help-dump.yml
+name: Kaggle benchmarks CLI help
+on:
+  workflow_dispatch:
+== .github/workflows/hunt-q8v5.yml
+name: Hunt the q8v5 adapter
+on:
+  workflow_dispatch:
+== .github/workflows/inspect-account.yml
+name: Inspect the Kaggle account
+on:
+  workflow_dispatch:
+== .github/workflows/inspect-head.yml
+name: Inspect the v5 adapter head
+on:
+  workflow_dispatch:
+== .github/workflows/kaggle-test.yml
+name: Kaggle test and submit
+on:
+  workflow_dispatch:
+== .github/workflows/kstatus.yml
+name: Kernel status
+on:
+  workflow_dispatch:
+== .github/workflows/lb.yml
+name: LB (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/lbonly.yml
+name: LB only
+on:
+  workflow_dispatch:
+== .github/workflows/list-datasets.yml
+name: List candidate member datasets
+on:
+  workflow_dispatch:
+== .github/workflows/list-wf.yml
+name: List workflows
+on:
+  workflow_dispatch:
+              grep -E "^name:|workflow_dispatch|^on:" "$f" | head -4
+== .github/workflows/llm-gmc-kaggle.yml
+name: Publish and run LLM GMC on Kaggle
+on:
+  workflow_dispatch:
+== .github/workflows/mykernels.yml
+name: My kernels and submissions
+on:
+  workflow_dispatch:
+== .github/workflows/now.yml
+name: Now (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/now2.yml
+name: Now2 (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/oof-stacking-diagnostic.yml
+name: Qwen SVC OOF stacking diagnostic
+on:
+  workflow_dispatch:
+== .github/workflows/phase-validation-kaggle.yml
+name: Run permanent phase validation notebook
+on:
+  workflow_dispatch:
+== .github/workflows/print-meta.yml
+name: Print our meta
+on:
+  workflow_dispatch:
+== .github/workflows/public-augmentation.yml
+name: Run public matched-dataset augmentation
+on:
+  workflow_dispatch:
+== .github/workflows/publish-deb.yml
+name: Publish our deberta checkpoint
+on:
+  workflow_dispatch:
+== .github/workflows/pullmine.yml
+name: Pull my private notebook
+on:
+  workflow_dispatch:
+== .github/workflows/qwen-two-stage-kaggle.yml
+name: Run Qwen two-stage LoRA
+on:
+  workflow_dispatch:
+== .github/workflows/qwen3-svm-kaggle.yml
+name: Run Qwen3 SVM diagnostic on Kaggle
+on:
+  workflow_dispatch:
+== .github/workflows/read-adapter-card.yml
+name: Read the adapter dataset card
+on:
+  workflow_dispatch:
+== .github/workflows/read-both.yml
+name: Read both results
+on:
+  workflow_dispatch:
+== .github/workflows/read-deb-log.yml
+name: Read training log body
+on:
+  workflow_dispatch:
+== .github/workflows/read-hub.yml
+name: Read hub docs
+on:
+  workflow_dispatch:
+== .github/workflows/readlog.yml
+name: Read the kernel log
+on:
+  workflow_dispatch:
+== .github/workflows/readmeta.yml
+name: Read the trained checkpoint meta
+on:
+  workflow_dispatch:
+== .github/workflows/ref-task.yml
+name: Read the reference benchmark task source
+on:
+  workflow_dispatch:
+== .github/workflows/reportlog.yml
+name: Report the kernel log into the repo
+on:
+  workflow_dispatch:
+== .github/workflows/run-and-submit.yml
+name: Run and submit LLM GMC on Kaggle
+on:
+  workflow_dispatch:
+== .github/workflows/run-and-submit2.yml
+name: Run and submit v2 (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/run-inspect.yml
+name: Inspect the two-stage members
+on:
+  workflow_dispatch:
+== .github/workflows/run-llama-fetch.yml
+name: Fetch the llama prefix
+on:
+  workflow_dispatch:
+== .github/workflows/run-pooltest.yml
+name: Pool comparison test
+on:
+  workflow_dispatch:
+== .github/workflows/run-probe-deb.yml
+name: Train our DeBERTa probe
+on:
+  workflow_dispatch:
+== .github/workflows/run-probe.yml
+name: Run the pool probe
+on:
+  workflow_dispatch:
+== .github/workflows/run-probe14.yml
+name: Run the q14v5 probe
+on:
+  workflow_dispatch:
+== .github/workflows/run-split.yml
+name: Run the CPU half then the GPU half
+on:
+  workflow_dispatch:
+== .github/workflows/run-tpu.yml
+name: Run the TPU probe
+on:
+  workflow_dispatch:
+== .github/workflows/run-train-deb.yml
+name: Train our own DeBERTa
+on:
+  workflow_dispatch:
+== .github/workflows/run-train-q8.yml
+name: Train our own Qwen3-8B LoRA
+on:
+  workflow_dispatch:
+== .github/workflows/status.yml
+name: Status (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/submit-only.yml
+name: Submit an existing LLM GMC kernel version
+on:
+  workflow_dispatch:
+== .github/workflows/submit-v.yml
+name: Submit a kernel version (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/submit-version.yml
+name: Submit a specific kernel version
+on:
+  workflow_dispatch:
+== .github/workflows/subs.yml
+name: Subs (six-safe)
+on:
+  workflow_dispatch:
+== .github/workflows/subsreport.yml
+name: Submissions report into the repo
+on:
+  workflow_dispatch:
+== .github/workflows/train-unit.yml
+name: Train an NTL LoRA24 unit on Kaggle
+on:
+  workflow_dispatch:
+== .github/workflows/verify-ac.yml
+name: Verify atlas and comp
+on:
+  workflow_dispatch:
+== .github/workflows/verify-ds.yml
+name: Verify dataset
+on:
+  workflow_dispatch:
+== .github/workflows/verify-gemma.yml
+name: Verify the gemma member
+on:
+  workflow_dispatch:
+== .github/workflows/verify-q8.yml
+name: Verify q8v5 and ll8v5
+on:
+  workflow_dispatch:
+== .github/workflows/verify2.yml
+name: Verify the four real candidates
+on:
+  workflow_dispatch:
+== .github/workflows/verify3.yml
+name: Verify llama on kaggle models
+on:
+  workflow_dispatch:
+== .github/workflows/verify4.yml
+name: Verify llama base and adapter
+on:
+  workflow_dispatch:
+== .github/workflows/verify5.yml
+name: Read the llama adapter README
+on:
+  workflow_dispatch:
+== .github/workflows/verify6.yml
+name: Final verify llama ref and meta
+on:
+  workflow_dispatch:
+== .github/workflows/verify7.yml
+name: Find the llama instance slug
+on:
+  workflow_dispatch:
+== .github/workflows/verify8.yml
+name: Verify the three real refs
+on:
+  workflow_dispatch:
