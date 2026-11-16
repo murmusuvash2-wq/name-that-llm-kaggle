@@ -11,6 +11,9 @@ on:
         default: "v65: LoRA members audited and weighted by measurement"
 permissions:
   contents: read
+concurrency:
+  group: kaggle-submit
+  cancel-in-progress: true
 jobs:
   go:
     runs-on: ubuntu-latest
@@ -64,6 +67,25 @@ jobs:
           PUSH="$(kaggle kernels push -p kk 2>&1)"; echo "$PUSH" | tail -3
           KV="$(echo "$PUSH" | grep -oE 'version [0-9]+' | grep -oE '[0-9]+' | head -1)"
           echo "KV=$KV" >> "$GITHUB_ENV"
+      - name: Verify the pushed kernel really carries this notebook
+        shell: bash
+        run: |
+          rm -rf vfy && mkdir -p vfy && cd vfy
+          kaggle kernels pull "$KERNEL_REF" -m >/dev/null 2>&1 || true
+          NB="$(ls *.ipynb 2>/dev/null | head -1)"
+          echo "pulled: $NB"
+          if [ -z "$NB" ]; then echo "could not pull the kernel back"; exit 1; fi
+          python3 - "$NB" <<'PY'
+          import json, sys
+          nb = json.load(open(sys.argv[1]))
+          src = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+          markers = ["ATLAS_W = 0.20", "SIB_MODELS = {}", "TOKFP = {", "def _load_pool"]
+          print("cells:", len(nb["cells"]))
+          for m in markers:
+              print(f"  {m:<20} {'present' if m in src else 'ABSENT'}")
+          if "ATLAS_W = 0.20" not in src:
+              sys.exit("ABORT: the pushed kernel does not contain the ATLAS cell — refusing to wait 90 minutes for the wrong code")
+          PY
       - name: Wait for the interactive run
         shell: bash
         run: |
