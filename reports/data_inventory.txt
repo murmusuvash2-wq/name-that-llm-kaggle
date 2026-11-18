@@ -1,0 +1,55 @@
+===== our own generated outputs =====
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+janaiworkspace/llm-gmc-compedition-1,LLM  GMC compedition  1,8046,2026-10-27 03:01:20.760000,5,0,0.125
+janaiworkspace/approved-parallel,Santali AI Licensed Parallel Corpus,2659101,2026-10-26 20:02:00.730000,0,0,0.23529412
+janaiworkspace/indictrans2-en-indic-200m,IndicTrans2 En-Indic 200M,1329918616,2026-10-26 20:04:58.900000,0,0,0.125
+janaiworkspace/ol-chiki-dataset,Ol-chiki-dataset,406090,2025-09-03 16:04:33.440000,1,0,0.25
+janaiworkspace/janai-rawdata-sample,janai_olchiki_pdf.zip,2391124,2025-09-02 16:05:50.033000,0,0,0.0625
+janaiworkspace/noto-sans-ol-chiki,Noto_Sans_Ol_Chiki,149925,2025-09-02 12:10:48.050000,0,0,0.125
+janaiworkspace/janai-ocr-dataset-v1,JanAI OCR Dataset V1,7609971,2025-09-09 07:01:58.820000,1,0,0.25
+janaiworkspace/indictrans2-320m,IndicTrans2 320M Indic Indic,1556949518,2026-09-21 06:19:54.270000,0,0,0.125
+janaiworkspace/ntl-cpu-output,NTL cpu output,179682,2026-10-30 17:24:26.793000,0,0,0.25
+janaiworkspace/ntl-llama-prefix,NTL llama prefix,569,2026-11-03 04:43:28.720000,0,0,0.25
+janaiworkspace/ntl-deb-ours,NTL deb ours,69510,2026-11-06 17:42:59.313000,3,0,0.25
+
+===== every public passage source, by size =====
+## ntl passages
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+elliotthankinson/ntl-tells-v4,NTL tells v4,14802723,2026-11-17 02:27:42.583000,327,0,0.47058824
+k1y0sh1/ntl-modernbert-pool-ft-1e4-ep1,ntl-modernbert-pool-ft-1e4-ep1,556599601,2026-11-16 10:22:48.440000,12,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-1e4-ep2,ntl-modernbert-pool-ft-1e4-ep2,556596858,2026-11-16 10:16:24.147000,5,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-1e4-ep3,ntl-modernbert-pool-ft-1e4-ep3,556609786,2026-11-16 10:07:46.053000,27,0,0.4375
+k1y0sh1/ntl-modernbert-pool-ft-ep3,ntl-modernbert-pool-ft-ep3,556597931,2026-11-15 21:49:10.180000,26,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-ep1,ntl-modernbert-pool-ft-ep1,556600704,2026-11-15 21:42:27.673000,17,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-ep2,ntl-modernbert-pool-ft-ep2,556597749,2026-11-15 21:35:29.870000,17,0,0.375
+
+## ntl generations
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+liuyihuileo/ntl-external-training-candidates-18,NTL 18-Model Clean External Training Candidates,25566567,2026-11-16 06:07:37.917000,292,0,0.47058824
+dhananjayk2609/ntl-panel-gap-passages-kaggle-benchmarks,NTL Panel-Gap Passages (Kaggle Benchmarks),2034346,2026-11-14 05:47:43.430000,446,2,0.5882353
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 224k Clean Passages,105140113,2026-11-13 19:26:10.190000,18620,108,0.9411765
+tamerlanomralinov/ntl-matched-bench-gen-r1,NTL Matched Bench Gen r1,257959,2026-11-13 03:54:53.620000,226,0,0.64705884
+aitahmednasser/ntl-kaggle-ai-gen,NTL Kaggle AI generations,533948,2026-11-11 22:03:19.740000,238,0,0.29411766
+nischaydnk/ntl-topic-synthetic-18llms,NTL 100-topic synthetic generations (18 LLMs),3874350,2026-11-11 00:31:14.700000,712,0,0.4117647
+nimithashreea/ntl-proxy-candidate-generations-20261110,NTL Proxy Candidate Generations,80297,2026-11-10 16:54:30.817000,403,0,0.47058824
+
+## ntl pool
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+k1y0sh1/ntl-modernbert-pool-ft-1e4-ep1,ntl-modernbert-pool-ft-1e4-ep1,556599601,2026-11-16 10:22:48.440000,12,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-1e4-ep2,ntl-modernbert-pool-ft-1e4-ep2,556596858,2026-11-16 10:16:24.147000,5,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-1e4-ep3,ntl-modernbert-pool-ft-1e4-ep3,556609786,2026-11-16 10:07:46.053000,27,0,0.4375
+anilmittal/ntl-deberta-frozen-gemini-features,NTL DeBERTa Frozen Gemini Features (37k),1194435355,2026-11-16 08:56:53.960000,123,0,0.4117647
+liuyihuileo/ntl-external-training-candidates-18,NTL 18-Model Clean External Training Candidates,25566567,2026-11-16 06:07:37.917000,292,0,0.47058824
+k1y0sh1/ntl-modernbert-pool-ft-ep3,ntl-modernbert-pool-ft-ep3,556597931,2026-11-15 21:49:10.180000,26,0,0.375
+k1y0sh1/ntl-modernbert-pool-ft-ep1,ntl-modernbert-pool-ft-ep1,556600704,2026-11-15 21:42:27.673000,17,0,0.375
+
+## ntl proxy
+ref,title,size,lastUpdated,downloadCount,voteCount,usabilityRating
+elliotthankinson/ntl-tells-v4,NTL tells v4,14802723,2026-11-17 02:27:42.583000,327,0,0.47058824
+liuyihuileo/ntl-external-training-candidates-18,NTL 18-Model Clean External Training Candidates,25566567,2026-11-16 06:07:37.917000,292,0,0.47058824
+dhananjayk2609/ntl-panel-gap-passages-kaggle-benchmarks,NTL Panel-Gap Passages (Kaggle Benchmarks),2034346,2026-11-14 05:47:43.430000,446,2,0.5882353
+crtproduction/name-that-llm-open-pool,Name That LLM Open Pool: 224k Clean Passages,105140113,2026-11-13 19:26:10.190000,18620,108,0.9411765
+tamerlanomralinov/ntl-matched-bench-gen-r1,NTL Matched Bench Gen r1,257959,2026-11-13 03:54:53.620000,226,0,0.64705884
+aitahmednasser/ntl-kaggle-ai-gen,NTL Kaggle AI generations,533948,2026-11-11 22:03:19.740000,238,0,0.29411766
+prvsiyan/prvsiyans-extended-name-that-llm-dataset,prvsiyan's Extended Name That LLM Dataset,31131899,2026-11-11 17:54:17.703000,12759,98,1
+
