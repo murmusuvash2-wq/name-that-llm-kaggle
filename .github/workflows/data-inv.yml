@@ -1,0 +1,44 @@
+name: Our generated data
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: What we have and what we could have
+        shell: bash
+        run: |
+          mkdir -p reports out
+          {
+            echo "===== our own generated outputs ====="
+            kaggle datasets list --user janaiworkspace --csv 2>&1 | head -14
+            echo
+            echo "===== every public passage source, by size ====="
+            for q in "ntl passages" "ntl generations" "ntl pool" "ntl proxy"; do
+              echo "## $q"
+              kaggle datasets list -s "$q" --sort-by updated --csv 2>&1 | head -8
+              echo
+            done
+          } > reports/data_inventory.txt
+          cat reports/data_inventory.txt
+      - name: Commit
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/ || true
+          git commit -m "report: data inventory" || echo nothing
+          git push || echo "push failed"
