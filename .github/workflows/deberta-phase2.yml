@@ -29,10 +29,14 @@ jobs:
         run: |
           mkdir -p phase2-output
           completed=false
-          for i in $(seq 1 210); do
-            s="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "Status $i/210: $s"
-            if echo "$s" | grep -qi COMPLETE; then completed=true; break; fi
-            if echo "$s" | grep -qiE "ERROR|CANCEL"; then exit 1; fi
+          for i in $(seq 1 180); do
+            s="$(timeout 90s kaggle kernels status "$KERNEL_REF" 2>&1 || echo STATUS_TIMEOUT_OR_ERROR)"
+            echo "Status $i/180: $s"
+            if echo "$s" | grep -qiE "COMPLETE|SUCCESS"; then completed=true; break; fi
+            if echo "$s" | grep -qiE "ERROR|CANCEL|FAILED|STATUS_TIMEOUT_OR_ERROR"; then
+              echo "Kaggle status polling failed or kernel failed; stopping safely."
+              exit 1
+            fi
             sleep 60
           done
           [ "$completed" = true ]
