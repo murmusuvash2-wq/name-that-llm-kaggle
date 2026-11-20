@@ -21,7 +21,7 @@ jobs:
           cp notebooks/deberta-phase2.ipynb kaggle_phase2/deberta-phase2.ipynb
           python - <<'PY'
           import json, os
-          m={"title":"Phase 2 DeBERTa candidate","id":f"{os.environ['KAGGLE_USERNAME']}/deberta-phase2","code_file":"deberta-phase2.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":True,"enable_internet":False,"dataset_sources":["nishantdahal/ntl-two-stage-lora"],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":["illuminatep/deberta-v3-plain/transformers/base/1"]}
+          m={"title":"deberta-phase2","id":f"{os.environ['KAGGLE_USERNAME']}/deberta-phase2","code_file":"deberta-phase2.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":True,"enable_internet":False,"dataset_sources":["nishantdahal/ntl-two-stage-lora"],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":["illuminatep/deberta-v3-plain/transformers/base/1"]}
           json.dump(m,open('kaggle_phase2/kernel-metadata.json','w'),indent=2)
           PY
       - run: kaggle kernels push -p kaggle_phase2
