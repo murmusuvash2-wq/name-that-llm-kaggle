@@ -1,27 +1,27 @@
 ########## submissions
 ref,fileName,date,description,status,publicScore,privateScore
-58598484,submission.parquet,2026-11-20 05:57:25.363000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.PENDING,,
+58607114,submission.parquet,2026-11-20 09:50:01.087000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.PENDING,,
+58598484,submission.parquet,2026-11-20 05:57:25.363000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.COMPLETE,0.648,
 58429216,submission.parquet,2026-11-16 11:57:33.147000,v81: ATLAS + sibling + tokenizer fingerprint,SubmissionStatus.COMPLETE,0.648,
 58369817,submission.parquet,2026-11-15 04:57:52.257000,v80: ATLAS w0.20 — the biggest missing member,SubmissionStatus.COMPLETE,0.648,
 58343542,submission.parquet,2026-11-14 12:54:11.797000,v79b: SVC on gtuli12 clean pool — the pool switch that did not take effect last run,SubmissionStatus.COMPLETE,0.648,
 58337098,submission.parquet,2026-11-14 08:21:09.217000,v79: SVC on the clean gtuli12 pool (k=2 OOF +0.040 measured),SubmissionStatus.COMPLETE,0.648,
 58082378,submission.parquet,2026-11-07 06:34:28.697000,"v75: our DeBERTa head embedded, pre-flight gated",SubmissionStatus.COMPLETE,0.638,
-58066549,submission.parquet,2026-11-06 18:45:07.640000,"v73: our DeBERTa head, head-only swap",SubmissionStatus.COMPLETE,0.640,
 
 ########## leaderboard
-Next Page Token = CfDJ8CXkJvnxKG5Ktgac76JjV5EepvVEtserJXtmbYZyZMJMQqRdC131WG-NWI9DKKSuziEZTRot2e3FYMdZ4wHIGQw
+Next Page Token = CfDJ8CXkJvnxKG5Ktgac76JjV5Fp2Pl_E6Tk2V2bzdCSLIzd5lAVbka-dOLzlAkeFlEIKcBjnjCwxUIufI8xqqMup-Y
   teamId  teamName                  submissionDate              score  
 --------  ------------------------  --------------------------  -----  
 17135987  Meni David Gottesman      2026-11-17 00:48:55.056000  0.776  
 17167595  NguyenThanhNhan           2026-11-14 02:26:46.880000  0.771  
+17109889  Le Viet                   2026-11-20 03:27:58.126000  0.770  
 17109387  Hod Carriers              2026-11-18 05:02:39.686000  0.770  
-17122191  Harveen Singh Chadha      2026-11-19 13:10:25.940000  0.769  
-17109889  Le Viet                   2026-11-19 08:00:22.996000  0.769  
+17109528  Søren Ravn Andersen       2026-11-20 02:57:14.706000  0.770  
 
 ########## quota
 resource  used   remaining  total   refreshAt                  
 --------  -----  ---------  ------  -------------------------  
-GPU       6.93h  23.07h     30.00h  2026-11-21T00:00:00+00:00  
+GPU       8.27h  21.73h     30.00h  2026-11-21T00:00:00+00:00  
 TPU       0.00h  20.00h     20.00h  2026-11-21T00:00:00+00:00  
 
 ########## kernel log
@@ -45,5 +45,7 @@ atlas SKIPPED on the 3-row interactive run
 per-class offsets: OOF BA 0.4916 -> 0.4933 (gain +0.0018)
 members that voted: ['deberta', 'distort_lr', 'll8v5', 'lora_qwen25_14b', 'lora_qwen3_14b', 'q14v5', 'svc', 'tfidf_lr']
 pre-flight OK: all 3 required members voted
-sibling re-rank failed, keeping the blend: ValueError NumPy boolean array indexing assignment cannot assign 3 input values to the 1 output values where the mask is true
-done in 5157s
+  sibling gpt-5.6: 1 rows in family, 0 re-ranked (mix)
+  sibling claude-other: 1 rows in family, 0 re-ranked (specialist)
+sibling re-rank moved 0 predictions in total
+done in 4789s
