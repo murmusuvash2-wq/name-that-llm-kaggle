@@ -1,0 +1,53 @@
+name: Report Kaggle state on demand
+on:
+  push:
+    paths:
+      - "reports/trigger.txt"
+permissions:
+  contents: write
+concurrency:
+  group: report
+  cancel-in-progress: true
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Collect
+        shell: bash
+        run: |
+          mkdir -p reports out
+          {
+            echo "########## submissions"
+            kaggle competitions submissions -c name-that-llm --csv 2>&1 | head -8
+            echo
+            echo "########## leaderboard"
+            kaggle competitions leaderboard -c name-that-llm --show 2>&1 | head -8
+            echo
+            echo "########## quota"
+            kaggle quota 2>&1 | tail -4
+            echo
+            echo "########## kernel log"
+            rm -rf out && mkdir -p out
+            kaggle kernels output janaiworkspace/llm-gmc -p out 2>&1 | tail -2 || true
+            python3 benchmarks/dump_kernel_log.py "out/*.log" 2>/dev/null | grep -iE "pool source|OOF BA|sibling|blend 0|spec 0|mix 0|atlas|tokenizer|members that voted|pre-flight|done in|Error|Traceback" | head -40
+          } > reports/latest.txt
+          cat reports/latest.txt
+      - name: Commit
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "report-bot"
+          git config user.email "report-bot@users.noreply.github.com"
+          git add reports/ || true
+          git commit -m "report: kaggle state" || echo nothing
+          git push || echo "push failed"
