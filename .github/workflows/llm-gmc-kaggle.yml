@@ -25,7 +25,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install Kaggle CLI
-        run: python -m pip install --upgrade pip kaggle
+        run: python -m pip install --upgrade pip kaggle six
 
       - name: Check Kaggle credentials
         shell: bash
