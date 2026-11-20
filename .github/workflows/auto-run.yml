@@ -1,0 +1,95 @@
+name: Auto run and submit on notebook push
+on:
+  push:
+    paths:
+      - "notebooks/llm-gmc.ipynb"
+permissions:
+  contents: read
+concurrency:
+  group: kaggle-submit
+  cancel-in-progress: true
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      REF: janaiworkspace/llm-gmc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install kaggle six python-slugify requests tqdm urllib3 certifi
+      - name: Push the notebook
+        shell: bash
+        run: |
+          mkdir -p kk && cp notebooks/llm-gmc.ipynb kk/llm-gmc.ipynb
+          python - <<'PY'
+          import json, os
+          m = {"title": "LLM GMC", "id": f"{os.environ['KAGGLE_USERNAME']}/llm-gmc",
+               "code_file": "llm-gmc.ipynb", "language": "python", "kernel_type": "notebook",
+               "is_private": True, "enable_gpu": True, "enable_internet": False,
+               "dataset_sources": ["nishantdahal/ntl-handwriting-blend",
+                                   "lightningv08/ntl-olmo2-native24-final-inference-assets",
+                                   "pjmathematician/ultrabert-380m-ntl",
+                                   "illiadolenko/ntl-merged-corpus-v2",
+                                   "trnhip/ntl-api-gen",
+                                   "harshitkmr/ntl-google-gen-v1",
+                                   "dhruvtibarewal/nlm-l24-adapters-v5",
+                                   "dhruvtibarewal/nlm-matched-clean",
+                                   "alexchilton/ntl-ts-q3-8b",
+                                   "gtuli12/ntl-own-pool",
+                                   "crtproduction/name-that-llm-open-pool",
+                                   "josephadamski91/ntl-atlas-qwen3-8b-v1"],
+               "competition_sources": ["name-that-llm"], "kernel_sources": [],
+               "model_sources": ["qwen-lm/qwen-3/transformers/14b-base/1",
+                                 "qwen-lm/qwen2.5/transformers/14b/1",
+                                 "alexchilton/llama-3-1-8b-base/transformers/default/1",
+                                 "qwen-lm/qwen-3/transformers/8b-base/1"]}
+          json.dump(m, open("kk/kernel-metadata.json", "w"), indent=2)
+          PY
+          kaggle kernels push -p kk 2>&1 | tee push.txt | tail -3
+      - name: Verify the pushed kernel carries this notebook
+        shell: bash
+        run: |
+          rm -rf vfy && mkdir -p vfy && cd vfy
+          kaggle kernels pull "$REF" -m >/dev/null 2>&1 || true
+          NB="$(ls *.ipynb 2>/dev/null | head -1)"
+          python3 - "$NB" <<'PY'
+          import json, sys
+          nb = json.load(open(sys.argv[1]))
+          src = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+          print("cells:", len(nb["cells"]))
+          ok = "FeatureUnion" in src
+          print("sibling FeatureUnion present:", ok)
+          if not ok:
+              sys.exit("ABORT: the pushed kernel is not v82")
+          PY
+      - name: Wait
+        shell: bash
+        run: |
+          for i in $(seq 1 160); do
+            st="$(kaggle kernels status "$REF" 2>&1 | grep -oE 'KernelWorkerStatus\.[A-Z]+' | head -1)"
+            echo "check $i: $st"
+            case "$st" in *COMPLETE*|*ERROR*|*CANCEL*) break ;; esac
+            sleep 45
+          done
+      - name: Submit
+        shell: bash
+        run: |
+          rm -rf out && mkdir -p out
+          kaggle kernels output "$REF" -p out 2>&1 | tail -2 || true
+          cp out/submission.parquet submission.parquet 2>/dev/null || echo "no parquet"
+          ls -la submission.parquet
+          KV="$(grep -oE 'Kernel version [0-9]+' push.txt | grep -oE '[0-9]+' | head -1)"
+          echo "submitting version $KV"
+          kaggle competitions submit -c name-that-llm -k "$REF" -v "$KV" -f submission.parquet -m "v82: sibling specialists, char+word union, per-family C" 2>&1 | tail -5 || true
+          for i in $(seq 1 40); do
+            kaggle competitions submissions -c name-that-llm --csv 2>&1 | head -3
+            kaggle competitions submissions -c name-that-llm --csv 2>&1 | head -2 | grep -qE "COMPLETE,[0-9]" && break
+            sleep 30
+          done
