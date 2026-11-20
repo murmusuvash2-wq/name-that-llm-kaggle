@@ -1,6 +1,6 @@
 ########## submissions
 ref,fileName,date,description,status,publicScore,privateScore
-58607114,submission.parquet,2026-11-20 09:50:01.087000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.PENDING,,
+58607114,submission.parquet,2026-11-20 09:50:01.087000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.COMPLETE,0.624,
 58598484,submission.parquet,2026-11-20 05:57:25.363000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.COMPLETE,0.648,
 58429216,submission.parquet,2026-11-16 11:57:33.147000,v81: ATLAS + sibling + tokenizer fingerprint,SubmissionStatus.COMPLETE,0.648,
 58369817,submission.parquet,2026-11-15 04:57:52.257000,v80: ATLAS w0.20 — the biggest missing member,SubmissionStatus.COMPLETE,0.648,
@@ -9,7 +9,7 @@ ref,fileName,date,description,status,publicScore,privateScore
 58082378,submission.parquet,2026-11-07 06:34:28.697000,"v75: our DeBERTa head embedded, pre-flight gated",SubmissionStatus.COMPLETE,0.638,
 
 ########## leaderboard
-Next Page Token = CfDJ8CXkJvnxKG5Ktgac76JjV5Fp2Pl_E6Tk2V2bzdCSLIzd5lAVbka-dOLzlAkeFlEIKcBjnjCwxUIufI8xqqMup-Y
+Next Page Token = CfDJ8CXkJvnxKG5Ktgac76JjV5Gq9zS_L5AIKLr_0Trwbw8dAuaj9563U-XDvN-Y48Q1r0J8185hoTZmRiODD557n60
   teamId  teamName                  submissionDate              score  
 --------  ------------------------  --------------------------  -----  
 17135987  Meni David Gottesman      2026-11-17 00:48:55.056000  0.776  
