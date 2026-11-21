@@ -85,10 +85,12 @@ jobs:
             exit 1
           fi
 
-      - name: Download Kaggle notebook outputs
-        run: kaggle kernels output "$KERNEL_REF" -p kaggle-output
+      - name: Download Kaggle notebook outputs and logs
+        if: always()
+        run: kaggle kernels output "$KERNEL_REF" -p kaggle-output || true
 
       - name: Upload validation results and Kaggle outputs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: llm-gmc-validation-results
