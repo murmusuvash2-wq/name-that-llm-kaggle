@@ -67,15 +67,15 @@ jobs:
           set -o pipefail
           mkdir -p kaggle-output
           completed=false
-          for attempt in $(seq 1 210); do
-            status="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
-            echo "Status check $attempt/90: $status"
-            if echo "$status" | grep -qi "COMPLETE"; then
+          for attempt in $(seq 1 180); do
+            status="$(timeout 90s kaggle kernels status "$KERNEL_REF" 2>&1 || echo STATUS_TIMEOUT_OR_ERROR)"
+            echo "Status check $attempt/180: $status"
+            if echo "$status" | grep -qiE "COMPLETE|SUCCESS"; then
               completed=true
               break
             fi
-            if echo "$status" | grep -qiE "ERROR|CANCEL"; then
-              echo "Kaggle notebook reported a failure."
+            if echo "$status" | grep -qiE "ERROR|CANCEL|FAILED|STATUS_TIMEOUT_OR_ERROR"; then
+              echo "Kaggle notebook reported a failure or status polling timeout."
               exit 1
             fi
             sleep 60
