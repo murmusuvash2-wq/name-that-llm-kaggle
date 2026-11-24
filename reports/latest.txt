@@ -1,28 +1,28 @@
 ########## submissions
 ref,fileName,date,description,status,publicScore,privateScore
+58810312,submission.parquet,2026-11-24 04:09:16.170000,"proven v81 valid output after validator fix, kernel v119",SubmissionStatus.COMPLETE,0.648,
+58649000,submission.parquet,2026-11-21 03:52:02.030000,Corrected baseline_qwen_svc_v1; hidden-size Sinkhorn target-mass bug fixed; production execution validated,SubmissionStatus.COMPLETE,0.560,
 58607114,submission.parquet,2026-11-20 09:50:01.087000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.COMPLETE,0.624,
 58598484,submission.parquet,2026-11-20 05:57:25.363000,"v82: sibling specialists, char+word union, per-family C",SubmissionStatus.COMPLETE,0.648,
 58429216,submission.parquet,2026-11-16 11:57:33.147000,v81: ATLAS + sibling + tokenizer fingerprint,SubmissionStatus.COMPLETE,0.648,
 58369817,submission.parquet,2026-11-15 04:57:52.257000,v80: ATLAS w0.20 — the biggest missing member,SubmissionStatus.COMPLETE,0.648,
 58343542,submission.parquet,2026-11-14 12:54:11.797000,v79b: SVC on gtuli12 clean pool — the pool switch that did not take effect last run,SubmissionStatus.COMPLETE,0.648,
-58337098,submission.parquet,2026-11-14 08:21:09.217000,v79: SVC on the clean gtuli12 pool (k=2 OOF +0.040 measured),SubmissionStatus.COMPLETE,0.648,
-58082378,submission.parquet,2026-11-07 06:34:28.697000,"v75: our DeBERTa head embedded, pre-flight gated",SubmissionStatus.COMPLETE,0.638,
 
 ########## leaderboard
-Next Page Token = CfDJ8CXkJvnxKG5Ktgac76JjV5Gq9zS_L5AIKLr_0Trwbw8dAuaj9563U-XDvN-Y48Q1r0J8185hoTZmRiODD557n60
-  teamId  teamName                  submissionDate              score  
---------  ------------------------  --------------------------  -----  
-17135987  Meni David Gottesman      2026-11-17 00:48:55.056000  0.776  
-17167595  NguyenThanhNhan           2026-11-14 02:26:46.880000  0.771  
-17109889  Le Viet                   2026-11-20 03:27:58.126000  0.770  
-17109387  Hod Carriers              2026-11-18 05:02:39.686000  0.770  
-17109528  Søren Ravn Andersen       2026-11-20 02:57:14.706000  0.770  
+Next Page Token = CfDJ8DXPm6Y-hepMoQLWDOQfJck-gBtXj7dqe0s0AHvP_zcsMiBekFhkBMPPUvRS7IAszOi1aZV_w1bG3i0PWWiNJ6A
+  teamId  teamName                   submissionDate              score  
+--------  -------------------------  --------------------------  -----  
+17184108  YK                         2026-11-22 22:09:09.030000  0.809  
+17167595  NguyenThanhNhan            2026-11-23 00:33:16.026000  0.802  
+17158247  Ngo Dinh Luan              2026-11-23 16:55:27.580000  0.793  
+17109387  Hod Carriers               2026-11-21 13:14:45.783000  0.791  
+17137893  Team Aillis                2026-11-23 09:26:22.450000  0.788  
 
 ########## quota
 resource  used   remaining  total   refreshAt                  
 --------  -----  ---------  ------  -------------------------  
-GPU       8.27h  21.73h     30.00h  2026-11-21T00:00:00+00:00  
-TPU       0.00h  20.00h     20.00h  2026-11-21T00:00:00+00:00  
+GPU       2.40h  27.60h     30.00h  2026-11-28T00:00:00+00:00  
+TPU       0.00h  20.00h     20.00h  2026-11-28T00:00:00+00:00  
 
 ########## kernel log
 Output file downloaded to out/validation_results.json
@@ -35,17 +35,15 @@ tokenizer fingerprint: ['qwen3-14b', 'qwen3-8b', 'qwen2.5-14b', 'llama-3.1-8b'] 
 TOKENIZER FINGERPRINT: official-row accuracy 0.1367 (never trained on these)
 tokenizer fingerprint NOT admitted
 sibling families: {'gpt-5.6': ['gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra'], 'gemini-flash': ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash'], 'claude-opus': ['claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5'], 'claude-other': ['claude-sonnet-5', 'claude-fable-5'], 'glm': ['glm-5.3', 'glm-5.3-flash']}
-  gpt-5.6        pool 47,249 | k2  300 | C 0.3 | blend 0.5833 spec 0.6133 mix 0.6267 -> mix
-  gemini-flash   pool 58,652 | k2  300 | C 0.3 | blend 0.5633 spec 0.5933 mix 0.5733 -> specialist
-  claude-opus    pool 29,584 | k2  300 | C 1.0 | blend 0.8333 spec 0.8300 mix 0.8300 -> blend
-  claude-other   pool 24,886 | k2  299 | C 3.0 | blend 0.7793 spec 0.7993 mix 0.7960 -> specialist
-  glm            pool 29,336 | k2  300 | C 3.0 | blend 0.5967 spec 0.6000 mix 0.6000 -> specialist
-sibling specialists kept: ['claude-other', 'gemini-flash', 'glm', 'gpt-5.6'] (applied later, after Sinkhorn)
+  gpt-5.6        pool 47,249 | k2  300 | blend 0.5833 spec 0.5533 mix 0.5600 -> blend
+  gemini-flash   pool 58,652 | k2  300 | blend 0.5633 spec 0.5800 mix 0.5767 -> specialist
+  claude-opus    pool 29,584 | k2  300 | blend 0.8333 spec 0.8067 mix 0.8133 -> blend
+  claude-other   pool 24,886 | k2  299 | blend 0.7793 spec 0.7692 mix 0.7659 -> blend
+  glm            pool 29,336 | k2  300 | blend 0.5967 spec 0.5767 mix 0.5900 -> blend
+sibling specialists kept: ['gemini-flash'] (applied later, after Sinkhorn)
 atlas SKIPPED on the 3-row interactive run
 per-class offsets: OOF BA 0.4916 -> 0.4933 (gain +0.0018)
 members that voted: ['deberta', 'distort_lr', 'll8v5', 'lora_qwen25_14b', 'lora_qwen3_14b', 'q14v5', 'svc', 'tfidf_lr']
 pre-flight OK: all 3 required members voted
-  sibling gpt-5.6: 1 rows in family, 0 re-ranked (mix)
-  sibling claude-other: 1 rows in family, 0 re-ranked (specialist)
 sibling re-rank moved 0 predictions in total
-done in 4789s
+done in 3925s
