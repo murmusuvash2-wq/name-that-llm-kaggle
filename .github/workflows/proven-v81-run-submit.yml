@@ -1,0 +1,145 @@
+name: Run and submit proven v81 score path
+on:
+  workflow_dispatch:
+    inputs:
+      submit:
+        description: Submit the completed kernel output to Name That LLM
+        required: true
+        default: true
+        type: boolean
+      message:
+        description: Competition submission message
+        required: true
+        default: proven v81 path after source audit
+        type: string
+permissions:
+  contents: read
+jobs:
+  run-submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/llm-gmc
+      COMP: name-that-llm
+      MSG: ${{ inputs.message }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade pip kaggle six
+      - name: Check Kaggle credentials
+        run: |
+          test -n "$KAGGLE_API_TOKEN"
+          kaggle competitions list --search 'Name That LLM'
+      - name: Prepare proven v81 notebook and metadata
+        shell: bash
+        run: |
+          mkdir -p kaggle_kernel
+          cp notebooks/llm-gmc-proven-v81.ipynb kaggle_kernel/llm-gmc.ipynb
+          python - <<'PY'
+          import json, os
+          metadata = {
+              'title': 'LLM GMC proven v81',
+              'id': f"{os.environ['KAGGLE_USERNAME']}/llm-gmc",
+              'code_file': 'llm-gmc.ipynb',
+              'language': 'python', 'kernel_type': 'notebook',
+              'is_private': True, 'enable_gpu': True, 'enable_internet': False,
+              'dataset_sources': [
+                  'nishantdahal/ntl-handwriting-blend',
+                  'lightningv08/ntl-olmo2-native24-final-inference-assets',
+                  'pjmathematician/ultrabert-380m-ntl',
+                  'illiadolenko/ntl-merged-corpus-v2',
+                  'trnhip/ntl-api-gen',
+                  'harshitkmr/ntl-google-gen-v1',
+                  'dhruvtibarewal/nlm-l24-adapters-v5',
+                  'dhruvtibarewal/nlm-matched-clean',
+                  'alexchilton/ntl-ts-q3-8b',
+                  'gtuli12/ntl-own-pool',
+                  'crtproduction/name-that-llm-open-pool',
+                  'josephadamski91/ntl-atlas-qwen3-8b-v1',
+              ],
+              'competition_sources': ['name-that-llm'],
+              'kernel_sources': [],
+              'model_sources': [
+                  'qwen-lm/qwen-3/transformers/14b-base/1',
+                  'qwen-lm/qwen2.5/transformers/14b/1',
+                  'alexchilton/llama-3-1-8b-base/transformers/default/1',
+                  'qwen-lm/qwen-3/transformers/8b-base/1',
+              ],
+          }
+          with open('kaggle_kernel/kernel-metadata.json', 'w') as f:
+              json.dump(metadata, f, indent=2)
+          PY
+          grep -q 'w_svc.*12' kaggle_kernel/llm-gmc.ipynb
+          grep -q 'w_deberta.*1.0' kaggle_kernel/llm-gmc.ipynb
+          grep -q 'ATLAS_W.*0.20' kaggle_kernel/llm-gmc.ipynb
+      - name: Push proven v81 notebook
+        shell: bash
+        run: |
+          set -o pipefail
+          kaggle kernels push -p kaggle_kernel 2>&1 | tee push.log
+          ver="$(grep -oiE 'version[^0-9]*[0-9]+' push.log | grep -oE '[0-9]+' | head -1 || true)"
+          echo "KERNEL_VERSION=$ver" >> "$GITHUB_ENV"
+          echo "pushed kernel version: ${ver:-unknown}"
+      - name: Wait for Kaggle run
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p kaggle-output
+          completed=false
+          for attempt in $(seq 1 180); do
+            status="$(timeout 90s kaggle kernels status "$KERNEL_REF" 2>&1 || echo STATUS_TIMEOUT_OR_ERROR)"
+            echo "Status check $attempt/180: $status"
+            if echo "$status" | grep -qiE 'COMPLETE|SUCCESS'; then completed=true; break; fi
+            if echo "$status" | grep -qiE 'ERROR|CANCEL|FAILED'; then exit 1; fi
+            sleep 60
+          done
+          test "$completed" = true
+      - name: Download Kaggle outputs and logs
+        if: always()
+        run: |
+          kaggle kernels output "$KERNEL_REF" -p kaggle-output || true
+          find kaggle-output -maxdepth 2 -type f -printf '%p %s bytes\n' | sort || true
+          tail -n 120 kaggle-output/llm-gmc.log 2>/dev/null || true
+      - name: Validate output contract
+        shell: bash
+        run: |
+          test -f kaggle-output/submission.parquet
+          python - <<'PY'
+          import pandas as pd
+          p = pd.read_parquet('kaggle-output/submission.parquet')
+          assert list(p.columns) == ['id', 'model'], p.columns.tolist()
+          assert len(p) == 3, len(p)
+          assert p['id'].is_unique
+          assert p['model'].notna().all()
+          print(p.to_string(index=False))
+          PY
+      - name: Submit to competition and wait for score
+        if: ${{ inputs.submit == true }}
+        shell: bash
+        run: |
+          set -o pipefail
+          if [ -n "${KERNEL_VERSION:-}" ]; then
+            kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$KERNEL_VERSION" \
+              -f submission.parquet -m "$MSG, kernel v$KERNEL_VERSION" --wait 10800 --poll-interval 60
+          else
+            kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" \
+              -f submission.parquet -m "$MSG, latest kernel" --wait 10800 --poll-interval 60
+          fi
+      - name: Show latest submissions
+        if: always()
+        run: kaggle competitions submissions -c "$COMP" | head -12
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proven-v81-kaggle-run
+          path: |
+            kaggle-output/
+            push.log
