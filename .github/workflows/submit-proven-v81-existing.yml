@@ -1,0 +1,71 @@
+name: Submit completed proven v81 kernel
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Completed proven v81 Kaggle kernel version
+        required: true
+        default: '119'
+        type: string
+      message:
+        description: Competition submission message
+        required: true
+        default: proven v81 completed output
+        type: string
+permissions:
+  contents: read
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/llm-gmc-proven-v81
+      COMP: name-that-llm
+      VERSION: ${{ inputs.version }}
+      MSG: ${{ inputs.message }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Kaggle CLI and parquet validator
+        run: python -m pip install --upgrade pip kaggle six pandas pyarrow
+      - name: Check Kaggle credentials
+        run: |
+          test -n "$KAGGLE_API_TOKEN"
+          kaggle competitions list --search 'Name That LLM'
+      - name: Download completed kernel output
+        run: |
+          rm -rf kaggle-output
+          mkdir -p kaggle-output
+          kaggle kernels output "$KERNEL_REF" -p kaggle-output
+          find kaggle-output -maxdepth 2 -type f -printf '%p %s bytes\n' | sort
+      - name: Validate submission contract
+        run: |
+          test -f kaggle-output/submission.parquet
+          python - <<'PY'
+          import pandas as pd
+          p = pd.read_parquet('kaggle-output/submission.parquet')
+          assert list(p.columns) == ['id', 'model'], p.columns.tolist()
+          assert len(p) == 3, len(p)
+          assert p['id'].is_unique
+          assert p['model'].notna().all()
+          print(p.to_string(index=False))
+          PY
+      - name: Submit completed version and wait for score
+        run: |
+          kaggle competitions submit -c "$COMP" -k "$KERNEL_REF" -v "$VERSION" \
+            -f submission.parquet -m "$MSG, kernel v$VERSION" --wait 10800 --poll-interval 60
+      - name: Show latest submissions
+        if: always()
+        run: kaggle competitions submissions -c "$COMP" | head -12
+      - name: Upload submission artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: submitted-proven-v81-v${{ inputs.version }}
+          path: kaggle-output/submission.parquet
