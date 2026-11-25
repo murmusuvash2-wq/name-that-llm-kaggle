@@ -1,0 +1,60 @@
+name: Gemini sibling OOF diagnostic
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: janaiworkspace
+      KERNEL_REF: janaiworkspace/gemini-sibling-diagnostic
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip kaggle six
+      - name: Prepare diagnostic notebook
+        run: |
+          mkdir -p kaggle_gemini
+          cp notebooks/gemini-sibling-diagnostic.ipynb kaggle_gemini/
+          python - <<'PY'
+          import json, os
+          m={"title":"Gemini sibling OOF diagnostic","id":f"{os.environ['KAGGLE_USERNAME']}/gemini-sibling-diagnostic","code_file":"gemini-sibling-diagnostic.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":False,"enable_internet":False,"dataset_sources":[],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":[]}
+          json.dump(m,open('kaggle_gemini/kernel-metadata.json','w'),indent=2)
+          PY
+      - name: Push diagnostic notebook
+        run: kaggle kernels push -p kaggle_gemini
+      - name: Wait and collect
+        run: |
+          set -o pipefail
+          mkdir -p gemini-output
+          done_flag=false
+          for i in $(seq 1 120); do
+            s="$(timeout 90s kaggle kernels status "$KERNEL_REF" 2>&1 || true)"; echo "Status $i/120: $s"
+            if echo "$s" | grep -qiE 'COMPLETE|SUCCESS'; then done_flag=true; break; fi
+            if echo "$s" | grep -qiE 'ERROR|CANCEL|FAILED'; then exit 1; fi
+            sleep 60
+          done
+          [ "$done_flag" = true ]
+          kaggle kernels output "$KERNEL_REF" -p gemini-output
+          test -f gemini-output/gemini_sibling_results.json
+      - name: Validate result contract
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('gemini-output/gemini_sibling_results.json'))
+          assert d['protocol']=='5-fold GroupKFold by prompt_id'
+          assert d['predeclared_promotion_margin']==0.010
+          assert len(d['thresholds'])==6
+          print(json.dumps({k:d[k] for k in ['experiment','protocol','base_balanced_accuracy','selected','elapsed_seconds']}, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gemini-sibling-diagnostic-results
+          path: gemini-output/
+          if-no-files-found: warn
