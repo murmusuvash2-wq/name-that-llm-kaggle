@@ -23,7 +23,7 @@ jobs:
           cp notebooks/gemini-sibling-diagnostic.ipynb kaggle_gemini/
           python - <<'PY'
           import json, os
-          m={"title":"Gemini sibling OOF diagnostic","id":f"{os.environ['KAGGLE_USERNAME']}/gemini-sibling-diagnostic","code_file":"gemini-sibling-diagnostic.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":False,"enable_internet":False,"dataset_sources":[],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":[]}
+          m={"title":"Gemini Sibling Diagnostic","id":f"{os.environ['KAGGLE_USERNAME']}/gemini-sibling-diagnostic","code_file":"gemini-sibling-diagnostic.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":False,"enable_internet":False,"dataset_sources":[],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":[]}
           json.dump(m,open('kaggle_gemini/kernel-metadata.json','w'),indent=2)
           PY
       - name: Push diagnostic notebook
