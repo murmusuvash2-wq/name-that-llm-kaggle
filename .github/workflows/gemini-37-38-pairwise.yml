@@ -23,7 +23,7 @@ jobs:
           cp notebooks/gemini-37-38-pairwise-diagnostic.ipynb kaggle_pairwise/
           python - <<'PY'
           import json, os
-          m={"title":"Gemini 37 38 Pairwise Diagnostic","id":f"{os.environ['KAGGLE_USERNAME']}/gemini-37-38-pairwise-diagnostic","code_file":"gemini-37-38-pairwise-diagnostic.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":False,"enable_internet":False,"dataset_sources":[],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":[]}
+          m={"title":"Gemini 37 38 Pairwise Diagnostic","id":f"{os.environ['KAGGLE_USERNAME']}/gemini-37-38-pairwise-diagnostic","code_file":"gemini-37-38-pairwise-diagnostic.ipynb","language":"python","kernel_type":"notebook","is_private":True,"enable_gpu":False,"enable_internet":False,"dataset_sources":["gtuli12/ntl-own-pool"],"competition_sources":["name-that-llm"],"kernel_sources":[],"model_sources":[]}
           json.dump(m,open('kaggle_pairwise/kernel-metadata.json','w'),indent=2)
           PY
       - name: Push notebook
